@@ -12,26 +12,29 @@ import com.badlogic.gdx.Screen;
  */
 public class GameplayMode implements Screen {
   // The root model used for the game
-  private GameplayModel model;
+  private GameplayModel model = new GameplayModel();
   
   // The input controller for player.
-  private InputController inputController;
+  private InputController inputController = new InputController();
   
   // The player controller
-  private PlayerController playerController;
+  private PlayerController playerController = new PlayerController();
   
+  // The list of controllers - used to simplify update loop processing.
   private List<AbstractController> controllers = new ArrayList<AbstractController>();
+  
+  // The game canvas.
+  private GameCanvas canvas;
   
   /**
    * Initializes an instance of the game with all the controllers, model and
    * view canvas.
    */
   public GameplayMode() {
-    inputController = new InputController();
-    playerController = new PlayerController();
-    
     controllers.add(inputController);
     controllers.add(playerController);
+    
+    canvas = new GameCanvas(model.getMainCamera().getCamera());
   }
 
   @Override
@@ -46,6 +49,9 @@ public class GameplayMode implements Screen {
     for (AbstractController c : controllers) {
       c.update(delta);
     }
+    
+    // Now we render all objects that we can render
+    model.draw(canvas);
   }
 
   @Override

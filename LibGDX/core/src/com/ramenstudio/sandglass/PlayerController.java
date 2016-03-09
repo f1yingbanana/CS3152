@@ -6,11 +6,11 @@ package com.ramenstudio.sandglass;
  * @author Jiacong Xu
  */
 public class PlayerController extends AbstractController {
-
+  
   @Override
   public void update(float dt) {
-    // TODO Auto-generated method stub
-
+    // Realizes player input
+    
   }
 
 }

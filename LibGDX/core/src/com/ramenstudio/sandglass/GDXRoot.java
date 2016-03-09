@@ -12,8 +12,6 @@ import com.badlogic.gdx.assets.AssetManager;
 public class GDXRoot extends ApplicationAdapter {
   /** Loads and manages assets. */
   private AssetManager manager;
-  /** Drawing context for objects on scene. */
-  private GameCanvas canvas;
   
   /**
    * Default initializer that initializes the asset manager.
@@ -31,7 +29,6 @@ public class GDXRoot extends ApplicationAdapter {
    */
   @Override
   public void create() {
-    canvas  = new GameCanvas();
     // loading = new LoadingMode(canvas,manager,1);
     
     // Initializes and loads the necessary controllers.
