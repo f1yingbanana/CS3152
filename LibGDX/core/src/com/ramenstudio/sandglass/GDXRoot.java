@@ -7,7 +7,7 @@ import com.badlogic.gdx.assets.AssetManager;
  * The platform-independent root class that initializes the base MVC for the
  * game.
  * 
- * @author flyingbanana
+ * @author Jiacong Xu
  */
 public class GDXRoot extends ApplicationAdapter {
   /** Loads and manages assets. */
@@ -65,6 +65,9 @@ public class GDXRoot extends ApplicationAdapter {
     super.dispose();
   }
   
+  /**
+   * We use this to implement an update loop for the subsequent controllers.
+   */
   @Override
   public void render() {
     
