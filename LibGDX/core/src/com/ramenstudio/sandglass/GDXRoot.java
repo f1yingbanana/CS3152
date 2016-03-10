@@ -1,7 +1,9 @@
 package com.ramenstudio.sandglass;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.ramenstudio.sandglass.util.ScreenListener;
 
 /**
  * The platform-independent root class that initializes the base MVC for the
@@ -9,9 +11,18 @@ import com.badlogic.gdx.assets.AssetManager;
  * 
  * @author Jiacong Xu
  */
-public class GDXRoot extends ApplicationAdapter {
+public class GDXRoot extends Game implements ScreenListener {
   /** Loads and manages assets. */
   private AssetManager manager;
+  
+  /** The three game modes */
+  private TitleMode titleMode;
+  private GameMode gameMode;
+  private LoadingMode loadingMode;
+  
+  public enum ApplicationMode {
+    TITLE, GAME, LOADING
+  }
   
   /**
    * Default initializer that initializes the asset manager.
@@ -19,6 +30,28 @@ public class GDXRoot extends ApplicationAdapter {
   public GDXRoot() {
     // Initializes manager.
     manager = new AssetManager();
+  }
+  
+  /**
+   * We dispose a screen and set the new screen given the mode. We assume the
+   * screen we are setting to is correctly configured before this function is
+   * called.
+   * 
+   * @param mode represents which of the three modes of the application we want
+   * to switch to.
+   */
+  public void setApplicationMode(ApplicationMode mode) {
+    switch (mode) {
+    case TITLE:
+      setScreen(titleMode);
+      break;
+    case GAME:
+      setScreen(gameMode);
+      break;
+    case LOADING:
+      setScreen(loadingMode);
+      break;
+    }
   }
   
   /** 
@@ -29,22 +62,14 @@ public class GDXRoot extends ApplicationAdapter {
    */
   @Override
   public void create() {
-    // loading = new LoadingMode(canvas,manager,1);
+    // We create all the modes we need. A title mode, a game mode, and a loading
+    // mode. We don't need to load anything yet, though.
+    titleMode = new TitleMode();
+    gameMode = new GameMode();
+    loadingMode = new LoadingMode();
     
-    // Initializes and loads the necessary controllers.
-    /*
-    controllers = new WorldController[3];
-    controllers[0] = new RocketController();
-    controllers[1] = new PlatformController();
-    controllers[2] = new RagdollController();
-    for(int ii = 0; ii < controllers.length; ii++) {
-      controllers[ii].preLoadContent(manager);
-    }
-    
-    current = 0;
-    loading.setScreenListener(this);
-    setScreen(loading);
-    */
+    // For now, we simply load the game play mode.
+    setApplicationMode(ApplicationMode.GAME);
   }
 
   /** 
@@ -62,11 +87,9 @@ public class GDXRoot extends ApplicationAdapter {
     super.dispose();
   }
   
-  /**
-   * We use this to implement an update loop for the subsequent controllers.
-   */
   @Override
-  public void render() {
-    
+  public void exitScreen(Screen screen, int exitCode) {
+    // When the given mode wants to exit the mode. This happens when title chose
+    // a level to play on, or when game mode is done, or when loading is done.
   }
 }

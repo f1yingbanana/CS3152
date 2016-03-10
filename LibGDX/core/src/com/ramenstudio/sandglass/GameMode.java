@@ -10,9 +10,9 @@ import com.badlogic.gdx.Screen;
  * 
  * @author Jiacong Xu
  */
-public class GameplayMode implements Screen {
+public class GameMode implements Screen {
   // The root model used for the game
-  private GameplayModel model = new GameplayModel();
+  private GameModel model = new GameModel();
   
   // The input controller for player.
   private InputController inputController = new InputController();
@@ -30,7 +30,7 @@ public class GameplayMode implements Screen {
    * Initializes an instance of the game with all the controllers, model and
    * view canvas.
    */
-  public GameplayMode() {
+  public GameMode() {
     controllers.add(inputController);
     controllers.add(playerController);
     
@@ -51,6 +51,7 @@ public class GameplayMode implements Screen {
     }
     
     // Now we render all objects that we can render
+    canvas.clearCanvas();
     model.draw(canvas);
   }
 

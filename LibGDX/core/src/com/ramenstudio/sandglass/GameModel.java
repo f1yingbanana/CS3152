@@ -5,7 +5,7 @@ package com.ramenstudio.sandglass;
  * 
  * @author flyingbanana
  */
-public class GameplayModel implements Drawable {
+public class GameModel implements Drawable {
   private GameCamera mainCamera = new GameCamera();
   
   /**
