@@ -1,6 +1,8 @@
 package com.ramenstudio.sandglass;
 
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.*;
 
 /**
@@ -16,7 +18,10 @@ public class GameCanvas {
   private OrthographicCamera mainCamera;
   
   // The background color
-  private Color backgroundColor = Color.SKY;
+  private Color bgColor = Color.SKY;
+  
+  // Drawing context to handle textures AND POLYGONS as sprites
+  private PolygonSpriteBatch spriteBatch = new PolygonSpriteBatch();
   
   /**
    * Instantiates a game canvas with the given camera.
@@ -32,24 +37,49 @@ public class GameCanvas {
    * @return the current background color for the canvas.
    */
   public Color getBackgroundColor() {
-    return backgroundColor;
+    return bgColor;
   }
 
   /**
    * Sets the background color for the canvas. Without it we get random noise 
-   * from the buffer.
+   * from the buffer. The alpha channel is ignored.
    * 
    * @param color is the background color to draw. Default is coral.
    */
   public void setBackgroundColor(Color color) {
-    backgroundColor = color;
+    bgColor = color;
   }
   
   /**
-   * Call first thing in render.
+   * Call first thing in render to avoid left-over buffer garbage.
    */
-  public void clearCanvas() {
-    Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.b, backgroundColor.g, 1);
+  public void clear() {
+    Gdx.gl.glClearColor(bgColor.r, bgColor.b, bgColor.g, 1);
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+  }
+  
+  /**
+   * Begins a new drawing pass.
+   */
+  public void begin() {
+    spriteBatch.setProjectionMatrix(mainCamera.combined);
+    spriteBatch.begin();
+  }
+  
+  /**
+   * Flushes all the drawing to the GPU.
+   */
+  public void end() {
+    spriteBatch.end();
+  }
+  
+  /**
+   * Draws the given texture at origin with given size.
+   * @param image is the texture we will render.
+   * @param origin is the bottom left corner of the image.
+   * @param size is how big the image should be in world units.
+   */
+  public void draw(Texture image, Vector2 origin, Vector2 size) {
+    spriteBatch.draw(image, origin.x, origin.y, size.x, size.y);
   }
 }

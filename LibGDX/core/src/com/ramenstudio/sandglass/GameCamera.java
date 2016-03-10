@@ -9,7 +9,15 @@ import com.badlogic.gdx.math.Vector2;
  * @author Jiacong Xu
  */
 public class GameCamera extends GameObject {
-  private OrthographicCamera camera = new OrthographicCamera();
+  private OrthographicCamera camera;
+  
+  /**
+   * Initializes the camera with the given viewport size.
+   * @param size is the size of the view in world units. Can be zoomed later.
+   */
+  public GameCamera(Vector2 size) {
+    camera = new OrthographicCamera(size.x, size.y);
+  }
   
   public OrthographicCamera getCamera() {
     return camera;

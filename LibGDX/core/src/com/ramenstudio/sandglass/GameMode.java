@@ -51,8 +51,10 @@ public class GameMode implements Screen {
     }
     
     // Now we render all objects that we can render
-    canvas.clearCanvas();
+    canvas.clear();
+    canvas.begin();
     model.draw(canvas);
+    canvas.end();
   }
 
   @Override
