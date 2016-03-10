@@ -19,7 +19,6 @@ public class CameraController extends AbstractController {
   private float lookAheadMoveThreshold = 0.05f;
 
   private Vector2 m_LastTargetPosition;
-  private Vector2 m_CurrentVelocity;
   private Vector2 m_LookAheadPos = new Vector2();
   
   private GameCamera camera;
