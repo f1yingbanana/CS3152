@@ -8,7 +8,7 @@ import com.badlogic.gdx.Screen;
  * 
  * @author flyingbanana
  */
-public class LoadingMode implements Screen {
+public class LoadingMode extends AbstractMode implements Screen {
 
   @Override
   public void show() {
@@ -50,6 +50,14 @@ public class LoadingMode implements Screen {
   public void dispose() {
     // TODO Auto-generated method stub
 
+  }
+
+  @Override
+  public String[] getResourcePaths() {
+    // We don't need to do anything since the whole point of this method is such
+    // that we can use the loading mode. Loading mode should not be loading
+    // another loading mode!
+    return null;
   }
 
 }
