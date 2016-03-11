@@ -146,4 +146,12 @@ public class InputController extends AbstractController {
 		// TODO Auto-generated method stub
 		
 	}
+  
+  @Override
+  public void update(float dt) {
+    // TODO Auto-generated method stub
+  }
+  
+  @Override
+  public void draw(GameCanvas canvas) {}
 }

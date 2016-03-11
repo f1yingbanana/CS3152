@@ -10,8 +10,8 @@ import com.badlogic.gdx.Screen;
  * 
  * @author Jiacong Xu
  */
-public class GameMode implements Screen {
-  // The root model used for the game
+public class GameMode extends AbstractMode implements Screen {
+  // The place to store all top-level game related data.
   private GameModel model = new GameModel();
   
   // The input controller for player.
@@ -34,7 +34,7 @@ public class GameMode implements Screen {
     controllers.add(inputController);
     controllers.add(playerController);
     
-    canvas = new GameCanvas(model.getMainCamera().getCamera());
+    canvas = new GameCanvas();
   }
 
   @Override
@@ -52,8 +52,13 @@ public class GameMode implements Screen {
     
     // Now we render all objects that we can render
     canvas.clear();
-    canvas.begin();
-    model.draw(canvas);
+    canvas.begin(playerController.getCameraTransform());
+    
+    // We need to have a way to enforce ordering, a priority queue of some sort
+    for (AbstractController c : controllers) {
+      c.draw(canvas);
+    }
+    
     canvas.end();
   }
 
@@ -80,6 +85,11 @@ public class GameMode implements Screen {
   @Override
   public void dispose() {
     // When we should release all resources for this screen.
+  }
+
+  @Override
+  public String[] getResourcePaths() {
+    return null;
   }
   
 }

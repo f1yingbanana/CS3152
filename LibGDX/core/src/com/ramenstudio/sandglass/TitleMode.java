@@ -8,7 +8,7 @@ import com.badlogic.gdx.Screen;
  * 
  * @author flyingbanana
  */
-public class TitleMode implements Screen {
+public class TitleMode extends AbstractMode implements Screen {
 
   @Override
   public void show() {
@@ -52,4 +52,9 @@ public class TitleMode implements Screen {
     
   }
 
+  @Override
+  public String[] getResourcePaths() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

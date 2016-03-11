@@ -2,6 +2,7 @@ package com.ramenstudio.sandglass;
 
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.*;
 
@@ -13,10 +14,6 @@ import com.badlogic.gdx.*;
  * @author Jiacong Xu
  */
 public class GameCanvas {
-  // A reference to the main camera for the game. Camera itself should be stored
-  // in GameplayModel.
-  private OrthographicCamera mainCamera;
-  
   // The background color
   private Color bgColor = Color.SKY;
   
@@ -24,13 +21,9 @@ public class GameCanvas {
   private PolygonSpriteBatch spriteBatch = new PolygonSpriteBatch();
   
   /**
-   * Instantiates a game canvas with the given camera.
-   * 
-   * @param camera  the orthographic camera reference. The camera itself can be
-   *                stored anywhere.
+   * Instantiates a game canvas.
    */
-  public GameCanvas(OrthographicCamera camera) {
-    mainCamera = camera;
+  public GameCanvas() {
   }
   
   /**
@@ -59,10 +52,12 @@ public class GameCanvas {
   }
   
   /**
-   * Begins a new drawing pass.
+   * Begins a new drawing pass with the given matrix transformation.
+   * @param worldToScreenMatrix is the matrix that transforms world coordinates
+   *        into screen space. This should be given by the main camera.
    */
-  public void begin() {
-    spriteBatch.setProjectionMatrix(mainCamera.combined);
+  public void begin(Matrix4 worldToScreenMatrix) {
+    spriteBatch.setProjectionMatrix(worldToScreenMatrix);
     spriteBatch.begin();
   }
   

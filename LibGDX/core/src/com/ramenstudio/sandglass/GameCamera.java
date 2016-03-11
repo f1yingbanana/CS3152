@@ -29,6 +29,7 @@ public class GameCamera extends GameObject {
     Vector2 oldPos = getPosition();
     super.setPosition(position);
     camera.translate(position.sub(oldPos));
+    camera.update();
   }
   
   @Override
@@ -37,5 +38,6 @@ public class GameCamera extends GameObject {
     float oldRot = getRotation();
     super.setRotation(rotation);
     camera.rotate(rotation - oldRot);
+    camera.update();
   }
 }
