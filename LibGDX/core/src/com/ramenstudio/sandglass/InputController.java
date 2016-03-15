@@ -47,7 +47,7 @@ public class InputController extends AbstractController {
 	 *
 	 * @return the amount of vertical movement. 
 	 */
-	public float getHorizontal() {
+	public float getVertical() {
 		return vertical;
 	}
 
@@ -146,11 +146,6 @@ public class InputController extends AbstractController {
 		// TODO Auto-generated method stub
 		
 	}
-  
-  @Override
-  public void update(float dt) {
-    // TODO Auto-generated method stub
-  }
   
   @Override
   public void draw(GameCanvas canvas) {}
