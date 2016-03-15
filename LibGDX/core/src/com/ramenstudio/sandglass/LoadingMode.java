@@ -193,7 +193,7 @@ public class LoadingMode implements Screen, InputProcessor {
 		Gdx.input.setInputProcessor(this);
 
 		// Let ANY connected controller start the game.
-		/**
+		/*
 		for (Controller controller : Controllers.getControllers()) {
 			controller.addListener(this);
 		}
@@ -213,9 +213,7 @@ public class LoadingMode implements Screen, InputProcessor {
 		this.background = new Texture(background);
 	}
 
-	public void preLoadAssets() {
-		String[] textures = gamestate.getImages();
-		String[] sounds = gamestate.getSounds();
+	public void preLoadTexture(String[] textures) {
 		if (textureState != AssetState.EMPTY){
 			return;
 		}
@@ -224,6 +222,9 @@ public class LoadingMode implements Screen, InputProcessor {
 			manager.load(textures[i], Texture.class);
 			assets.add(textures[i]);
 		}
+	}
+
+	public void preLoadSound(String[] sounds) {
 		if (soundState != AssetState.EMPTY){
 			return;
 		}
@@ -234,8 +235,7 @@ public class LoadingMode implements Screen, InputProcessor {
 		}
 	}
 
-	public void loadAssets() {
-		String[] textures = gamestate.getImages();
+	public void loadTexture(String[] textures) {
 		String[] sounds = gamestate.getSounds();
 		if (textureState != AssetState.LOADING) {
 			return;
@@ -244,12 +244,15 @@ public class LoadingMode implements Screen, InputProcessor {
 		for (int i = 0; i < textures.length; i++) {
 			createTexture(manager, textures[i], true);
 		}
+	}
+
+	public void loadSound(String[] sounds) {
 		if (soundState != AssetState.LOADING) {
 			return;
 		}
 		soundState = AssetState.COMPLETE;
 		for (int i = 0; i < sounds.length; i++) {
-			manager.load(sounds[i], Sound.class);
+			soundcontroller.allocate(manager,sounds[i]);
 		}
 	}
 
@@ -549,7 +552,6 @@ public class LoadingMode implements Screen, InputProcessor {
 	public boolean ySliderMoved (Controller controller, int sliderCode, boolean value) {
 		return true;
 	}
-
 
 
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
