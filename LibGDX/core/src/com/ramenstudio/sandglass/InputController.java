@@ -2,7 +2,7 @@ package com.ramenstudio.sandglass;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.controllers.*;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * An input controller that handles player input.
@@ -18,8 +18,12 @@ public class InputController extends AbstractController {
 	private float vertical;
 	/** Did we press the jump button? */
 	private boolean pressedJump;
+	/** Did we previously press the jump button? */
+	private boolean prevJump;
 	/** Did we press the flip button? */
 	private boolean pressedFlip;
+	/** Did we previously press the jump button? */
+	private boolean prevFlip;
 	/** Did we press the mouse button? */
 	private boolean pressedMouse;
 	/** The mouse position on screen. */
@@ -27,6 +31,7 @@ public class InputController extends AbstractController {
 
 	public InputController() {
 		// TODO: Constructor
+		prevJump = prevFlip = false;
 	}
 
 	/**
@@ -95,37 +100,39 @@ public class InputController extends AbstractController {
 	 * Sets the private fields that can be accessed using getters.
 	 */
 	public void readKeyboard() {
-    int up, left, right, down, jump, flip;
-    up    = Input.Keys.UP; 
-    down  = Input.Keys.DOWN;
-    left  = Input.Keys.LEFT; 
-    right = Input.Keys.RIGHT;
-    jump  = Input.Keys.SPACE;
-    flip  = Input.Keys.E;
-		
-    // Convert keyboard state into game commands
-    horizontal = vertical = 0;
-    pressedJump = pressedFlip = false;
-
-    // Movement up/down
+	    int up, left, right, down, jump, flip;
+	    up    = Input.Keys.UP; 
+	    down  = Input.Keys.DOWN;
+	    left  = Input.Keys.LEFT; 
+	    right = Input.Keys.RIGHT;
+	    jump  = Input.Keys.SPACE;
+	    flip  = Input.Keys.E;
+			
+	    // Convert keyboard state into game commands
+	    horizontal = vertical = 0;
+	    pressedJump = pressedFlip = false;
+	
+	    // Movement up/down
 		if (Gdx.input.isKeyPressed(up) && !Gdx.input.isKeyPressed(down)) {
-      vertical = 1;
+			vertical = 1;
 		} else if (Gdx.input.isKeyPressed(down) && !Gdx.input.isKeyPressed(up)) {
-      vertical = -1;
+			vertical = -1;
 		}
 		
-    // Movement left/right
+		// Movement left/right
 		if (Gdx.input.isKeyPressed(left) && !Gdx.input.isKeyPressed(right)) {
-      horizontal = 1;
+			horizontal = 1;
 		} else if (Gdx.input.isKeyPressed(right) && !Gdx.input.isKeyPressed(left)) {
-      horizontal = -1;
+			horizontal = -1;
 		}
 
-    // Jumping
-		pressedJump = Gdx.input.isKeyPressed(jump);
+		// Jumping
+		pressedJump = Gdx.input.isKeyPressed(jump) && !prevJump;	// Might be able to use isKeyJustPressed()
+		prevJump = Gdx.input.isKeyPressed(jump);
     
-    // Flipping
-    pressedFlip = Gdx.input.isKeyPressed(flip);
+		// Flipping
+		pressedFlip = Gdx.input.isKeyPressed(flip) && ! prevFlip;	// Might be able to use isKeyJustPressed()
+		prevFlip = Gdx.input.isKeyPressed(flip);
 	}
 
 	/**
@@ -134,19 +141,27 @@ public class InputController extends AbstractController {
 	 * Sets the private fields for mouse logic that can be accessed using getters.
 	 */
 	public void readMouse() {
-		int mouseClick = Input.Buttons.Left;
+		int mouseClick = Input.Buttons.LEFT;
 		pressedMouse = Gdx.input.isButtonPressed(mouseClick);
 		int x = Gdx.input.getX();
 		int y = Gdx.input.getY();
 		mousePos = new Vector2(x,y);
 	}
 
+	/**
+	 * Read input and process.
+	 *
+	 * Must be called before PlayerController update method.
+	 */
 	@Override
 	public void update(float dt) {
-		// TODO Auto-generated method stub
-		
+		readKeyboard();
+		readMouse();
 	}
-  
-  @Override
-  public void draw(GameCanvas canvas) {}
+
+	@Override
+	public void draw(GameCanvas canvas) {
+		// TODO Auto-generated method stub
+	}
+
 }
