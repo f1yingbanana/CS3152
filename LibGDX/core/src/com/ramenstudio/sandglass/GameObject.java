@@ -1,5 +1,6 @@
 package com.ramenstudio.sandglass;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -7,13 +8,33 @@ import com.badlogic.gdx.math.Vector2;
  * or not) in the game.
  * 
  * @author Jiacong Xu
+ * @author Nathaniel Hunter
  */
-public class GameObject {
+public class GameObject implements Drawable{
   // The world position of this object.
-  private Vector2 position = new Vector2();
-  
+  private Vector2 position;
   // The world rotation of this object.
   private float rotation = 0;
+  // The size of this object.
+  private Vector2 size;
+  // The texture of this object
+  private Texture texture;
+  
+  /**INITIALIZERS*/
+  public GameObject(){
+	  this.position = new Vector2();
+	  this.size = new Vector2();
+	  this.texture = null;
+  }
+  /**Creates a GameObject with rotation 0 and:
+   * @param p - the position of the object
+   * @param s - the size of the object
+   * @param t - the texture the object will use to draw itself*/
+  public GameObject(Vector2 p, Vector2 s, Texture t){
+	  this.position = p;
+	  this.size = s;
+	  this.texture = t;
+  }
   
   /**
    * @return a copy of this object's world position.
@@ -52,5 +73,32 @@ public class GameObject {
     }
     
     this.rotation = r;
+  }
+  
+  /**Returns the Vector2 size of this object*/
+  public Vector2 getSize(){
+	  return size;
+  }
+  
+  /**Sets the size of this object to s
+   * @param s - a Vector2 object*/
+  public void setSize(Vector2 s){
+	  size = s;
+  }
+  
+  /**Returns the texture of this object*/
+  public Texture getTexture(){
+	  return texture;
+  }
+  
+  /**Sets the texture of this object to the given texture
+   * @param t - the texture we wish to apply
+   * */
+  public void setTexture(Texture t){
+	  texture = t;
+  }
+  
+  public void draw(GameCanvas canvas){
+	  canvas.draw(getTexture(), getPosition(), getSize());
   }
 }

@@ -8,19 +8,15 @@ import com.badlogic.gdx.math.Vector2;
  * The player model. This stores information about the player in this level as
  * well as information to draw the player.
  * 
- * @author flyingbanana
+ * @author Jiacong Xu
+ * @author Nathaniel Hunter
  */
-public class Player extends GameObject implements Drawable {
-  private Texture playerTexture;
-  
-  private Vector2 size = new Vector2(1, 1);
+public class Player extends GameObject {
   
   public Player() {
-    playerTexture = new Texture(Gdx.files.internal("badlogic.jpg"));
+	  super();
+	  this.setSize(new Vector2(1,1));
+	  this.setTexture(new Texture(Gdx.files.internal("badlogic.jpg")));
   }
-  
-  @Override
-  public void draw(GameCanvas canvas) {
-    canvas.draw(playerTexture, getPosition(), size);
-  }
+
 }
