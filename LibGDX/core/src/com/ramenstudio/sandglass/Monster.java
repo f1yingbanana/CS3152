@@ -6,7 +6,7 @@
  * whose movement will be controlled by MonsterController.java
  *
  * Author: Saerom Choi
- * Based on Ship.java by Walker M. White
+ * Based on monster.java by Walker M. White
  */
 package edu.cornell.gdiac.ailab;
 
@@ -19,19 +19,19 @@ import com.badlogic.gdx.audio.*;
  */
 public class Monster {
 
-	protected enum MType {
+	protected static enum MType {
 		/* For over world */
 		OVER,
 		/* For under world*/
 		UNDER
 	}
-	/** Static random number generator shared across all ships */
+	/** Static random number generator shared across all monsters */
 	private static final Random random = new Random();
 
-	// CONSTANTS FOR SHIP HANDLING
+	// CONSTANTS FOR monster HANDLING
 	/** How far forward this monster can move in a single turn */
 	private static final float MOVE_SPEED = 6.5f;
-	/** How much this ship can turn in a single turn */
+	/** How much this monster can turn in a single turn */
 	private static final float TURN_SPEED = 15.0f;
 	/** For animating turning movement */
 	private static final float RAND_FACTOR = (2.0f / 128.0f);
@@ -63,19 +63,19 @@ public class Monster {
 	// * The number of frames until we can fire again 
 	// private int firecool;
 	
-	/** The sound currently associated with this ship */
+	/** The sound currently associated with this monster */
 	private Sound sound;
-	/** The associated sound cue (if ship is making a sound). */
+	/** The associated sound cue (if monster is making a sound). */
 	private long sndcue;
 
 	/**
-	 * Create ship # id at the given position.
+	 * Create monster # id at the given position.
 	 *
-	 * @param id The unique ship id
-	 * @param x The initial x-coordinate of the ship
-	 * @param y The initial y-coordinate of the ship
+	 * @param id The unique monster id
+	 * @param x The initial x-coordinate of the monster
+	 * @param y The initial y-coordinate of the monster
 	 */
-	public Ship(int id, float x, float y, MType mType) {
+	public Monster(int id, float x, float y, MType mType) {
 		this.id = id;
 		this.mType = mType;
 		position = new Vector2(x,y);
@@ -91,18 +91,18 @@ public class Monster {
 	}
 	
 	/** 
-	 * Returns the unique ship id number 
+	 * Returns the unique monster id number 
 	 * 
-	 * @return the unique ship id number 
+	 * @return the unique monster id number 
 	 */
 	public int getId() {
 		return id;
 	}
 	
 	/**
-	 * Returns the x-coordinate of the ship position
+	 * Returns the x-coordinate of the monster position
 	 *
-	 * @return the x-coordinate of the ship position
+	 * @return the x-coordinate of the monster position
 	 */
 	public float getX() {
 		return position.x;
@@ -118,134 +118,134 @@ public class Monster {
 	}
 
 	/**
-	 * Sets the x-coordinate of the ship position
+	 * Sets the x-coordinate of the monster position
 	 *
-	 * @param value the x-coordinate of the ship position
+	 * @param value the x-coordinate of the monster position
 	 */
 	public void setX(float value) {
 		position.x = value;
 	}
 
 	/**
-	 * Returns the y-coordinate of the ship position
+	 * Returns the y-coordinate of the monster position
 	 *
-	 * @return the y-coordinate of the ship position
+	 * @return the y-coordinate of the monster position
 	 */
 	public float getY() {
 		return position.y;
 	}
 
 	/**
-	 * Sets the y-coordinate of the ship position
+	 * Sets the y-coordinate of the monster position
 	 *
-	 * @param value the y-coordinate of the ship position
+	 * @param value the y-coordinate of the monster position
 	 */
 	public void setY(float value) {
 		position.y = value;
 	}
 	
 	/**
-	 * Returns the position of this ship.
+	 * Returns the position of this monster.
 	 *
-	 * This method returns a reference to the underlying ship position vector.
-	 * Changes to this object will change the position of the ship.
+	 * This method returns a reference to the underlying monster position vector.
+	 * Changes to this object will change the position of the monster.
 	 *
-	 * @return the position of this ship.
+	 * @return the position of this monster.
 	 */
 	public Vector2 getPosition() {
 		return position;
 	}
 
 	/**
-	 * Returns the x-coordinate of the ship velocity
+	 * Returns the x-coordinate of the monster velocity
 	 *
-	 * @return the x-coordinate of the ship velocity
+	 * @return the x-coordinate of the monster velocity
 	 */
 	public float getVX() {
 		return velocity.x;
 	}
 
 	/**
-	 * Sets the x-coordinate of the ship velocity
+	 * Sets the x-coordinate of the monster velocity
 	 *
-	 * @param value the x-coordinate of the ship velocity
+	 * @param value the x-coordinate of the monster velocity
 	 */
 	public void setVX(float value) {
 		velocity.x = value;
 	}
 
 	/**
-	 * Returns the y-coordinate of the ship velocity
+	 * Returns the y-coordinate of the monster velocity
 	 *
-	 * @return the y-coordinate of the ship velocity
+	 * @return the y-coordinate of the monster velocity
 	 */
 	public float getVY() {
 		return velocity.y;
 	}
 
 	/**
-	 * Sets the y-coordinate of the ship velocity
+	 * Sets the y-coordinate of the monster velocity
 	 *
-	 * @param value the y-coordinate of the ship velocity
+	 * @param value the y-coordinate of the monster velocity
 	 */
 	public void setVY(float value) {
 		velocity.y = value;
 	}
 
 	/**
-	 * Returns the velocity of this ship.
+	 * Returns the velocity of this monster.
 	 *
-	 * This method returns a reference to the underlying ship velocity vector.
-	 * Changes to this object will change the velocity of the ship.
+	 * This method returns a reference to the underlying monster velocity vector.
+	 * Changes to this object will change the velocity of the monster.
 	 *
-	 * @return the velocity of this ship.
+	 * @return the velocity of this monster.
 	 */	
 	public Vector2 getVelocity() {
 		return velocity;
 	}
 	
 	/**
-	 * Returns the current facing angle of the ship
+	 * Returns the current facing angle of the monster
 	 *
 	 * This value cannot be changed externally.  It can only
 	 * be changed by update()
 	 *
-	 * @return the current facing angle of the ship
+	 * @return the current facing angle of the monster
 	 */
 	public float getAngle() {
 		return angle;
 	}
 	
 	/**
-	 * Returns whether or not the ship is alive.
+	 * Returns whether or not the monster is alive.
 	 *
-	 * A ship is dead once it has fallen past MAX_FALL_AMOUNT. A dead ship cannot be 
+	 * A monster is dead once it has fallen past MAX_FALL_AMOUNT. A dead monster cannot be 
 	 * targeted, involved in collisions, or drawn.  For all intents and purposes, it 
 	 * does not exist.
 	 *
-	 * @return whether or not the ship is alive
+	 * @return whether or not the monster is alive
 	 */	 
 	public boolean isAlive() {
 		return isAlive;
 	}
 	
 	/**
-	 * Push the ship so that it starts to fall.
+	 * Push the monster so that it starts to fall.
 	 * 
-	 * This method will not destroy the ship immediately.  It will tumble and fall 
-	 * offscreen before dying. To instantly kill a ship, use setAlive().
+	 * This method will not destroy the monster immediately.  It will tumble and fall 
+	 * offscreen before dying. To instantly kill a monster, use setAlive().
 	 */
 	public void destroy() {
 		fallAmount = MIN_FALL_AMOUNT;
 	}
 	
 	/**
-	 * Sets whether or not the ship is alive.
+	 * Sets whether or not the monster is alive.
 	 *
-	 * This method should only be used if we need to kill the ship immediately.
-	 * The preferred method to get rid of a ship is destroy().
+	 * This method should only be used if we need to kill the monster immediately.
+	 * The preferred method to get rid of a monster is destroy().
 	 *
-	 * @param value whether or not the ship is alive.
+	 * @param value whether or not the monster is alive.
 	 */
 	public void setAlive(boolean value) {
 		isAlive = value;
@@ -254,7 +254,7 @@ public class Monster {
 	/**
 	 * Plays the given sound.  
 	 *
-	 * Each ship can only play one sound at a time.  If a sound is currently playing,
+	 * Each monster can only play one sound at a time.  If a sound is currently playing,
 	 * it will be stopped.
 	 */
 	public void play(String sound) {
@@ -266,7 +266,7 @@ public class Monster {
 	}
 
 	/**
-	 * Updates this ship position (and weapons fire) according to the control code.
+	 * Updates this monster position (and weapons fire) according to the control code.
 	 *
 	 * This method updates the velocity and the weapon status, but it does not change
 	 * the position or create photons.  The later interact with other objects (position
@@ -325,7 +325,7 @@ public class Monster {
 	}
 
 	/**
-	 * Update the ship rotation so that angle gets closer to dstAng
+	 * Update the monster rotation so that angle gets closer to dstAng
 	 *
 	 * This allows us to have some delay in rotation, even though
 	 * movement is always left-right/up-down.  The result is a much

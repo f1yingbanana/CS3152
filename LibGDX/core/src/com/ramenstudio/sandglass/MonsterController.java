@@ -21,51 +21,50 @@ public class MonsterController implements InputController {
 	 * Enumeration to encode the finite state machine.
 	 */
 	private static enum FSMState {
-		/** The ship just spawned */
+		/** The monster just spawned */
 		SPAWN,
-		/** The ship is patrolling around without a target */
+		/** The monster is patrolling around without a target */
 		WANDER,
-		/** The ship has a target, but must get closer */
+		/** The monster has a target, but must get closer */
 		CHASE,
-		/** The ship has a target and is attacking it */
+		/** The monster has a target and is attacking it */
 		ATTACK
 	}
-	protected enum MType {
-		/* For over world */
-		OVER,
-		/* For under world*/
-		UNDER
-	}
+
 	// Constants for chase algorithms
 	/** How close a target must be for us to chase it */
-	private static final int CHASE_DIST  = 9;
+	private static final int CHASE_DIST;
 	/** How close a target must be for us to attack it */
 	private static final int ATTACK_DIST = 4;
 
 	// Instance Attributes
-	/** The ship being controlled by this AIController */
-	private Monster ship;
+	/** The monster being controlled by this AIController */
+	private Monster monster;
 	/** The game board; used for pathfinding */
 	private GameModel gamemodel;
 	/** The monster's current state in the FSM */
 	private FSMState state;
-	/** The target ship (to chase or attack). */
+	/** The target monster (to chase or attack). */
 	private Player target; 
-	/** The ship's next action  */
+	/** The monster's next action  */
 	private int move; // A ControlCode
 	/** The number of ticks since we started this controller */
 	private long ticks;
-	
+	/** is player in the same world*/
 	private boolean setGoal;
 	
 	/**
-	 * Creates an AIController for the ship with the given id.
+	 * Creates an AIController for the monster with the given id.
 	 *
-	 * @param id The unique ship identifier
+	 * @param id The unique monster identifier
 	 * @param board The game board (for pathfinding)
-	 * @param ships The list of ships (for targetting)
+	 * @param monsters The list of monsters (for targetting)
 	 */
-	public AIController(int id, MType mType, GmaeModel gmodel) {
+	public MonsterController(int id, Monster.MType mType, GmaeModel gmodel, Player player) {
+		this.id = id;
+		this.mType = mType;
+		gamemodel = gmodel;
+		target = player;
 	}
 
 	/**
@@ -76,7 +75,7 @@ public class MonsterController implements InputController {
 	 * Java does not (nicely) provide bitwise operation support for enums. 
 	 *
 	 * This function tests the environment and uses the FSM to chose the next
-	 * action of the ship. This function SHOULD NOT need to be modified.  It
+	 * action of the monster. This function SHOULD NOT need to be modified.  It
 	 * just contains code that drives the functions that you need to implement.
 	 *
 	 * @return the action selected by this InputController
@@ -107,7 +106,7 @@ public class MonsterController implements InputController {
 	// FSM Code for Targeting (MODIFY ALL THE FOLLOWING METHODS)
 
 	/**
-	 * Change the state of the ship.
+	 * Change the state of the monster.
 	 *
 	 * A Finite State Machine (FSM) is just a collection of rules that,
 	 * given a current state, and given certain observations about the
@@ -134,8 +133,8 @@ public class MonsterController implements InputController {
 			//#region PUT YOUR CODE HERE
 			selectTarget();
 			if (target!=null){
-				if (Math.abs(target.getX() - ship.getX()) + 
-						Math.abs(target.getY()-ship.getY())<=board.boardToScreen(CHASE_DIST)){
+				if (Math.abs(target.getX() - monster.getX()) + 
+						Math.abs(target.getY()-monster.getY())<=board.boardToScreen(CHASE_DIST)){
 					state = FSMState.CHASE;	
 				}
 				
@@ -171,44 +170,6 @@ public class MonsterController implements InputController {
 			state = FSMState.WANDER; // If debugging is off
 			break;
 		}
-	}
-
-	/**
-	 * Acquire a target to attack (and put it in field target).
-	 *
-	 * Insert your checking and target selection code here. Note that this
-	 * code does not need to reassign <c>target</c> every single time it is
-	 * called. Like all other methods, make sure it works with any number
-	 * of players (between 0 and 32 players will be checked). Also, it is a
-	 * good idea to make sure the ship does not target itself or an
-	 * already-fallen (e.g. inactive) ship.
-	 */
-	private void selectTarget() {
-		//#region PUT YOUR CODE HERE
-		if (target!=null && target.isActive()){
-			return;
-		}		
-		ship_avail = new ArrayList<Ship>();		
-		Iterator<Ship> shipIter = fleet.iterator();		
-		while (shipIter.hasNext()){
-			Ship current = shipIter.next();
-			if (current.isActive() && current.getId() != ship.getId()){
-				ship_avail.add(current);
-			}
-		}
-		
-		//println("available ships number : " + ship_avail.size());
-		if (ship_avail.size()>0){
-			int index = (int) (Math.random()*ship_avail.size()) % ship_avail.size();
-			target = ship_avail.get(index);
-			//println("ship " + ship.getId() + ": target is "+ target.getId());
-		}
-		
-		else {
-			target=null;
-		}
-		
-		//#endregion			
 	}
 
 	/**
@@ -254,9 +215,9 @@ public class MonsterController implements InputController {
 	 */
 	private boolean canShootTarget() {
 		//#region
-		int shipX = board.screenToBoard(ship.getX());
-		int shipY = board.screenToBoard(ship.getY());
-		return canShootTargetFrom(shipX, shipY);
+		int monsterX = board.screenToBoard(monster.getX());
+		int monsterY = board.screenToBoard(monster.getY());
+		return canShootTargetFrom(monsterX, monsterY);
 		//#endregion
 	}
 
@@ -268,7 +229,7 @@ public class MonsterController implements InputController {
 	 * This method implements pathfinding through the use of goal tiles.
 	 * It searches for all desirable tiles to move to (there may be more than
 	 * one), and marks each one as a goal. Then, the pathfinding method
-	 * getMoveAlongPathToGoalTile() moves the ship towards the closest one.
+	 * getMoveAlongPathToGoalTile() moves the monster towards the closest one.
 	 *
 	 * POSTCONDITION: There is guaranteed to be at least one goal tile
      * when completed.
@@ -291,7 +252,7 @@ public class MonsterController implements InputController {
 		case WANDER: // Do not pre-empt with FSMState in a case
 			// Insert code to mark tiles that will cause us to move around;
 			// set setGoal to true if we marked any tiles.
-			// NOTE: this case must work even if the ship has no target
+			// NOTE: this case must work even if the monster has no target
 			// (and changeStateIfApplicable should make sure we are never
 			// in a state that won't work at the time)
 			
@@ -334,8 +295,8 @@ public class MonsterController implements InputController {
 		// If we have no goals, mark current position as a goal
 		// so we do not spend time looking for nothing:
 		if (!setGoal) {
-			int sx = board.screenToBoard(ship.getX());
-			int sy = board.screenToBoard(ship.getY());
+			int sx = board.screenToBoard(monster.getX());
+			int sy = board.screenToBoard(monster.getY());
 			board.setGoal(sx, sy);
 			setGoal = true;
 		}
