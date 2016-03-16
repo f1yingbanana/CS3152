@@ -1,9 +1,42 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.controller;
 
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.audio.*;
 import com.badlogic.gdx.utils.*;
 
+/**
+ * Modified version of the SoundController provided in lab 4. 
+ * 
+ * Credits to Professor Walker White for the skeleton implementation
+ * of this class.
+ * 
+ *
+ * A singleton class for controlling sound effects in LibGDX
+ * 
+ * Sound sucks in LibGDX for three reasons.  (1) You have to keep track of
+ * a mysterious number every time you play a sound.  (2) You have no idea
+ * when a sound has finished playing.  (3) OpenAL bugs on OS X cause popping
+ * and distortions if you have no idea what you are doing.  This class 
+ * provides a (not so great) solution to all of these.
+ * 
+ * To get around (1), this sound engine uses a key management system.  
+ * Instead of waiting for a number after playing the sound, you give it a
+ * key ahead of time.  The key allows you to identify different instances
+ * of the same sound.  See our example for collision sounds in the Rocket
+ * demo for more.
+ * 
+ * To get around (2), we have an update() method.  By calling this method
+ * you let the SoundController know that time has progressed by one animation
+ * frame.  The cooldown prevents you from playing the same instance of a 
+ * sound too close together.  In addition, the frame limit prevents you 
+ * from playing too many sounds during the same animation frame (which can
+ * lead to distortion).  This is not as good as being able to tell when a
+ * sound is finished, but it works for most applications.
+ * 
+ * Finally, for (3), we never actually stop a Sound.  Instead we turn its
+ * volume to 0 and allow it to be garbage collected when done.  This is why
+ * we never allow you to access a sound object directly.
+ */
 public class SoundController {
 
 	/**

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.utils.Array;
+import com.ramenstudio.sandglass.controller.SoundController;
 import com.ramenstudio.sandglass.util.ScreenListener;
 import com.sun.j3d.utils.scenegraph.io.retained.Controller;
 

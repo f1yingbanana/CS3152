@@ -1,4 +1,6 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.controller;
+
+import com.ramenstudio.sandglass.GameCanvas;
 
 /**
  * An abstract controller that provides some useful methods for controllers.

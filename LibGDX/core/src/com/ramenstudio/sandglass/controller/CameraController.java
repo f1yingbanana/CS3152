@@ -1,7 +1,10 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.ramenstudio.sandglass.GameCamera;
+import com.ramenstudio.sandglass.GameCanvas;
+import com.ramenstudio.sandglass.GameObject;
 
 /**
  * A camera controller that supports complex behavior of the camera, like

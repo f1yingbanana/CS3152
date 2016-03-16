@@ -1,9 +1,11 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.ramenstudio.sandglass.GameCanvas;
+import com.ramenstudio.sandglass.Player;
 
 /**
  * Handles player input and manages the player object.
