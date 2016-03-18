@@ -1,6 +1,7 @@
 package com.ramenstudio.sandglass.game;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.ramenstudio.sandglass.game.controller.GameController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.AbstractMode;
@@ -17,6 +18,9 @@ public class GameMode extends AbstractMode implements Screen {
   
   // The game canvas.
   private GameCanvas canvas = new GameCanvas();
+
+  // A debug renderer
+  Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   
   /**
    * Initializes an instance of the game with all the controllers, model and
@@ -39,6 +43,8 @@ public class GameMode extends AbstractMode implements Screen {
     canvas.begin(gameplayController.world2ScreenMatrix());
     gameplayController.draw(canvas);
     canvas.end();
+
+    debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
   }
 
   @Override

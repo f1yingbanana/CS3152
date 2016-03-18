@@ -18,16 +18,13 @@ public class CameraController extends AbstractController {
   // The game object to follow
   private GameObject target;
   
-  // A bunch of math constants and stuff. Probably subject to change.
-  private float damping = 0.1f;
-  private float lookAheadFactor = 20f;
-  private float lookAheadReturnSpeed = 0.5f;
-  private float lookAheadMoveThreshold = 0.05f;
-
-  private Vector2 m_LastTargetPosition;
-  private Vector2 m_LookAheadPos = new Vector2();
-  
+  // The underlying math-doing camera.
   private GameCamera camera;
+  
+  // The position used to store the position to move the camera to. Due to
+  // orthogonal camera only offers translate instead of set position, we can't
+  // initialize box2d body with initial position, but set it afterwards.
+  private Vector2 initPos;
   
   /**
    * Creates a camera controller and initializes the game camera.
@@ -38,12 +35,13 @@ public class CameraController extends AbstractController {
   }
   
   /**
-   * Creates a camera controller with the given target
-   * @param target is the target we want to follow.
+   * Creates a camera controller with the given starting position.
+   * 
+   * @param initialPosition is the position where the camera is created.
    */
-  public CameraController(GameObject targetObject) {
+  public CameraController(Vector2 initialPosition) {
     this();
-    setTarget(targetObject);
+    initPos = initialPosition.cpy();
   }
   
   /**
@@ -60,38 +58,21 @@ public class CameraController extends AbstractController {
    */
   public void setTarget(GameObject targetObject) {
     target = targetObject;
-    m_LastTargetPosition = target.getPosition();
   }
   
   @Override
   public void update(float dt) {
-    // only update lookahead pos if accelerating or changed direction
-    Vector2 dr = target.getPosition().sub(m_LastTargetPosition);
-    boolean updateLookAheadTarget = dr.len() > lookAheadMoveThreshold;
-    
-    if (updateLookAheadTarget) {
-      m_LookAheadPos = dr.scl(lookAheadFactor);
-    } else {
-      float amt = dt * lookAheadReturnSpeed;
-      
-      if (m_LookAheadPos.len() > amt) {
-        m_LookAheadPos.sub(m_LookAheadPos.cpy().scl(amt));
-      } else {
-        m_LookAheadPos = Vector2.Zero;
-      }
-    }
-    
-    Vector2 aheadTargetPos = target.getPosition().add(m_LookAheadPos);
-    Vector2 newPos = smoothDamp(camera.getPosition(), aheadTargetPos);
-    
-    camera.setPosition(newPos);
-    m_LastTargetPosition = target.getPosition();
+    camera.setPosition(target.getPosition());
   }
   
-  private Vector2 smoothDamp(Vector2 from, Vector2 to) {
-    return to.sub(from).scl(damping).add(from);
-  }
-
   @Override
   public void draw(GameCanvas canvas) {}
+
+  @Override
+  public void objectSetup(PhysicsDelegate handler) {
+    // Creates the camera object.
+    camera.body = handler.addBody(camera.bodyDef);
+    camera.setPosition(initPos);
+    initPos = null;
+  }
 }

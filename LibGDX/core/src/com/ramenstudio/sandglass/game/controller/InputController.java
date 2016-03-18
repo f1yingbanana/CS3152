@@ -165,4 +165,7 @@ public class InputController extends AbstractController {
 		// TODO Auto-generated method stub
 	}
 
+  @Override
+  public void objectSetup(PhysicsDelegate handler) {}
+
 }

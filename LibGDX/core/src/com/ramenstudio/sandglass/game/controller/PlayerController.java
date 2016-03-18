@@ -19,30 +19,45 @@ public class PlayerController extends AbstractController {
   // The input controller for player.
   private InputController inputController = new InputController();
   
-  
   // The player we are managing
-  private Player player = new Player();
+  private Player player;
+  
+  // Maximum move speed in horizontal movement
+  private float moveSpeed = 2.0f;
   
   /**
    * Default constructor for player object.
    */
   public PlayerController() {
-    cameraController = new CameraController(player);
+    player = new Player(new Vector2(0, 0));
+    cameraController = new CameraController(new Vector2(5, 5));
+  }
+
+  @Override
+  public void objectSetup(PhysicsDelegate handler) {
+    player.body = handler.addBody(player.bodyDef);
+    player.body.createFixture(player.fixtureDef);
+    player.body.setFixedRotation(true);
+    
+    cameraController.setTarget(player);
+    cameraController.objectSetup(handler);
   }
   
   @Override
   public void update(float dt) {
     cameraController.update(dt);
+    inputController.update(dt);
     
     // Realizes player input
-    // PLACEHOLDER!
-    int h = Gdx.input.isKeyPressed(Input.Keys.A)? -1 : 0 + (Gdx.input.isKeyPressed(Input.Keys.D)? 1:0);
-    int v = Gdx.input.isKeyPressed(Input.Keys.S)? -1 : 0 + (Gdx.input.isKeyPressed(Input.Keys.W)? 1:0);
+    Vector2 p = player.body.getLinearVelocity();
+    p.x = moveSpeed * inputController.getHorizontal();
     
-    Vector2 p = player.getPosition();
-    p.x += h * dt;
-    p.y += v * dt;
-    player.setPosition(p);
+    player.body.setLinearVelocity(p);
+    
+    if (inputController.didPressJump()) {
+      player.body.applyLinearImpulse(new Vector2(0, 25), player.getPosition(), true);
+    }
+    
   }
   
   /**

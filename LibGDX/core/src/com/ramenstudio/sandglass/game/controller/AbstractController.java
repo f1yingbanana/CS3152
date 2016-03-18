@@ -8,6 +8,7 @@ import com.ramenstudio.sandglass.game.view.GameCanvas;
  * @author Jiacong Xu
  */
 public abstract class AbstractController {
+  
   /**
    * The update method for the controller. This should be called every drawing
    * frame.
@@ -21,4 +22,13 @@ public abstract class AbstractController {
    * @param canvas provides API for rendering textures and such.
    */
   public abstract void draw(GameCanvas canvas);
+  
+  /**
+   * This is called immediately after the constructor so the controller may
+   * insert its objects into the world.
+   * 
+   * @param handler is a controller implementing necessary methods for object
+   * insertion.
+   */
+  public abstract void objectSetup(PhysicsDelegate handler);
 }
