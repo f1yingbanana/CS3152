@@ -122,9 +122,9 @@ public class InputController extends AbstractController {
 		
 		// Movement left/right
 		if (Gdx.input.isKeyPressed(left) && !Gdx.input.isKeyPressed(right)) {
-			horizontal = 1;
-		} else if (Gdx.input.isKeyPressed(right) && !Gdx.input.isKeyPressed(left)) {
 			horizontal = -1;
+		} else if (Gdx.input.isKeyPressed(right) && !Gdx.input.isKeyPressed(left)) {
+			horizontal = 1;
 		}
 
 		// Jumping
