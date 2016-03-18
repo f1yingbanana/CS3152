@@ -19,7 +19,7 @@ import com.ramenstudio.sandglass.game.view.GameCanvas;
 public class GameController extends AbstractController implements PhysicsDelegate {
 
   // The physics world object
-  public World world = new World(new Vector2(0, -1.5f), true);
+  public World world = new World(new Vector2(0, -9.8f), true);
 
   // The amount of time for a physics engine step.
   private static final float WORLD_STEP = 1/60.0f;

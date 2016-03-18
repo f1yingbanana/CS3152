@@ -51,12 +51,13 @@ public class PlayerController extends AbstractController {
     // Realizes player input
     Vector2 p = player.body.getLinearVelocity();
     p.x = moveSpeed * inputController.getHorizontal();
+
+    if (inputController.didPressJump()) {
+      p.y = 5.0f;
+    }
     
     player.body.setLinearVelocity(p);
     
-    if (inputController.didPressJump()) {
-      player.body.applyLinearImpulse(new Vector2(0, 25), player.getPosition(), true);
-    }
     
   }
   
