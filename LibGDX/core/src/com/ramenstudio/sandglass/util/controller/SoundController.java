@@ -1,4 +1,4 @@
-package com.ramenstudio.sandglass.controller;
+package com.ramenstudio.sandglass.util.controller;
 
 import com.badlogic.gdx.assets.*;
 import com.badlogic.gdx.audio.*;

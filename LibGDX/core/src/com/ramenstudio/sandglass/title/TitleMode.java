@@ -1,6 +1,7 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.title;
 
 import com.badlogic.gdx.Screen;
+import com.ramenstudio.sandglass.util.AbstractMode;
 
 /**
  * The mode when choosing a level to play. This includes score book-keeping,

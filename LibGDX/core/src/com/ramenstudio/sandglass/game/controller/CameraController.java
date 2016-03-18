@@ -1,10 +1,11 @@
-package com.ramenstudio.sandglass.controller;
+package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.ramenstudio.sandglass.GameCamera;
-import com.ramenstudio.sandglass.GameCanvas;
-import com.ramenstudio.sandglass.GameObject;
+import com.ramenstudio.sandglass.game.model.GameCamera;
+import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.view.GameCanvas;
 
 /**
  * A camera controller that supports complex behavior of the camera, like
@@ -16,6 +17,8 @@ import com.ramenstudio.sandglass.GameObject;
 public class CameraController extends AbstractController {
   // The game object to follow
   private GameObject target;
+  
+  // A bunch of math constants and stuff. Probably subject to change.
   private float damping = 0.1f;
   private float lookAheadFactor = 20f;
   private float lookAheadReturnSpeed = 0.5f;
@@ -45,14 +48,15 @@ public class CameraController extends AbstractController {
   }
   
   /**
-   * @return the camera managed by this camera controller.
+   * @return the current matrix used to translate world space position to screen
    */
-  public GameCamera getCamera() {
-    return camera;
+  public Matrix4 world2ScreenMatrix() {
+    return camera.getCamera().combined;
   }
   
   /**
    * Sets the target object for the camera to follow.
+   * 
    * @param targetObject is the game object that the camera will smoothly pan to
    */
   public void setTarget(GameObject targetObject) {

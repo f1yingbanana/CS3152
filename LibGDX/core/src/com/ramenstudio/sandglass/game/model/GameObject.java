@@ -1,4 +1,4 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.game.model;
 
 import com.badlogic.gdx.math.Vector2;
 

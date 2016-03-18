@@ -1,4 +1,4 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.util;
 
 /**
  * An abstraction for mode that includes some required methods each mode should

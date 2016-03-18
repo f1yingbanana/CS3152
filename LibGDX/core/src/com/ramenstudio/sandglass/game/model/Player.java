@@ -1,8 +1,10 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.game.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.ramenstudio.sandglass.util.Drawable;
 
 /**
  * The player model. This stores information about the player in this level as

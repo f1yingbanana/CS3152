@@ -6,9 +6,14 @@
  * Author: Saerom Choi
  * Based on AIController from Lab 3 by Walker M. WHite
  */
-package edu.cornell.gdiac.ailab;
+package com.ramenstudio.sandglass.game.controller;
 
 import java.util.*;
+
+import com.ramenstudio.sandglass.game.model.GameModel;
+import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.Monster.MType;
 
 /** 
  * InputController corresponding to AI control.

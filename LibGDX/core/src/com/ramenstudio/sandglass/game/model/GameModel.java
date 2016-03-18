@@ -1,7 +1,9 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.game.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.ramenstudio.sandglass.util.Drawable;
 
 /**
  * The root model class for storing all information in a single level.

@@ -1,11 +1,11 @@
-package com.ramenstudio.sandglass.controller;
+package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.ramenstudio.sandglass.GameCanvas;
-import com.ramenstudio.sandglass.Player;
+import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.view.GameCanvas;
 
 /**
  * Handles player input and manages the player object.
@@ -15,6 +15,10 @@ import com.ramenstudio.sandglass.Player;
 public class PlayerController extends AbstractController {
   // The camera controller we are controlling
   private CameraController cameraController;
+
+  // The input controller for player.
+  private InputController inputController = new InputController();
+  
   
   // The player we are managing
   private Player player = new Player();
@@ -44,8 +48,8 @@ public class PlayerController extends AbstractController {
   /**
    * @return the matrix transformation from world to screen. Used in drawing.
    */
-  public Matrix4 getCameraTransform() {
-    return cameraController.getCamera().getCamera().combined;
+  public Matrix4 world2ScreenMatrix() {
+    return cameraController.world2ScreenMatrix();
   }
 
   @Override
