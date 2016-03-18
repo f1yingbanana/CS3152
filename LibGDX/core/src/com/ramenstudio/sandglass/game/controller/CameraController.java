@@ -1,6 +1,7 @@
 package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.GameCamera;
@@ -45,10 +46,10 @@ public class CameraController extends AbstractController {
   }
   
   /**
-   * @return the current matrix used to translate world space position to screen
+   * @return the current camera managed by the controller.
    */
-  public Matrix4 world2ScreenMatrix() {
-    return camera.getCamera().combined;
+  public OrthographicCamera getCamera() {
+    return camera.getCamera();
   }
   
   /**
@@ -74,5 +75,16 @@ public class CameraController extends AbstractController {
     camera.body = handler.addBody(camera.bodyDef);
     camera.setPosition(initPos);
     initPos = null;
+  }
+  
+  /**
+   * Rotates the camera view given the amount, with an option to animate.
+   * 
+   * @param radians is the amount to rotate.
+   * @param duration is the time in seconds to animate the camera.
+   */
+  public void rotate(float radians, float duration) {
+    // Currently animation is not supported!
+    camera.setRotation(camera.getRotation() + radians);
   }
 }

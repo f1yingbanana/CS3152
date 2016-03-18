@@ -1,5 +1,6 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameModel;
+import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 
 /**
@@ -20,6 +22,9 @@ public class GameController extends AbstractController implements PhysicsDelegat
 
   // The physics world object
   public World world = new World(new Vector2(0, -9.8f), true);
+  
+  // Tile map manager?
+  public LevelLoader loader = new LevelLoader();
 
   // The amount of time for a physics engine step.
   private static final float WORLD_STEP = 1/60.0f;
@@ -45,6 +50,8 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public GameController() {
     playerController = new PlayerController();
     
+    // Temporary level loading
+    loader.loadLevel("example.tmx");
     
     // Set up the world!
     objectSetup(this);
@@ -92,7 +99,14 @@ public class GameController extends AbstractController implements PhysicsDelegat
    * @return the world to screen transformation matrix kept by the camera.
    */
   public Matrix4 world2ScreenMatrix() {
-    return playerController.world2ScreenMatrix();
+    return getMainCamera().combined;
+  }
+  
+  /**
+   * @return the default rendering camera.
+   */
+  public OrthographicCamera getMainCamera() {
+    return playerController.getMainCamera();
   }
   
   

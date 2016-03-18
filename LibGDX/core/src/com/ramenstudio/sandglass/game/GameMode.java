@@ -1,6 +1,8 @@
 package com.ramenstudio.sandglass.game;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.ramenstudio.sandglass.game.controller.GameController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -22,6 +24,8 @@ public class GameMode extends AbstractMode implements Screen {
   // A debug renderer
   Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   
+  TiledMapRenderer tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/32f);
+  
   /**
    * Initializes an instance of the game with all the controllers, model and
    * view canvas.
@@ -37,14 +41,26 @@ public class GameMode extends AbstractMode implements Screen {
   public void render(float delta) {
     // Implements an update-draw loop
     gameplayController.update(delta);
+
     
     // Now we render all objects that we can render
     canvas.clear();
+    
+    
+
+    // MAP RENDER
+    tiledMapRenderer.setView(gameplayController.getMainCamera());
+    tiledMapRenderer.render();
+    
+    //
     canvas.begin(gameplayController.world2ScreenMatrix());
     gameplayController.draw(canvas);
     canvas.end();
 
+    // DEBUG RENDERS. We can have more render passes later implemented here.
+    
     debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
+    
   }
 
   @Override

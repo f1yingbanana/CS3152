@@ -2,6 +2,7 @@ package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.Player;
@@ -62,10 +63,10 @@ public class PlayerController extends AbstractController {
   }
   
   /**
-   * @return the matrix transformation from world to screen. Used in drawing.
+   * @return the main camera for rendering.
    */
-  public Matrix4 world2ScreenMatrix() {
-    return cameraController.world2ScreenMatrix();
+  public OrthographicCamera getMainCamera() {
+    return cameraController.getCamera();
   }
 
   @Override
