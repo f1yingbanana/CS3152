@@ -3,6 +3,9 @@ package com.ramenstudio.sandglass;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.ramenstudio.sandglass.game.GameMode;
+import com.ramenstudio.sandglass.loading.LoadingMode;
+import com.ramenstudio.sandglass.title.TitleMode;
 import com.ramenstudio.sandglass.util.ScreenListener;
 
 /**
@@ -66,7 +69,7 @@ public class GDXRoot extends Game implements ScreenListener {
     // mode. We don't need to load anything yet, though.
     titleMode = new TitleMode();
     gameMode = new GameMode();
-    loadingMode = new LoadingMode();
+    // loadingMode = new LoadingMode();
     
     // For now, we simply load the game play mode.
     setApplicationMode(ApplicationMode.GAME);

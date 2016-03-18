@@ -1,4 +1,4 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.loading;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,8 +12,10 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.utils.Array;
-import com.ramenstudio.sandglass.controller.SoundController;
+import com.ramenstudio.sandglass.game.GameMode;
+import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.ScreenListener;
+import com.ramenstudio.sandglass.util.controller.SoundController;
 import com.sun.j3d.utils.scenegraph.io.retained.Controller;
 
 /**
@@ -168,7 +170,7 @@ public class LoadingMode implements Screen, InputProcessor {
 		budget = millis;
 
 		// Compute the dimensions from the canvas
-		resize(canvas.getWidth(), canvas.getHeight());
+		// resize(canvas.getWidth(), canvas.getHeight());
 
 		// Load the next two images immediately.
 		statusBar = new Texture(PROGRESS_FILE);
@@ -237,7 +239,7 @@ public class LoadingMode implements Screen, InputProcessor {
 	}
 
 	public void loadTexture(String[] textures) {
-		String[] sounds = gamestate.getSounds();
+		// String[] sounds = gamestate.getSounds();
 		if (textureState != AssetState.LOADING) {
 			return;
 		}
@@ -271,6 +273,7 @@ public class LoadingMode implements Screen, InputProcessor {
 
 
 	private void unloadContent(){
+	  /*
 		String[] textures = gamestate.getImages();
 		String[] sounds = gamestate.getSounds();
 
@@ -285,6 +288,7 @@ public class LoadingMode implements Screen, InputProcessor {
 				manager.unload(sounds[i]);	
 			}
 		}
+		*/
 	}
 
 	private void update(float delta) {
@@ -329,7 +333,7 @@ public class LoadingMode implements Screen, InputProcessor {
 	public void render(float delta) {
 		if (active) {
 			update(delta);
-			draw();
+			//draw();
 
 			// We are are ready, notify our listener
 			if (isReady() && listener != null) {

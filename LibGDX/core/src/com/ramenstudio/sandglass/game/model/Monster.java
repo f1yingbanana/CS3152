@@ -8,7 +8,8 @@
  * Author: Saerom Choi
  * Based on monster.java by Walker M. White
  */
-package edu.cornell.gdiac.ailab;
+
+package com.ramenstudio.sandglass.game.model;
 
 import java.util.Random;
 import com.badlogic.gdx.math.*;
@@ -84,7 +85,7 @@ public class Monster {
 		dstAng = 0.0f;
 		
 		isAlive = true;
-		firecool = 0;
+		// firecool = 0;
 		
 		sound = null;
 		sndcue = -1;

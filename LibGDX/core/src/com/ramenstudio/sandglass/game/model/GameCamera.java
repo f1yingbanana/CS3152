@@ -1,4 +1,4 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.game.model;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
@@ -17,8 +17,12 @@ public class GameCamera extends GameObject {
    */
   public GameCamera(Vector2 size) {
     camera = new OrthographicCamera(size.x, size.y);
+    
   }
   
+  /**
+   * @return the underlying orthogonal camera this game object holds.
+   */
   public OrthographicCamera getCamera() {
     return camera;
   }

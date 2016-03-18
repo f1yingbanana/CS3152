@@ -1,4 +1,4 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.game.view;
 
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
@@ -15,7 +15,7 @@ import com.badlogic.gdx.*;
  */
 public class GameCanvas {
   // The background color
-  private Color bgColor = Color.SKY;
+  private Color bgColor = Color.DARK_GRAY;
   
   // Drawing context to handle textures AND POLYGONS as sprites
   private PolygonSpriteBatch spriteBatch = new PolygonSpriteBatch();

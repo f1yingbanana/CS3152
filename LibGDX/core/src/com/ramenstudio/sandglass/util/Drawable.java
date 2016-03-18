@@ -1,4 +1,6 @@
-package com.ramenstudio.sandglass;
+package com.ramenstudio.sandglass.util;
+
+import com.ramenstudio.sandglass.game.view.GameCanvas;
 
 /**
  * Specifies how the object can be rendered on a given canvas.
