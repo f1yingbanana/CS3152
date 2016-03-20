@@ -9,18 +9,13 @@ import com.badlogic.gdx.math.Vector2;
  * well as information to draw the player.
  * 
  * @author flyingbanana
+ * @author Nathaniel Hunter
  */
 public class Player extends GameObject implements Drawable {
-  private Texture playerTexture;
-  
-  private Vector2 size = new Vector2(1, 1);
   
   public Player() {
-    playerTexture = new Texture(Gdx.files.internal("badlogic.jpg"));
-  }
-  
-  @Override
-  public void draw(GameCanvas canvas) {
-    canvas.draw(playerTexture, getPosition(), size);
+	  super();
+	  this.setTexture(new Texture(Gdx.files.internal("badlogic.jpg")));
+	  this.setSize(new Vector2(1,1));
   }
 }
