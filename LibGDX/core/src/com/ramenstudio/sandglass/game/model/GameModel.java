@@ -27,7 +27,7 @@ public class GameModel implements Drawable {
 	//position of the exit gate in this level
 	private Vector2 gate_pos;
 	//array of objects in this level (land, resources, etc)
-	private GameObject[] objects;
+	private GameObject[] objects = {};
 	
 	
   /**
@@ -40,7 +40,6 @@ public class GameModel implements Drawable {
 	  collected_pieces = 0;
 	  in_overworld = true;
 	  completed = false;
-	  objects = null;
   }
   
   /**GETTERS + SETTERS */
