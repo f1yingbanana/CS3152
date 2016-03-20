@@ -154,11 +154,16 @@ public class GameModel implements Drawable {
 	  objects = o;
   }
   
-  @Override
-  public void draw(GameCanvas canvas) {
+  
+	@Override
+	/**Draws all objects in the level to the Game Canvas
+	 * @param canvas - the GameCanvas to draw to
+	 * */
+	public void draw(GameCanvas canvas) {
     // Tells all objects to render themselves with the given canvas.
-	for (GameObject o : objects){
-		o.draw(canvas);
+		for (GameObject o : objects){
+			o.draw(canvas);
+		}
 	}
-  }
 }
+

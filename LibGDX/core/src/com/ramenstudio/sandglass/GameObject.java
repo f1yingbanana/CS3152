@@ -1,7 +1,7 @@
 package com.ramenstudio.sandglass;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * The most generic object in a game. It represents an object (whether rendered
@@ -30,12 +30,16 @@ public class GameObject implements Drawable{
 	  texture = null;
 	  size = new Vector2();
   }
-  
-  public GameObject(Vector2 pos, float rot, Texture tex, Vector2 s){
-	  position = pos;
-	  rotation = rot;
-	  texture = tex;
-	  size = s;
+
+  /**Creates a GameObject with rotation 0 and:
+   * @param p - the position of the object
+   * @param s - the size of the object
+   * @param t - the texture the object will use to draw itself*/
+  public GameObject(Vector2 p, Vector2 s, Texture t){
+	  this.position = p;
+	  this.size = s;
+	  this.texture = t;
+	  this.rotation = 0;
   }
   
   /**

@@ -17,5 +17,6 @@ public class Player extends GameObject implements Drawable {
 	  super();
 	  this.setTexture(new Texture(Gdx.files.internal("badlogic.jpg")));
 	  this.setSize(new Vector2(1,1));
+
   }
 }
