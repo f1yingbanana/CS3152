@@ -5,6 +5,9 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
+import com.badlogic.gdx.graphics.Texture;
+import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.ramenstudio.sandglass.util.Drawable;
 
 /**
  * The most generic object in a game. It represents an object (whether rendered
@@ -14,7 +17,7 @@ import com.badlogic.gdx.physics.box2d.MassData;
  * 
  * @author Jiacong Xu
  */
-public class GameObject {
+public class GameObject implements Drawable{
   // The physical object of this game object.
   public Body body;
   
@@ -27,6 +30,26 @@ public class GameObject {
   
   // Stores the custom mass information for this object. Leave null for default.
   public MassData massdata;
+  
+  // Stores the size of this object for purposes of drawing
+  private Vector2 size;
+  
+  // Stores the texture associated with this object, can be null if game camera
+  private Texture texture;
+  
+  /**Initializer*/
+  public GameObject(){
+	  texture = null;
+	  size = new Vector2();
+  }
+
+  /**Creates a GameObject with rotation 0 and:
+   * @param s - the size of the object
+   * @param t - the texture the object will use to draw itself*/
+  public GameObject(Vector2 s, Texture t){
+	  this.texture = t;
+	  this.size = s;
+  }
   
   /**
    * @return a copy of this object's world position.
@@ -58,5 +81,32 @@ public class GameObject {
    */
   public void setRotation(float rotation) {
     body.setTransform(body.getPosition(), rotation);
+  }
+  
+  /**@return the size of this object as a Vector2*/
+  public Vector2 getSize(){
+	  return size;
+  }
+  
+  /**Sets the size of this object (for purposes of drawing)
+   * @param s the new vector2 size*/
+  public void setSize(Vector2 s){
+	  size = s;
+  }
+  
+  /**@return the texture of this game object*/
+  public Texture getTexture(){
+	  return texture;
+  }
+  
+  /**Sets the texture of this object
+   * @param t the Texture to set*/
+  public void setTexture(Texture t){
+	  texture = t;
+  }
+  
+  @Override
+  public void draw(GameCanvas canvas){
+	  canvas.draw(texture, body.getPosition(), size);
   }
 }

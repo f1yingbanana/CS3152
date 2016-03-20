@@ -16,17 +16,15 @@ import com.ramenstudio.sandglass.util.Drawable;
  * @author flyingbanana
  */
 public class Player extends GameObject implements Drawable {
-  private Texture playerTexture;
-  
-  private Vector2 size = new Vector2(0.8f, 1.5f);
-  
   /**
    * Creates the player at the given initial position.
    * 
    * @param initialPos is the position of the player at the time of creation.
    */
   public Player(Vector2 initialPos) {
-    playerTexture = new Texture(Gdx.files.internal("badlogic.jpg"));
+	super();
+    setTexture(new Texture(Gdx.files.internal("badlogic.jpg")));
+    setSize(new Vector2(0.8f, 1.5f));
     bodyDef.position.set(initialPos);
     bodyDef.type = BodyDef.BodyType.DynamicBody;
     
@@ -39,6 +37,6 @@ public class Player extends GameObject implements Drawable {
   
   @Override
   public void draw(GameCanvas canvas) {
-    canvas.draw(playerTexture, getPosition().add(size.cpy().scl(-0.5f)), size);
+    canvas.draw(getTexture(), getPosition().add(getSize().cpy().scl(-0.5f)), getSize());
   }
 }
