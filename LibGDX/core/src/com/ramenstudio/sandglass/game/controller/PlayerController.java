@@ -1,9 +1,9 @@
 package com.ramenstudio.sandglass.game.controller;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 
@@ -22,8 +22,18 @@ public class PlayerController extends AbstractController {
   // The player we are managing
   private Player player;
   
+  // This is the offset from the center of the body to the foot.
+  private float footOffset = -0.7f;
+  
+  // This is the distance from where we are raycasting
+  private float rayDist = 0.1f;
+  
   // Maximum move speed in horizontal movement
   private float moveSpeed = 2.0f;
+  
+  // Saving an instance of the delegate
+  private PhysicsDelegate delegate;
+  
   
   /**
    * Default constructor for player object.
@@ -35,6 +45,7 @@ public class PlayerController extends AbstractController {
 
   @Override
   public void objectSetup(PhysicsDelegate handler) {
+    delegate = handler;
     player.body = handler.addBody(player.bodyDef);
     player.body.createFixture(player.fixtureDef);
     player.body.setFixedRotation(true);
@@ -52,7 +63,7 @@ public class PlayerController extends AbstractController {
     Vector2 p = player.body.getLinearVelocity();
     p.x = moveSpeed * inputController.getHorizontal();
 
-    if (inputController.didPressJump()) {
+    if (inputController.didPressJump() && isGrounded()) {
       p.y = 5.0f;
     }
     
@@ -71,5 +82,34 @@ public class PlayerController extends AbstractController {
   @Override
   public void draw(GameCanvas canvas) {
     player.draw(canvas);
+  }
+  
+  /**
+   * @return whether player is touching the ground.
+   */
+  public boolean isGrounded() {
+    Vector2 g = delegate.getGravity().nor();
+    Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
+    Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
+    
+    RayCastHandler handler = new RayCastHandler();
+    delegate.rayCast(handler, footPos, endPos);
+    
+    return handler.isGrounded;
+  }
+  
+  private class RayCastHandler implements RayCastCallback {
+    boolean isGrounded = false;
+    
+    @Override
+    public float reportRayFixture(Fixture fixture, Vector2 point, 
+        Vector2 normal, float fraction) {
+      /**
+       * Later we need to check whether this is actually tagged as ground.
+       * For now, we ignore and return true for any objects!
+       */
+      isGrounded = true;
+      return 0;
+    }
   }
 }

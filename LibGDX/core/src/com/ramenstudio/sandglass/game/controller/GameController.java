@@ -1,14 +1,18 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.ramenstudio.sandglass.game.model.GameObject;
 
 /**
  * This takes care of the game initialization, maintains update and drawing
@@ -54,11 +58,21 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public void objectSetup(PhysicsDelegate handler) {
     // TESTING AREA. CREATE SOME OBJECTS FOR FUN!
     BodyDef boxDef = new BodyDef();
-    boxDef.position.set(new Vector2(-3, -3));
+    boxDef.position.set(new Vector2(-3, -3));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
     Body box = world.createBody(boxDef);
     PolygonShape boxShape = new PolygonShape();
-    boxShape.setAsBox(1, 1);
+    boxShape.setAsBox(8, 4);
     box.createFixture(boxShape, 0);
+    boxShape.setAsBox(4, 4, new Vector2(4,8),0);
+    box.createFixture(boxShape, 0);
+    
+    //GameObject boxobj = new GameObject();
+    //boxobj.setTexture(new Texture(Gdx.files.internal("paper.png")));
+    //boxobj.setSize(new Vector2(8,8));
+    //GameObject[] a = {boxobj};
+    
+    //gameModel.setGameObjects(a);
+    
     
     
     playerController.objectSetup(handler);
@@ -86,6 +100,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public void draw(GameCanvas canvas) {
     playerController.draw(canvas);
+    gameModel.draw(canvas);
   }
   
   /**
@@ -99,6 +114,16 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public Body addBody(BodyDef definition) {
     return world.createBody(definition);
+  }
+
+  @Override
+  public Vector2 getGravity() {
+    return world.getGravity().cpy();
+  }
+
+  @Override
+  public void rayCast(RayCastCallback callback, Vector2 point1, Vector2 point2) {
+    world.rayCast(callback, point1, point2);
   }
 
 }
