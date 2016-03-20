@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -99,6 +100,16 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public Body addBody(BodyDef definition) {
     return world.createBody(definition);
+  }
+
+  @Override
+  public Vector2 getGravity() {
+    return world.getGravity().cpy();
+  }
+
+  @Override
+  public void rayCast(RayCastCallback callback, Vector2 point1, Vector2 point2) {
+    world.rayCast(callback, point1, point2);
   }
 
 }

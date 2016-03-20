@@ -22,7 +22,7 @@ public class Player extends GameObject implements Drawable {
    * @param initialPos is the position of the player at the time of creation.
    */
   public Player(Vector2 initialPos) {
-	super();
+    super();
     setTexture(new Texture(Gdx.files.internal("badlogic.jpg")));
     setSize(new Vector2(0.8f, 1.5f));
     bodyDef.position.set(initialPos);
@@ -33,6 +33,7 @@ public class Player extends GameObject implements Drawable {
     shape.setAsBox(0.4f, 0.75f, initialPos, 0);
     fixtureDef.density = 10.0f;
     fixtureDef.shape = shape;
+    
   }
   
   @Override
