@@ -42,6 +42,8 @@ public class GameCamera extends GameObject {
     float oldRot = getRotation();
     super.setRotation(rotation);
     camera.rotate(rotation - oldRot);
+//	super.setRotation(getRotation()+rotation);
+//	camera.rotate(rotation);
     camera.update();
   }
 }
