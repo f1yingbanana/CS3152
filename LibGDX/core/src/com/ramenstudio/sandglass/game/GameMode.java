@@ -72,9 +72,17 @@ public class GameMode extends AbstractMode implements Screen {
     // When we should release all resources for this screen.
   }
 
-  @Override
-  public String[] getResourcePaths() {
-    return null;
-  }
+
+@Override
+public String[] getTexturePaths() {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public String[] getSoundPaths() {
+	// TODO Auto-generated method stub
+	return null;
+}
   
 }

@@ -26,7 +26,7 @@ public class Player extends GameObject implements Drawable {
    * @param initialPos is the position of the player at the time of creation.
    */
   public Player(Vector2 initialPos) {
-    playerTexture = new Texture(Gdx.files.internal("badlogic.jpg"));
+    playerTexture = new Texture(Gdx.files.internal("/Users/saerom/Desktop/2016SP/GameDesign/CS3152/LibGDX/core/assets/badlogic.jpg"));
     bodyDef.position.set(initialPos);
     bodyDef.type = BodyDef.BodyType.DynamicBody;
     

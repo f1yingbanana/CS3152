@@ -11,5 +11,7 @@ public abstract class AbstractMode {
    * @return a list of resource paths under the asset folder that this mode
    * needs.
    */
-  public abstract String[] getResourcePaths();
+  public abstract String[] getTexturePaths();
+  
+  public abstract String[] getSoundPaths();
 }
