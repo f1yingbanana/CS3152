@@ -162,9 +162,11 @@ public class GameModel implements Drawable {
 	 * */
 	public void draw(GameCanvas canvas) {
     // Tells all objects to render themselves with the given canvas.
+		if (objects.length > 0){
 		for (GameObject o : objects){
 			o.draw(canvas);
 		}
+	}
 	}
 }
 

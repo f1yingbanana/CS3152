@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.TurnTile;
 
 /**
  * This takes care of the game initialization, maintains update and drawing
@@ -57,14 +58,39 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public void objectSetup(PhysicsDelegate handler) {
     // TESTING AREA. CREATE SOME OBJECTS FOR FUN!
-    BodyDef boxDef = new BodyDef();
-    boxDef.position.set(new Vector2(-3, -3));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-    Body box = world.createBody(boxDef);
-    PolygonShape boxShape = new PolygonShape();
-    boxShape.setAsBox(8, 4);
-    box.createFixture(boxShape, 0);
-    boxShape.setAsBox(4, 4, new Vector2(4,8),0);
-    box.createFixture(boxShape, 0);
+	//create box 1
+	BodyDef box1Def = new BodyDef();
+	box1Def.position.set(new Vector2(-3, -3));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+    Body box1 = world.createBody(box1Def);
+    PolygonShape boxShape1 = new PolygonShape();
+    boxShape1.setAsBox(8, 4);
+    box1.createFixture(boxShape1, 0);
+	  
+	//create box 2
+    BodyDef box2Def = new BodyDef();
+	box2Def.position.set(new Vector2(1, 5));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+    Body box2 = world.createBody(box2Def);
+    PolygonShape boxShape2 = new PolygonShape();
+    boxShape2.setAsBox(4, 4);
+    box2.createFixture(boxShape2, 0);
+
+	//set up turn tiles at corners
+    TurnTile tt1 = new TurnTile();
+    tt1.position = new Vector2(-3.66f, -3.66f);
+    tt1.shape.setAsBox(0.5f, 0.5f, tt1.position,0);
+    TurnTile tt2 = new TurnTile();
+    tt2.position = new Vector2(-3.66f, 1.66f);
+    tt2.shape.setAsBox(0.5f, 0.5f, tt2.position,0);
+    TurnTile tt3 = new TurnTile();
+    tt3.position = new Vector2(5.66f, -3.66f);
+    tt3.shape.setAsBox(0.5f, 0.5f, tt3.position,0);
+    TurnTile tt4 = new TurnTile();
+    tt4.position = new Vector2(5.66f, 5.66f);
+    tt4.shape.setAsBox(0.5f, 0.5f, tt4.position,0);
+    TurnTile tt5 = new TurnTile();
+    tt5.position = new Vector2(0.33f, 5.66f);
+    tt5.shape.setAsBox(0.5f, 0.5f, tt5.position,0);
+
     
     //GameObject boxobj = new GameObject();
     //boxobj.setTexture(new Texture(Gdx.files.internal("paper.png")));
