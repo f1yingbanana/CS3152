@@ -18,34 +18,45 @@ import com.ramenstudio.sandglass.util.Drawable;
  * @author Jiacong Xu
  */
 public class GameObject implements Drawable{
-  // The physical object of this game object.
+  /** 
+   * The physical object of this game object.
+   */
   public Body body;
   
-  // The definition for this body for this object. Every game object has a
-  // position at least.
+  /**
+   * The definition for this body for this object. Every game object has a
+   * position at least.
+   */
   public BodyDef bodyDef = new BodyDef();
   
-  // Stores the fixture information for this object.
+  /** 
+   * Stores the fixture information for this object. Make sure userData for
+   * fixture points back to the game object it belongs to! 
+   */
   public FixtureDef fixtureDef;
   
-  // Stores the custom mass information for this object. Leave null for default.
+  /**
+   * Stores the custom mass information for this object. Leave null for default.
+   */
   public MassData massdata;
   
   // Stores the size of this object for purposes of drawing
-  private Vector2 size;
+  private Vector2 size = new Vector2();
   
   // Stores the texture associated with this object, can be null if game camera
-  private Texture texture;
+  private Texture texture = null;
   
-  /**Initializer*/
-  public GameObject(){
-	  texture = null;
-	  size = new Vector2();
-  }
-
-  /**Creates a GameObject with rotation 0 and:
+  /**
+   * Default initializer.
+   */
+  public GameObject() {}
+  
+  /**
+   * Creates a GameObject with given size and texture.
+   * 
    * @param s - the size of the object
-   * @param t - the texture the object will use to draw itself*/
+   * @param t - the texture the object will use to draw itself
+   * */
   public GameObject(Vector2 s, Texture t){
 	  this.texture = t;
 	  this.size = s;
@@ -85,13 +96,13 @@ public class GameObject implements Drawable{
   
   /**@return the size of this object as a Vector2*/
   public Vector2 getSize(){
-	  return size;
+	  return size.cpy();
   }
   
   /**Sets the size of this object (for purposes of drawing)
    * @param s the new vector2 size*/
   public void setSize(Vector2 s){
-	  size = s;
+	  size = size.set(s);
   }
   
   /**@return the texture of this game object*/

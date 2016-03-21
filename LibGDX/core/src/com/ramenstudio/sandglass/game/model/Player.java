@@ -30,10 +30,9 @@ public class Player extends GameObject implements Drawable {
     
     fixtureDef = new FixtureDef();
     PolygonShape shape = new PolygonShape();
-    shape.setAsBox(0.4f, 0.75f, initialPos, 0);
+    shape.setAsBox(0.4f, 0.75f);
     fixtureDef.density = 10.0f;
     fixtureDef.shape = shape;
-    
   }
   
   @Override

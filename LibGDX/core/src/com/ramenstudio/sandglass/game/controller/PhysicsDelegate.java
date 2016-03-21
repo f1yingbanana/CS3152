@@ -3,6 +3,7 @@ package com.ramenstudio.sandglass.game.controller;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 
 /**
@@ -26,7 +27,14 @@ public interface PhysicsDelegate {
   public Vector2 getGravity();
   
   /**
-   * See rayCast function in World class.
+   * See rayCast method in World class.
    */
   public void rayCast(RayCastCallback callback, Vector2 point1, Vector2 point2);
+  
+  /**
+   * See QueryAABB method in World class.
+   */
+  public void QueryAABB(QueryCallback callback, float lowerX, float lowerY,
+    float upperX, float upperY);
+
 }
