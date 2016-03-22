@@ -18,7 +18,7 @@ public class GameCanvas {
   private Color bgColor = Color.DARK_GRAY;
   
   // Drawing context to handle textures AND POLYGONS as sprites
-  private PolygonSpriteBatch spriteBatch = new PolygonSpriteBatch();
+  public PolygonSpriteBatch spriteBatch = new PolygonSpriteBatch();
   
   /**
    * Instantiates a game canvas.
@@ -77,4 +77,5 @@ public class GameCanvas {
   public void draw(Texture image, Vector2 origin, Vector2 size) {
     spriteBatch.draw(image, origin.x, origin.y, size.x, size.y);
   }
+  
 }

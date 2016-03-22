@@ -1,6 +1,9 @@
 package com.ramenstudio.sandglass.game.controller;
 
+<<<<<<< HEAD
 import com.badlogic.gdx.Gdx;
+=======
+>>>>>>> 9c015a491abe6b9f769bc4183b1813af27c2638c
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -31,6 +34,10 @@ public class GameController extends AbstractController implements PhysicsDelegat
   // The amount of time for a physics engine step.
   private static final float WORLD_STEP = 1/60.0f;
   
+  private static final String BACKGROUND_FILE = "assets/background.png";
+  
+  private Texture background;
+  
   // The maximum allowed time for each step in the simulation.
   private static final float WORLD_MAX_STEP = 1/4.0f;
   
@@ -51,7 +58,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
   
   public GameController() {
     playerController = new PlayerController();
-    
+    background = new Texture(BACKGROUND_FILE);
     
     // Set up the world!
     objectSetup(this);
@@ -60,6 +67,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public void objectSetup(PhysicsDelegate handler) {
     // TESTING AREA. CREATE SOME OBJECTS FOR FUN!
+<<<<<<< HEAD
     //create box 1
     BodyDef box1Def = new BodyDef();
     box1Def.position.set(new Vector2(-3, -3));
@@ -110,6 +118,16 @@ public class GameController extends AbstractController implements PhysicsDelegat
     
     
     
+=======
+	  for (int i = 0; i < 20; i++){
+		  BodyDef boxDef = new BodyDef();
+		    boxDef.position.set(new Vector2(i, -3));
+		    Body box = world.createBody(boxDef);
+		    PolygonShape boxShape = new PolygonShape();
+		    boxShape.setAsBox(1, 1);
+		    box.createFixture(boxShape, 0);
+	  }
+>>>>>>> 9c015a491abe6b9f769bc4183b1813af27c2638c
     playerController.objectSetup(handler);
   }
   
@@ -134,6 +152,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
 
   @Override
   public void draw(GameCanvas canvas) {
+	canvas.draw(background, new Vector2(0,0), new Vector2(10,10));
     playerController.draw(canvas);
     gameModel.draw(canvas);
   }

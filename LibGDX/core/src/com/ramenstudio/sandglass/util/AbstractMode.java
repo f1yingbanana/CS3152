@@ -14,5 +14,6 @@ public abstract class AbstractMode {
 
   public abstract String[] getTexturePaths();
 
+  
   public abstract String[] getSoundPaths();
 }
