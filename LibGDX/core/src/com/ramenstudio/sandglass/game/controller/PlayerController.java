@@ -49,9 +49,6 @@ public class PlayerController extends AbstractController {
   /** Whether this player is in the underworld. */
   private boolean isUnder = false;
   
-  /** The RayCastHandler that was used to detect the block underneath the player in this frame */
-  private RayCastHandler frameHandler;
-  
   /**
    * Default constructor for player object.
    */
@@ -156,13 +153,14 @@ public class PlayerController extends AbstractController {
        */
       Object obj = fixture.getUserData();
       
-      if (obj != null && obj.getClass().equals(SandglassTile.class)) {
+      if (obj != null && obj instanceof SandglassTile) {
+    	  System.out.println("Got here");
         SandglassTile tempGameObject = (SandglassTile)obj;
-        isGrounded = tempGameObject.isGround();
-        isFlip = tempGameObject.isFlippable();
+        isGrounded = tempGameObject.isGround() || isGrounded;
+        isFlip = tempGameObject.isFlippable() || isFlip;
         return 0;
       }
-      return -1;
+      return 0;
     }
   }
   
