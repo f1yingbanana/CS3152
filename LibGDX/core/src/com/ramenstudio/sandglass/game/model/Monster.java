@@ -13,6 +13,7 @@ package com.ramenstudio.sandglass.game.model;
 
 import java.util.Random;
 import com.badlogic.gdx.math.*;
+import com.ramenstudio.sandglass.util.controller.SoundController;
 import com.badlogic.gdx.audio.*;
 
 /**
@@ -237,7 +238,7 @@ public class Monster {
 	 * offscreen before dying. To instantly kill a monster, use setAlive().
 	 */
 	public void destroy() {
-		fallAmount = MIN_FALL_AMOUNT;
+		// TODO: Implement
 	}
 	
 	/**
@@ -253,17 +254,10 @@ public class Monster {
 	}
 	
 	/**
-	 * Plays the given sound.  
-	 *
-	 * Each monster can only play one sound at a time.  If a sound is currently playing,
-	 * it will be stopped.
+	 * Plays the appropriate sound for this monster's current 
 	 */
-	public void play(String sound) {
-		if (sndcue != -1) {
-			this.sound.stop(sndcue);
-		}
-		this.sound = SoundController.get(sound);
-		sndcue = this.sound.play();
+	public void play() {
+		
 	}
 
 	/**

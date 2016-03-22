@@ -23,8 +23,8 @@ public class Player extends GameObject implements Drawable {
    */
   public Player(Vector2 initialPos) {
     super();
-    setTexture(new Texture(Gdx.files.internal("badlogic.jpg")));
-    setSize(new Vector2(0.8f, 1.5f));
+    setTexture(new Texture(Gdx.files.internal("transparent.png")));
+    setSize(new Vector2(.8f, 1.5f));
     bodyDef.position.set(initialPos);
     bodyDef.type = BodyDef.BodyType.DynamicBody;
     

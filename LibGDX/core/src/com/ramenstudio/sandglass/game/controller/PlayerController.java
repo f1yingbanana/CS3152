@@ -16,39 +16,42 @@ import com.ramenstudio.sandglass.game.view.GameCanvas;
  * @author Jiacong Xu
  */
 public class PlayerController extends AbstractController {
-  // The camera controller we are controlling
+  /** The camera controller we are controlling */
   private CameraController cameraController;
 
-  // The input controller for player.
+  /** The input controller for player. */
   private InputController inputController = new InputController();
   
-  // The player we are managing
+  /** The player we are managing */
   private Player player;
   
-  // This is the offset from the center of the body to the foot.
+  /** This is the offset from the center of the body to the foot. */
   private float footOffset = -0.7f;
   
-  // This is the distance from where we are raycasting
+  /** This is the distance from where we are raycasting */
   private float rayDist = 0.1f;
   
-  // Maximum move speed in horizontal movement
+  /** Maximum move speed in horizontal movement */
   private float moveSpeed = 3.0f;
   
-  // Saving an instance of the delegate
+  /** Saving an instance of the delegate */
   private PhysicsDelegate delegate;
   
   // Variables concerned with turning at corners.
-  // Whether we entered a TurnTile from the left.
+  /** Whether we entered a TurnTile from the left. */
   private boolean enteredLeft;
   
-  // The active corner we are tracking whether we should turn or not.
+  /** The active corner we are tracking whether we should turn or not. */
   private GameObject activeCorner;
+  
+  /** Whether this player is in the underworld. */
+  private boolean isUnder = false;
   
   /**
    * Default constructor for player object.
    */
   public PlayerController() {
-    player = new Player(new Vector2(0, 0));
+    player = new Player(new Vector2(-5, 5));
     cameraController = new CameraController(new Vector2(5, 5));
   }
 
@@ -70,16 +73,24 @@ public class PlayerController extends AbstractController {
     
     // Realizes player input
     Vector2 p = player.body.getLinearVelocity();
-    p.x = moveSpeed * inputController.getHorizontal();
+    int underFactor = (isUnder)? -1 : 1;
+    p.x = underFactor* moveSpeed * inputController.getHorizontal();
 
     if (inputController.didPressJump() && isGrounded()) {
-      p.y = 5.0f;
+      p.y = underFactor * 5.0f;
     }
     
     player.body.setLinearVelocity(p);
     
-    // Check corners
+    // Handle rotating
+    // TODO
     checkCorner();
+    
+    // Handle flipping
+    if (inputController.didPressFlip() && canFlip()) {
+    	cameraController.rotate(180, false);
+    	// TODO: Rotate player
+    }
   }
   
   /**
@@ -106,6 +117,16 @@ public class PlayerController extends AbstractController {
     delegate.rayCast(handler, footPos, endPos);
     
     return handler.isGrounded;
+  }
+  
+  /**
+   * Returns true if the player can flip and false if not
+   * 
+   * @return whether player can flip
+   */
+  public boolean canFlip() {
+	  // TODO
+	  return false;
   }
   
   private class RayCastHandler implements RayCastCallback {
