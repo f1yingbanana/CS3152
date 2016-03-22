@@ -155,6 +155,14 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public Vector2 getGravity() {
     return world.getGravity().cpy();
   }
+  
+  /**
+   * @return a copy of the current gravity.
+   */
+  @Override
+  public void setGravity(Vector2 gravity) {
+	  world.setGravity(gravity);
+  }
 
   @Override
   public void rayCast(RayCastCallback callback, Vector2 point1, 
