@@ -7,4 +7,6 @@ public interface SandglassTile extends Drawable{
 	public boolean isFlippable();
 	public boolean isGround();
 	public void draw(GameCanvas canvas);
+	public float getWidth();
+	public float getHeight();
 }
