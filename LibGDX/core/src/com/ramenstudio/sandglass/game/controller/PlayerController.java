@@ -6,7 +6,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.NormalTile;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.SandglassTile;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 
@@ -47,6 +49,9 @@ public class PlayerController extends AbstractController {
   /** Whether this player is in the underworld. */
   private boolean isUnder = false;
   
+  /** The RayCastHandler that was used to detect the block underneath the player in this frame */
+  private RayCastHandler frameHandler;
+  
   /**
    * Default constructor for player object.
    */
@@ -81,6 +86,8 @@ public class PlayerController extends AbstractController {
     }
     
     player.body.setLinearVelocity(p);
+    
+    
     
     // Handle rotating
     // TODO
@@ -125,12 +132,20 @@ public class PlayerController extends AbstractController {
    * @return whether player can flip
    */
   public boolean canFlip() {
-	  // TODO
-	  return false;
+	  // TODO: Check if a player can flip if isGrounded and tile standing on also is flippable.
+	    Vector2 g = delegate.getGravity().nor();
+	    Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
+	    Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
+	    
+	    RayCastHandler handler = new RayCastHandler();
+	    delegate.rayCast(handler, footPos, endPos);
+	    
+	    return handler.isGrounded && handler.isFlip;
   }
   
   private class RayCastHandler implements RayCastCallback {
     boolean isGrounded = false;
+    boolean isFlip = false;
     
     @Override
     public float reportRayFixture(Fixture fixture, Vector2 point, 
@@ -139,8 +154,15 @@ public class PlayerController extends AbstractController {
        * Later we need to check whether this is actually tagged as ground.
        * For now, we ignore and return true for any objects!
        */
-      isGrounded = true;
-      return 0;
+      Object obj = fixture.getUserData();
+      
+      if (obj != null && obj.getClass().equals(SandglassTile.class)) {
+        SandglassTile tempGameObject = (SandglassTile)obj;
+        isGrounded = tempGameObject.isGround();
+        isFlip = tempGameObject.isFlippable();
+        return 0;
+      }
+      return -1;
     }
   }
   
