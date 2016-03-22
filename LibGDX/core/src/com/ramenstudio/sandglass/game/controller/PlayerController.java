@@ -97,12 +97,12 @@ public class PlayerController extends AbstractController {
 			if (under.isFlippable())
 			cameraController.rotate(180, false);
 			// Rotate player box
-			player.setRotation((float) Math.PI);
+//			player.setRotation((float) Math.PI);
 			// TODO: Rotate player image
 			// TODO: Move player based on tile below
 			Vector2 pos = player.getPosition();
 			float dist = player.getRotation()%Math.PI == 0? 
-					under.getHeight()/2f : under.getWidth()/2f;
+					under.getHeight() : under.getWidth();
 			pos.y -= dist * underFactor;
 			player.setPosition(pos);
 			Vector2 grav = delegate.getGravity();
@@ -228,6 +228,8 @@ public class PlayerController extends AbstractController {
 
 			if (obj != null && obj.getClass().equals(TurnTile.class)) {
 				corner = (GameObject)obj;
+//				float 
+//				if (corner.getPosition())
 				rotate = true;
 				return false;
 			}
