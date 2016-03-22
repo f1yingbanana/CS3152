@@ -14,17 +14,22 @@ import com.ramenstudio.sandglass.game.view.GameCanvas;
 public class NormalTile extends GameObject implements SandglassTile {
 	
 	private boolean isFlip;
+	private Body theBox;
+	private PolygonShape theBoxShape;
 
 	public NormalTile(PhysicsDelegate physicsDelegate,
 			World world, float positionX, float positionY, float boxHalfWidth,
 			float boxHalfHeight, boolean argFlip) {
+		super();
 		isFlip = argFlip;
 		
 	    BodyDef box1Def = new BodyDef();
 	    box1Def.position.set(new Vector2(positionX, positionY));
 	    Body box1 = world.createBody(box1Def);
+	    theBox = box1;
 	    PolygonShape boxShape1 = new PolygonShape();
 	    boxShape1.setAsBox(boxHalfWidth, boxHalfHeight);
+	    theBoxShape = boxShape1;
 	    Fixture tempFixture = box1.createFixture(boxShape1, 0);
 	    tempFixture.setUserData(this);
 	}
