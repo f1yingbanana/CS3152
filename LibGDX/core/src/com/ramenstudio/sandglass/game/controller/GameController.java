@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.NormalTile;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 
 /**
@@ -61,20 +62,26 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public void objectSetup(PhysicsDelegate handler) {
     // TESTING AREA. CREATE SOME OBJECTS FOR FUN!
     //create box 1
-    BodyDef box1Def = new BodyDef();
-    box1Def.position.set(new Vector2(-3, -3));
-    Body box1 = world.createBody(box1Def);
-    PolygonShape boxShape1 = new PolygonShape();
-    boxShape1.setAsBox(8, 4);
-    box1.createFixture(boxShape1, 0);
+//    BodyDef box1Def = new BodyDef();
+//    box1Def.position.set(new Vector2(-3, -3));
+//    Body box1 = world.createBody(box1Def);
+//    PolygonShape boxShape1 = new PolygonShape();
+//    boxShape1.setAsBox(8, 4);
+//    box1.createFixture(boxShape1, 0);
+
+	// This does everything above except in the constructor
+    new NormalTile(handler, world, -3, -3, 8, 4, true);
     
     //create box 2
-    BodyDef box2Def = new BodyDef();
-    box2Def.position.set(new Vector2(1, 5));
-    Body box2 = world.createBody(box2Def);
-    PolygonShape boxShape2 = new PolygonShape();
-    boxShape2.setAsBox(4, 4);
-    box2.createFixture(boxShape2, 0);
+//    BodyDef box2Def = new BodyDef();
+//    box2Def.position.set(new Vector2(1, 5));
+//    Body box2 = world.createBody(box2Def);
+//    PolygonShape boxShape2 = new PolygonShape();
+//    boxShape2.setAsBox(4, 4);
+//    box2.createFixture(boxShape2, 0);
+    
+    // This does everything above except in the constructor	
+    new NormalTile(handler, world, 1, 5, 4, 4, true);
     
     //set up turn tiles at corners
     TurnTile tt1 = new TurnTile();
