@@ -16,6 +16,8 @@ public class NormalTile extends GameObject implements SandglassTile {
 	private boolean isFlip;
 	private Body theBox;
 	private PolygonShape theBoxShape;
+	private float width;
+	private float height;
 
 	public NormalTile(PhysicsDelegate physicsDelegate,
 			World world, float positionX, float positionY, float boxHalfWidth,
@@ -32,6 +34,8 @@ public class NormalTile extends GameObject implements SandglassTile {
 	    theBoxShape = boxShape1;
 	    Fixture tempFixture = box1.createFixture(boxShape1, 0);
 	    tempFixture.setUserData(this);
+	    width = 2*boxHalfWidth;
+	    height = 2*boxHalfHeight;
 	}
 	
 	@Override
@@ -48,5 +52,15 @@ public class NormalTile extends GameObject implements SandglassTile {
 	@Override
 	public boolean isGround() {
 		return true;
+	}
+
+	@Override
+	public float getWidth() {
+		return width;
+	}
+
+	@Override
+	public float getHeight() {
+		return height;
 	}
 }

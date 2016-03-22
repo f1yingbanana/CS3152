@@ -17,6 +17,8 @@ public class TurnTile extends GameObject implements SandglassTile {
 	private boolean isFlip;
 	private PolygonShape thePolygonShape;
 	private FixtureDef theFixtureDef;
+	private float width;
+	private float height;
 	
 	
 	public TurnTile() {
@@ -30,6 +32,8 @@ public class TurnTile extends GameObject implements SandglassTile {
 		shape.setAsBox(0.5f, 0.5f);
 		fixtureDef.shape = shape;
 		theFixtureDef = fixtureDef;
+		width = .5f;
+		height = .5f;
 	}
 	
 	
@@ -48,5 +52,17 @@ public class TurnTile extends GameObject implements SandglassTile {
 	@Override
 	public boolean isGround() {
 		return false;
+	}
+
+
+	@Override
+	public float getWidth() {
+		return width;
+	}
+
+
+	@Override
+	public float getHeight() {
+		return height;
 	}
 }
