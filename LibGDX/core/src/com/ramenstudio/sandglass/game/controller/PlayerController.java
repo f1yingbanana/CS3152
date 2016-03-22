@@ -93,13 +93,17 @@ public class PlayerController extends AbstractController {
 
 		// Handle flipping
 		if (inputController.didPressFlip() && canFlip()) {
+			SandglassTile under = oneFrameHandler.tileUnderneath;
+			if (under.isFlippable())
 			cameraController.rotate(180, false);
 			// Rotate player box
 			player.setRotation((float) Math.PI);
 			// TODO: Rotate player image
 			// TODO: Move player based on tile below
 			Vector2 pos = player.getPosition();
-			pos.y -= 5*underFactor;
+			float dist = player.getRotation()%Math.PI == 0? 
+					under.getHeight()/2f : under.getWidth()/2f;
+			pos.y -= dist * underFactor;
 			player.setPosition(pos);
 			Vector2 grav = delegate.getGravity();
 			grav.y *= -1;
@@ -201,7 +205,9 @@ public class PlayerController extends AbstractController {
 
 		// We only set active corner if we WALKED into the corner. We can land on
 		// the corner too.
-		
+		if (handler.rotate) {
+			
+		}
 		
 		
 		
@@ -214,6 +220,7 @@ public class PlayerController extends AbstractController {
 
 	private class OverlapHandler implements QueryCallback {
 		GameObject corner;
+		boolean rotate;
 
 		@Override
 		public boolean reportFixture(Fixture fixture) {
@@ -221,9 +228,10 @@ public class PlayerController extends AbstractController {
 
 			if (obj != null && obj.getClass().equals(TurnTile.class)) {
 				corner = (GameObject)obj;
+				rotate = true;
 				return false;
 			}
-
+			rotate = false;
 			return true;
 		}
 	}
