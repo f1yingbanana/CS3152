@@ -3,8 +3,10 @@ package com.ramenstudio.sandglass.game.model;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.controller.GameController;
 import com.ramenstudio.sandglass.game.controller.PhysicsDelegate;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -23,7 +25,8 @@ public class NormalTile extends GameObject implements SandglassTile {
 	    Body box1 = world.createBody(box1Def);
 	    PolygonShape boxShape1 = new PolygonShape();
 	    boxShape1.setAsBox(boxHalfWidth, boxHalfHeight);
-	    box1.createFixture(boxShape1, 0);
+	    Fixture tempFixture = box1.createFixture(boxShape1, 0);
+	    tempFixture.setUserData(this);
 	}
 	
 	@Override

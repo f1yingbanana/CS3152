@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.SandglassTile;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 
@@ -135,12 +136,19 @@ public class PlayerController extends AbstractController {
 	 * @return whether player can flip
 	 */
 	public boolean canFlip() {
-		// TODO
-		return isGrounded();
+		Vector2 g = delegate.getGravity().nor();
+		Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
+		Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
+
+		RayCastHandler handler = new RayCastHandler();
+		delegate.rayCast(handler, footPos, endPos);
+
+		return handler.isGrounded && handler.isFlip;
 	}
 
 	private class RayCastHandler implements RayCastCallback {
 		boolean isGrounded = false;
+		boolean isFlip = false;
 
 		@Override
 		public float reportRayFixture(Fixture fixture, Vector2 point, 
@@ -149,8 +157,16 @@ public class PlayerController extends AbstractController {
 			 * Later we need to check whether this is actually tagged as ground.
 			 * For now, we ignore and return true for any objects!
 			 */
-			isGrounded = true;
-			return 0;
+			Object obj = fixture.getUserData();
+
+			if (obj != null && obj instanceof SandglassTile) {
+				System.out.println("Got here");
+				SandglassTile tempGameObject = (SandglassTile)obj;
+				isGrounded = tempGameObject.isGround() || isGrounded;
+				isFlip = tempGameObject.isFlippable() || isFlip;
+				return 0;
+			}
+			return -1;
 		}
 	}
 
