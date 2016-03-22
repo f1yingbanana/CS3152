@@ -53,9 +53,16 @@ public class TitleMode extends AbstractMode implements Screen {
     
   }
 
-  @Override
-  public String[] getResourcePaths() {
-    // TODO Auto-generated method stub
-    return null;
-  }
+
+@Override
+public String[] getTexturePaths() {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public String[] getSoundPaths() {
+	// TODO Auto-generated method stub
+	return null;
+}
 }
