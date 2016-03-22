@@ -103,6 +103,8 @@ public class PlayerController extends AbstractController {
 			Vector2 pos = player.getPosition();
 			float dist = player.getRotation()%Math.PI == 0? 
 					under.getHeight() : under.getWidth();
+			dist += player.getRotation()%Math.PI == 0?
+					player.getSize().y : player.getSize().x;
 			pos.y -= dist * underFactor;
 			player.setPosition(pos);
 			Vector2 grav = delegate.getGravity();

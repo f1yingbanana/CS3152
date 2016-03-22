@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
 
@@ -46,6 +47,8 @@ public class GameObject implements Drawable{
   // Stores the texture associated with this object, can be null if game camera
   private Texture texture = null;
   
+  private TextureRegion textureRegion;
+  
   /**
    * Default initializer.
    */
@@ -60,6 +63,7 @@ public class GameObject implements Drawable{
   public GameObject(Vector2 s, Texture t){
 	  this.texture = t;
 	  this.size = s;
+	  textureRegion = new TextureRegion(t);
   }
   
   /**
@@ -112,8 +116,17 @@ public class GameObject implements Drawable{
   
   /**Sets the texture of this object
    * @param t the Texture to set*/
-  public void setTexture(Texture t){
+  public void setTexture(Texture t) {
 	  texture = t;
+	  textureRegion = new TextureRegion(t);
+  }
+  
+  public TextureRegion getTextureRegion() {
+	  return textureRegion;
+  }
+  
+  public void setTextureRegion(TextureRegion tr) {
+	  textureRegion = tr;
   }
   
   @Override
