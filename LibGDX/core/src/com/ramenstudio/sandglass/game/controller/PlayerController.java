@@ -1,11 +1,13 @@
 package com.ramenstudio.sandglass.game.controller;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.QueryCallback;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
+import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 
 /**
@@ -23,8 +25,24 @@ public class PlayerController extends AbstractController {
   // The player we are managing
   private Player player;
   
+  // This is the offset from the center of the body to the foot.
+  private float footOffset = -0.7f;
+  
+  // This is the distance from where we are raycasting
+  private float rayDist = 0.1f;
+  
   // Maximum move speed in horizontal movement
-  private float moveSpeed = 2.0f;
+  private float moveSpeed = 3.0f;
+  
+  // Saving an instance of the delegate
+  private PhysicsDelegate delegate;
+  
+  // Variables concerned with turning at corners.
+  // Whether we entered a TurnTile from the left.
+  private boolean enteredLeft;
+  
+  // The active corner we are tracking whether we should turn or not.
+  private GameObject activeCorner;
   
   /**
    * Default constructor for player object.
@@ -36,6 +54,7 @@ public class PlayerController extends AbstractController {
 
   @Override
   public void objectSetup(PhysicsDelegate handler) {
+    delegate = handler;
     player.body = handler.addBody(player.bodyDef);
     player.body.createFixture(player.fixtureDef);
     player.body.setFixedRotation(true);
@@ -53,24 +72,93 @@ public class PlayerController extends AbstractController {
     Vector2 p = player.body.getLinearVelocity();
     p.x = moveSpeed * inputController.getHorizontal();
 
-    if (inputController.didPressJump()) {
+    if (inputController.didPressJump() && isGrounded()) {
       p.y = 5.0f;
     }
     
     player.body.setLinearVelocity(p);
     
-    
+    // Check corners
+    checkCorner();
   }
   
   /**
-   * @return the main camera for rendering.
+   * @return the matrix transformation from world to screen. Used in drawing.
    */
-  public OrthographicCamera getMainCamera() {
-    return cameraController.getCamera();
+  public Matrix4 world2ScreenMatrix() {
+    return cameraController.world2ScreenMatrix();
   }
 
   @Override
   public void draw(GameCanvas canvas) {
     player.draw(canvas);
+  }
+  
+  /**
+   * @return whether player is touching the ground.
+   */
+  public boolean isGrounded() {
+    Vector2 g = delegate.getGravity().nor();
+    Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
+    Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
+    
+    RayCastHandler handler = new RayCastHandler();
+    delegate.rayCast(handler, footPos, endPos);
+    
+    return handler.isGrounded;
+  }
+  
+  private class RayCastHandler implements RayCastCallback {
+    boolean isGrounded = false;
+    
+    @Override
+    public float reportRayFixture(Fixture fixture, Vector2 point, 
+        Vector2 normal, float fraction) {
+      /**
+       * Later we need to check whether this is actually tagged as ground.
+       * For now, we ignore and return true for any objects!
+       */
+      isGrounded = true;
+      return 0;
+    }
+  }
+  
+  /**
+   * If we are not currently at a turning corner, we try to find one. Otherwise
+   * we decide whether we want to flip or not.
+   */
+  private void checkCorner() {
+    OverlapHandler handler = new OverlapHandler();
+    
+    // At start this is 0 degrees
+    float rot = delegate.getGravity().angle() - 270;
+    Vector2 upper = player.getPosition().add(player.getSize().scl(0.5f).rotate(rot));
+    Vector2 lower = player.getPosition().add(player.getSize().scl(-0.5f).rotate(rot));
+    
+    delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
+    
+    // We only set active corner if we WALKED into the corner. We can land on
+    // the corner too.
+    // if (activeCorner == null)
+    
+    // activeCorner = handler.corner;
+    
+    // Now we check 
+  }
+  
+  private class OverlapHandler implements QueryCallback {
+    GameObject corner;
+    
+    @Override
+    public boolean reportFixture(Fixture fixture) {
+      Object obj = fixture.getUserData();
+      
+      if (obj != null && obj.getClass().equals(TurnTile.class)) {
+        corner = (GameObject)obj;
+        return false;
+      }
+      
+      return true;
+    }
   }
 }

@@ -21,31 +21,16 @@ import com.sun.j3d.utils.scenegraph.io.retained.Controller;
 /**
  * The overall container for a loading mode. This displays pretty graphics while
  * the game loads.
+ * It is called only once when any of the screen should be displayed.
  * 
  * @author gnsrom
  */
 public class LoadingMode implements Screen, InputProcessor {
 
-
-	/** 
-	 * Tracks the asset state.  Otherwise subclasses will try to load assets 
-	 */
-	protected enum AssetState {
-		/** No assets loaded */
-		EMPTY,
-		/** Still loading assets */
-		LOADING,
-		/** Assets are complete */
-		COMPLETE
-	}
-
 	/** Track texture loading from all instances and subclasses */
 	protected AssetState textureState = AssetState.EMPTY;
 	/** Track sound loading from all instances and subclasses */
 	protected AssetState soundState = AssetState.EMPTY;
-	/** Track all loaded assets (for unloading purposes) */
-	protected Array<String> assets;	
-
 
 	// Textures necessary to support the loading screen
 	private static final String PROGRESS_FILE = "shared/progressbar.png";
@@ -75,10 +60,6 @@ public class LoadingMode implements Screen, InputProcessor {
 	private static int PROGRESS_MIDDLE = 200;
 	/** Amount to scale the play button */
 	private static float BUTTON_SCALE  = 0.75f;
-	/** playButton directory*/
-	private static String PLAYBUTTON;
-	/** animation directory*/
-	private static String ANIMATION;
 	
 	/** Start button for XBox controller on Windows */
 	private static int WINDOWS_START = 7;
@@ -105,12 +86,10 @@ public class LoadingMode implements Screen, InputProcessor {
 	private GameCanvas canvas;
 	/** Listener that will update the player mode when we are done */
 	private ScreenListener listener;
-	/** Animation controller */
-	private AnimationController animecontroller;
 	/** Sound controller*/
 	private SoundController soundcontroller;
 	/** Game State that contains this loading mode.*/
-	private GameMode gamestate;
+	private GameModel gamestate;
 
 	/** The width of the progress bar */
 	private int width;
@@ -130,13 +109,24 @@ public class LoadingMode implements Screen, InputProcessor {
 	private float progress;
 	/** The current state of the play button */
 	private int   pressState;
-	/** The amount of time to devote to loading assets (as opposed to on screen hints, etc.) */
+	/** The amount of time to devote to loading assets */
 	private int   budget;
 	/** Support for the X-Box start button in place of play button */
 	private int   startButton;
 	/** Whether or not this player mode is still active */
 	private boolean active;
+	/** playButton directory*/
+	private static String playButtondir;
+	/** animation directory*/
+	private static String animationdir;
+	/** background directory*/
+	private static String backgroundir;
 
+	/**
+	* returns the budget for the asset loader.
+	* The budget is the number of milliseconds to spend loading assets each animation
+	* frame. 
+	*/
 	public int getBudget() {
 		return budget;
 	}
@@ -154,23 +144,31 @@ public class LoadingMode implements Screen, InputProcessor {
 		return pressState == 2;
 	}
 
-	public LoadingMode(GameMode gamestate, GameCanvas canvas, AssetManager manager, AnimationController anime,
+	public LoadingMode(GameMode gamestate, GameCanvas canvas, AssetManager manager,
 		SoundController soundctrl) {
-		this(gamestate, canvas, manager, anime, soundctrl, DEFAULT_BUDGET);
+		this(gamestate, canvas, manager, soundctrl, DEFAULT_BUDGET);
 	}
 
-	public LoadingMode(GameMode gamestate, GameCanvas canvas, AssetManager manager, 
-		AnimationController anime, SoundController soundctrl, int millis) {
+
+	/** 
+	* Creates a LoadingMode with default size and position
+	*
+	* Because it is called by the GameController, it needs to have the
+	* String array of textures and sound directories of the level to be loaded.
+	* That array is kept in the GameModel class, from which we can get
+	* Sound and Texture by getSound or getImage method.
+	*/
+	public LoadingMode(GameModel gamestate, GameCanvas canvas, AssetManager manager, 
+		SoundController soundctrl, int millis) {
 		playButton = null;
 		this.gamestate = gamestate;
 		this.manager = manager;
 		this.canvas = canvas;
-		animecontroller = anime;
 		soundcontroller = soundctrl;
 		budget = millis;
 
 		// Compute the dimensions from the canvas
-		// resize(canvas.getWidth(), canvas.getHeight());
+		resize(canvas.getWidth(), canvas.getHeight());
 
 		// Load the next two images immediately.
 		statusBar = new Texture(PROGRESS_FILE);
@@ -195,67 +193,53 @@ public class LoadingMode implements Screen, InputProcessor {
 		startButton = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
 		Gdx.input.setInputProcessor(this);
 
-		// Let ANY connected controller start the game.
-		/*
-		for (Controller controller : Controllers.getControllers()) {
-			controller.addListener(this);
-		}
-		*/
 		active = true;
 	}
 
 	public void setPlayButton(String playButton){
-		PLAYBUTTON = playButton;
+		this.playButton = new Texture(playButton);
 	}
 	
-	public void setAnimation(String animation){
-		ANIMATION = animation;
-	}
+	// public void setAnimation(String animation){
+	// 	this.animation = new 
+	// }
 
 	public void setBackground(String background){
 		this.background = new Texture(background);
 	}
 
-	public void preLoadTexture(String[] textures) {
-		if (textureState != AssetState.EMPTY){
-			return;
-		}
-		textureState = AssetState.LOADING;
+	public void loadFont(Strign fontfile, int fontsize){
+		FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+		size2Params.fontFileName = fontfile;
+		size2Params.fontParameters.size = fontsize;
+		manager.load(fontfile, BitmapFont.class, size2Params);
+		assets.add(fontfile);
+	}
+
+	public TextureRegion[] loadTexture() {
+		String[] textures = gamestate.getImages();
+		textureState = AssetState.COMPLETE;
+		TextureRegion[] tex = new TextureRegion[texture.length];
+
 		for (int i = 0; i < textures.length; i++) {
 			manager.load(textures[i], Texture.class);
 			assets.add(textures[i]);
+			tex[i]=createTexture(manager, textures[i], true);
 		}
+		return tex;
+
+		// should use gameModel. setAssets(tex)
 	}
 
-	public void preLoadSound(String[] sounds) {
-		if (soundState != AssetState.EMPTY){
-			return;
-		}
-		soundState = AssetState.LOADING;
+	public Sound[] loadSound() {
+		Sound[] sounds = gamestate.getSounds()
+		Sound[] snd = new Sound[sounds.length];
 		for (int i = 0; i < sounds.length; i++) {
 			manager.load(sounds[i], Sound.class);
+			Sound sound = manager.get(sounds[i], Sound.class);
 			assets.add(sounds[i]);
-		}
-	}
-
-	public void loadTexture(String[] textures) {
-		// String[] sounds = gamestate.getSounds();
-		if (textureState != AssetState.LOADING) {
-			return;
-		}
-		textureState = AssetState.COMPLETE;
-		for (int i = 0; i < textures.length; i++) {
-			createTexture(manager, textures[i], true);
-		}
-	}
-
-	public void loadSound(String[] sounds) {
-		if (soundState != AssetState.LOADING) {
-			return;
-		}
-		soundState = AssetState.COMPLETE;
-		for (int i = 0; i < sounds.length; i++) {
 			soundcontroller.allocate(manager,sounds[i]);
+			snd[i] = sound;
 		}
 	}
 
@@ -272,8 +256,8 @@ public class LoadingMode implements Screen, InputProcessor {
 	}
 
 
-	private void unloadContent(){
-	  /*
+	private void unloadContent(Array<String> assets){
+	  
 		String[] textures = gamestate.getImages();
 		String[] sounds = gamestate.getSounds();
 
@@ -288,7 +272,7 @@ public class LoadingMode implements Screen, InputProcessor {
 				manager.unload(sounds[i]);	
 			}
 		}
-		*/
+
 	}
 
 	private void update(float delta) {
@@ -304,11 +288,10 @@ public class LoadingMode implements Screen, InputProcessor {
 		}
 	}
 
-	/*
+	
 	private void draw() {
 		canvas.begin();
 		canvas.draw(background, 0, 0);
-		animecontroller.animate(animation);
 		if (playButton == null) {
 			drawProgress(canvas);
 		} else {
@@ -318,7 +301,6 @@ public class LoadingMode implements Screen, InputProcessor {
 		}
 		canvas.end();
 	}
-	*/
 
 	
 	/**
@@ -354,7 +336,7 @@ public class LoadingMode implements Screen, InputProcessor {
 		heightY = height;
 	}
 
-	/*
+	
 	private void drawProgress(GameCanvas canvas) {
 
 		// draw status bar
@@ -379,7 +361,6 @@ public class LoadingMode implements Screen, InputProcessor {
 				scale * PROGRESS_CAP, scale * PROGRESS_HEIGHT);
 		}
 	}
-	*/
 
 	@Override
 	public void pause() {
@@ -400,7 +381,6 @@ public class LoadingMode implements Screen, InputProcessor {
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 		active = false;
 	}
 
@@ -430,10 +410,6 @@ public class LoadingMode implements Screen, InputProcessor {
 	}
 	
 	public boolean keyDown(int keycode){
-		return true;
-	}
-
-	public boolean keyUp(char character){
 		return true;
 	}
 
@@ -606,8 +582,8 @@ public class LoadingMode implements Screen, InputProcessor {
 	 * @param buttonCode The button pressed
 	 * @return whether to hand the event to other listeners. 
 	 */
-	public boolean buttonDown (Controller controller, int buttonCode) {
-		if (buttonCode == startButton && pressState == 0) {
+	public boolean buttonDown (Controller controller) {
+		if (pressState == 0) {
 			pressState = 1;
 			return false;
 		}
@@ -625,8 +601,8 @@ public class LoadingMode implements Screen, InputProcessor {
 	 * @param buttonCode The button pressed
 	 * @return whether to hand the event to other listeners. 
 	 */
-	public boolean buttonUp (Controller controller, int buttonCode) {
-		if (pressState == 1 && buttonCode == startButton) {
+	public boolean buttonUp (Controller controller) {
+		if (pressState == 1) {
 			pressState = 2;
 			return false;
 		}

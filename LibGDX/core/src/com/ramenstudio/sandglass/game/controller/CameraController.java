@@ -1,7 +1,7 @@
 package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.GameCamera;
@@ -27,6 +27,17 @@ public class CameraController extends AbstractController {
   // initialize box2d body with initial position, but set it afterwards.
   private Vector2 initPos;
   
+  /** The current rotation angle goal. */
+  private float goal;
+  /** Whether to use smoothing. */
+  private boolean instant;
+  /** The smoothing factor. */
+  private float factor = 1;
+  /** The standard for camera speed. */
+  private static final float FRAME_TIME = 1f/60f;
+  
+  private int count = 0;
+  
   /**
    * Creates a camera controller and initializes the game camera.
    */
@@ -46,10 +57,10 @@ public class CameraController extends AbstractController {
   }
   
   /**
-   * @return the current camera managed by the controller.
+   * @return the current matrix used to translate world space position to screen
    */
-  public OrthographicCamera getCamera() {
-    return camera.getCamera();
+  public Matrix4 world2ScreenMatrix() {
+    return camera.getCamera().combined;
   }
   
   /**
@@ -61,9 +72,56 @@ public class CameraController extends AbstractController {
     target = targetObject;
   }
   
+  /**
+   * Sets the smoothing factor for the camera.
+   * 
+   * @param factor	the smoothing factor
+   * 				Must be between 0 and 1 inclusive
+   */
+  public void setSmoothing(float f) {
+    factor = f;
+  }
+	  
+  /**
+   * Rotates the camera view given the amount, with an option to animate.
+   * 
+   * @param radians is the amount to rotate.
+   * @param isInstant is the flag for whether rotation should be instant.
+   */
+  public void rotate(float radians, boolean isInstant) {
+    goal = goal + radians;
+    instant = isInstant;
+  }
+  
   @Override
   public void update(float dt) {
-    camera.setPosition(target.getPosition());
+	float time = (dt/FRAME_TIME) * factor;
+
+	float camAngle = camera.getRotation();
+	if (goal != camAngle) {
+		if (instant) {
+		    camera.setRotation(goal);
+		} else {
+			float newAngle = (goal - camAngle)*time + camAngle;
+		    camera.setRotation(newAngle);
+		}
+	}
+	Vector2 targPos = target.getPosition();
+    Vector2 camPos = camera.getPosition();
+	if (targPos != camPos) {
+		float x = (targPos.x - camPos.x)*time + camPos.x;
+	    float y = (targPos.y - camPos.y)*time + camPos.y;
+	    Vector2 deltaPos = new Vector2(x,y);
+	    camera.setPosition(deltaPos);
+	}
+	
+	// TESTING
+    count++;
+	if (Gdx.input.isKeyPressed(Input.Keys.R) && count > 10) {
+		count = 0;
+		rotate(90,false);
+		factor = 0.1f;
+	}
   }
   
   @Override
@@ -75,16 +133,5 @@ public class CameraController extends AbstractController {
     camera.body = handler.addBody(camera.bodyDef);
     camera.setPosition(initPos);
     initPos = null;
-  }
-  
-  /**
-   * Rotates the camera view given the amount, with an option to animate.
-   * 
-   * @param radians is the amount to rotate.
-   * @param duration is the time in seconds to animate the camera.
-   */
-  public void rotate(float radians, float duration) {
-    // Currently animation is not supported!
-    camera.setRotation(camera.getRotation() + radians);
   }
 }
