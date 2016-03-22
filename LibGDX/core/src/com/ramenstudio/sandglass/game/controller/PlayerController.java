@@ -77,35 +77,45 @@ public class PlayerController extends AbstractController {
 		inputController.update(dt);
 
 		// Realizes player input
-		Vector2 p = player.body.getLinearVelocity();
+		Vector2 pos = player.getPosition();
+		Vector2 vel = player.body.getLinearVelocity();
+		float ang = player.getRotation();
+		Vector2 grav = delegate.getGravity();
 		int underFactor = (isUnder)? -1 : 1;
-		p.x = underFactor* moveSpeed * inputController.getHorizontal();
-
+		
+		// Handle movement
+		vel.x = underFactor* moveSpeed * inputController.getHorizontal();
 		if (inputController.didPressJump() && isGrounded()) {
-			p.y = underFactor * 5.0f;
+			vel.y = underFactor * 5.0f;
 		}
-
-		player.body.setLinearVelocity(p);
+		player.body.setLinearVelocity(vel);
 
 		// Handle rotating
 		// TODO
 		checkCorner();
+		if (activeCorner != null && isGrounded()) {
+			Vector2 cornerPos = activeCorner.getPosition();
+			float diff = (ang%Math.PI == 0) ? 
+					pos.x - cornerPos.x : pos.y - cornerPos.y;
+			if (diff > 0) {
+				cameraController.rotate(-90);
+				float temp = grav.x;
+				grav.x = -grav.y;
+				grav.y = temp;
+				delegate.setGravity(grav);
+			}
+		}
 
 		// Handle flipping
 		if (inputController.didPressFlip() && canFlip()) {
 			SandglassTile under = oneFrameHandler.tileUnderneath;
 			if (under.isFlippable())
-			cameraController.rotate(180, false);
-			// Rotate player box
-//			player.setRotation((float) Math.PI);
+			cameraController.rotate(180);
 			// TODO: Rotate player image
 			// TODO: Move player based on tile below
-			Vector2 pos = player.getPosition();
-			float dist = player.getRotation()%Math.PI == 0? 
-					under.getHeight() : under.getWidth();
+			float dist = (ang%Math.PI == 0) ? under.getHeight() : under.getWidth();
 			pos.y -= dist * underFactor;
 			player.setPosition(pos);
-			Vector2 grav = delegate.getGravity();
 			grav.y *= -1;
 			delegate.setGravity(grav);
 			isUnder ^= true;
@@ -205,9 +215,7 @@ public class PlayerController extends AbstractController {
 
 		// We only set active corner if we WALKED into the corner. We can land on
 		// the corner too.
-		if (handler.rotate) {
-			
-		}
+		
 		
 		
 		
@@ -228,9 +236,25 @@ public class PlayerController extends AbstractController {
 
 			if (obj != null && obj.getClass().equals(TurnTile.class)) {
 				corner = (GameObject)obj;
-//				float 
-//				if (corner.getPosition())
-				rotate = true;
+				float coord;
+				float pos;
+				float vel;
+				if (player.getRotation()%Math.PI == 0) {
+					coord = corner.getPosition().x;
+					pos = player.getPosition().x;
+					vel = player.body.getLinearVelocity().x;
+				} else {
+					coord = corner.getPosition().y;
+					pos = player.getPosition().y;
+					vel = player.body.getLinearVelocity().y;
+				}
+				if (coord < pos && vel < 0) {
+					activeCorner = corner;
+				} else if (coord > pos && vel > 0) {
+					activeCorner = corner;
+				} else {
+					activeCorner = null;
+				}
 				return false;
 			}
 			rotate = false;
