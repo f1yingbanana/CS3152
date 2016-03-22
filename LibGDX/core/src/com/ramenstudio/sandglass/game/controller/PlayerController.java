@@ -186,6 +186,10 @@ public class PlayerController extends AbstractController {
 
 		// We only set active corner if we WALKED into the corner. We can land on
 		// the corner too.
+		
+		
+		
+		
 		// if (activeCorner == null)
 
 		// activeCorner = handler.corner;
