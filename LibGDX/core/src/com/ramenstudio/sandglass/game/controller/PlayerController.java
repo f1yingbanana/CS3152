@@ -47,6 +47,10 @@ public class PlayerController extends AbstractController {
 
 	/** Whether this player is in the underworld. */
 	private boolean isUnder = false;
+	
+	/** RayCastHandler that detects tiles in this one frame. Should always be set
+	 * to null after every update loop. */
+	private RayCastHandler oneFrameHandler;
 
 	/**
 	 * Default constructor for player object.
@@ -102,6 +106,7 @@ public class PlayerController extends AbstractController {
 			delegate.setGravity(grav);
 			isUnder ^= true;
 		}
+		oneFrameHandler = null;
 	}
 
 	/**
@@ -127,6 +132,8 @@ public class PlayerController extends AbstractController {
 		RayCastHandler handler = new RayCastHandler();
 		delegate.rayCast(handler, footPos, endPos);
 
+		oneFrameHandler = handler;
+		
 		return handler.isGrounded;
 	}
 
@@ -136,19 +143,27 @@ public class PlayerController extends AbstractController {
 	 * @return whether player can flip
 	 */
 	public boolean canFlip() {
-		Vector2 g = delegate.getGravity().nor();
-		Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
-		Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
+		if (oneFrameHandler == null) {
+			Vector2 g = delegate.getGravity().nor();
+			Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
+			Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
 
-		RayCastHandler handler = new RayCastHandler();
-		delegate.rayCast(handler, footPos, endPos);
+			RayCastHandler handler = new RayCastHandler();
+			delegate.rayCast(handler, footPos, endPos);
 
-		return handler.isGrounded && handler.isFlip;
+			oneFrameHandler = handler;
+			
+			return handler.isGrounded && handler.isFlip;
+		}
+		else {
+			return oneFrameHandler.isGrounded && oneFrameHandler.isFlip;
+		}
 	}
 
 	private class RayCastHandler implements RayCastCallback {
 		boolean isGrounded = false;
 		boolean isFlip = false;
+		private SandglassTile tileUnderneath;
 
 		@Override
 		public float reportRayFixture(Fixture fixture, Vector2 point, 
@@ -160,10 +175,10 @@ public class PlayerController extends AbstractController {
 			Object obj = fixture.getUserData();
 
 			if (obj != null && obj instanceof SandglassTile) {
-				System.out.println("Got here");
 				SandglassTile tempGameObject = (SandglassTile)obj;
 				isGrounded = tempGameObject.isGround() || isGrounded;
 				isFlip = tempGameObject.isFlippable() || isFlip;
+				tileUnderneath = tempGameObject;
 				return 0;
 			}
 			return -1;

@@ -15,16 +15,21 @@ import com.ramenstudio.sandglass.util.Drawable;
 public class TurnTile extends GameObject implements SandglassTile {
 
 	private boolean isFlip;
+	private PolygonShape thePolygonShape;
+	private FixtureDef theFixtureDef;
+	
 	
 	public TurnTile() {
 		super();
 		bodyDef.type = BodyDef.BodyType.StaticBody;
 
 		PolygonShape shape = new PolygonShape();
+		thePolygonShape = shape;
 		fixtureDef = new FixtureDef();
 		fixtureDef.isSensor = true;
 		shape.setAsBox(0.5f, 0.5f);
 		fixtureDef.shape = shape;
+		theFixtureDef = fixtureDef;
 	}
 	
 	
