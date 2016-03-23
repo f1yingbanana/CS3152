@@ -102,6 +102,16 @@ public class CameraController extends AbstractController {
     instant = isInstant;
   }
   
+  /**
+   * Rotates the camera view given the amount with animation.
+   * 
+   * @param angle is the amount to rotate in degrees.
+   */
+  public void rotate(float angle) {
+	    goal = goal + angle;
+	    instant = false;
+	  }
+  
   @Override
   public void update(float dt) {
 	float translateTime = (dt/FRAME_TIME) * TRANSLATING_FACTOR;

@@ -10,9 +10,15 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
+<<<<<<< HEAD
+=======
+import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.NormalTile;
+>>>>>>> origin/westaalger
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
 
@@ -72,20 +78,26 @@ public class GameController extends AbstractController implements PhysicsDelegat
     // TESTING AREA. CREATE SOME OBJECTS FOR FUN!
 
     //create box 1
-    BodyDef box1Def = new BodyDef();
-    box1Def.position.set(new Vector2(-3, -3));
-    Body box1 = world.createBody(box1Def);
-    PolygonShape boxShape1 = new PolygonShape();
-    boxShape1.setAsBox(8, 4);
-    box1.createFixture(boxShape1, 0);
+//    BodyDef box1Def = new BodyDef();
+//    box1Def.position.set(new Vector2(-3, -3));
+//    Body box1 = world.createBody(box1Def);
+//    PolygonShape boxShape1 = new PolygonShape();
+//    boxShape1.setAsBox(8, 4);
+//    box1.createFixture(boxShape1, 0);
+
+	// This does everything above except in the constructor
+    new NormalTile(handler, world, -3, -3, 8, 4, true);
     
     //create box 2
-    BodyDef box2Def = new BodyDef();
-    box2Def.position.set(new Vector2(1, 5));
-    Body box2 = world.createBody(box2Def);
-    PolygonShape boxShape2 = new PolygonShape();
-    boxShape2.setAsBox(4, 4);
-    box2.createFixture(boxShape2, 0);
+//    BodyDef box2Def = new BodyDef();
+//    box2Def.position.set(new Vector2(1, 5));
+//    Body box2 = world.createBody(box2Def);
+//    PolygonShape boxShape2 = new PolygonShape();
+//    boxShape2.setAsBox(4, 4);
+//    box2.createFixture(boxShape2, 0);
+    
+    // This does everything above except in the constructor	
+    new NormalTile(handler, world, 1, 5, 4, 4, true);
     
     //set up turn tiles at corners
     TurnTile tt1 = new TurnTile();
@@ -190,6 +202,14 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public Vector2 getGravity() {
     return world.getGravity().cpy();
+  }
+  
+  /**
+   * @return a copy of the current gravity.
+   */
+  @Override
+  public void setGravity(Vector2 gravity) {
+	  world.setGravity(gravity);
   }
 
   @Override

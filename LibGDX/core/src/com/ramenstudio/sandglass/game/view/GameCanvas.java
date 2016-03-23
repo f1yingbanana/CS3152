@@ -2,6 +2,7 @@ package com.ramenstudio.sandglass.game.view;
 
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.*;
@@ -78,4 +79,12 @@ public class GameCanvas {
     spriteBatch.draw(image, origin.x, origin.y, size.x, size.y);
   }
   
+<<<<<<< HEAD
+=======
+  public void draw(TextureRegion image, Vector2 origin, Vector2 size, 
+		  Vector2 worldOrigin, float angle) {
+	  spriteBatch.draw(image, origin.x, origin.y, worldOrigin.x, worldOrigin.y, size.x, size.y,
+			  1, 1, angle);
+  }
+>>>>>>> origin/westaalger
 }

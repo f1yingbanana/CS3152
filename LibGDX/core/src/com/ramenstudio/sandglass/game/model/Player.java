@@ -17,6 +17,7 @@ import com.ramenstudio.sandglass.util.Drawable;
  * @author flyingbanana
  */
 public class Player extends GameObject implements Drawable {
+<<<<<<< HEAD
 
 /**
    * Creates the player at the given initial position.
@@ -62,4 +63,31 @@ public class Player extends GameObject implements Drawable {
     super.setBody(body);
     
   }
+=======
+	/**
+	 * Creates the player at the given initial position.
+	 * 
+	 * @param initialPos is the position of the player at the time of creation.
+	 */
+	public Player(Vector2 initialPos) {
+		super();
+		setTexture(new Texture(Gdx.files.internal("character2.png")));
+		setSize(new Vector2(.8f, 1.5f));
+		bodyDef.position.set(initialPos);
+		bodyDef.type = BodyDef.BodyType.DynamicBody;
+
+		fixtureDef = new FixtureDef();
+		PolygonShape shape = new PolygonShape();
+		shape.setAsBox(0.4f, 0.75f);
+		fixtureDef.density = 10.0f;
+		fixtureDef.shape = shape;
+	}
+
+	@Override
+	public void draw(GameCanvas canvas) {
+		canvas.draw(getTextureRegion(), getPosition().add(getSize().cpy().scl(-0.5f)), getSize(),
+				new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+		
+	}
+>>>>>>> origin/westaalger
 }
