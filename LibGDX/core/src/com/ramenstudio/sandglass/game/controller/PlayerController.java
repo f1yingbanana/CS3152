@@ -143,7 +143,7 @@ public class PlayerController extends AbstractController {
 			if (thisEnum == NORTH) {
 				return 0;
 			}
-			else if (thisEnum == EAST) {
+			else if (thisEnum == WEST) {
 				return (float) (Math.PI/2);
 			}
 			else if (thisEnum == SOUTH) {
@@ -196,24 +196,30 @@ public class PlayerController extends AbstractController {
 		// Realizes player input
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.body.getLinearVelocity();
-		float ang = player.getRotation();
 		Vector2 grav = delegate.getGravity();
 		int underFactor = (isUnder)? -1 : 1;
 		
 		// Handle movement
 		boolean jump = false;
-		float x = underFactor * moveSpeed * inputController.getHorizontal();
+		float x = moveSpeed * inputController.getHorizontal();
 		float y = AngleEnum.isVertical(heading) ? vel.y: vel.x;
 		if (inputController.didPressJump() && isGrounded()) {
-			y = underFactor * jumpVelocity;
+			y = jumpVelocity;
 			jump = true;
 		}
-		if (AngleEnum.isVertical(heading)) {
+		if (heading == AngleEnum.NORTH) {
 			vel.x = x;
-			vel.y = y;
-		} else {
+			vel.y = y; 
+		} else if (heading == AngleEnum.EAST) {
 			vel.x = y;
+			vel.y = -x;
+		} else if (heading == AngleEnum.SOUTH) {
+			vel.x = -x;
+			vel.y = jump? -y : y;
+		} else {
+			vel.x = jump? -y : y;
 			vel.y = x;
+			System.out.println(vel.y);
 		}
 		player.body.setLinearVelocity(vel);
 
@@ -229,13 +235,13 @@ public class PlayerController extends AbstractController {
 			if (diff > 0) {
 				cameraController.rotate(-90);
 				delegate.setGravity(delegate.getGravity().rotate(90));
-				heading = AngleEnum.flipClockWise(heading);
+				heading = AngleEnum.flipCounterClockWise(heading);
 				player.setRotation(AngleEnum.convertToAngle(heading));
 
 			} else {
 				cameraController.rotate(90);
 				delegate.setGravity(delegate.getGravity().rotate(-90));
-				heading = AngleEnum.flipCounterClockWise(heading);
+				heading = AngleEnum.flipClockWise(heading);
 				player.setRotation(AngleEnum.convertToAngle(heading));
 			}
 			activeCorner = null;
@@ -258,7 +264,7 @@ public class PlayerController extends AbstractController {
 
 				player.setPosition(pos);
 				player.setRotation(AngleEnum.convertToAngle(heading));
-				delegate.setGravity(delegate.getGravity().scl(-1));
+				delegate.setGravity(delegate.getGravity().rotate(180));
 				isUnder ^= true;
 			}
 		}
@@ -385,12 +391,8 @@ public class PlayerController extends AbstractController {
 		@Override
 		public boolean reportFixture(Fixture fixture) {
 			Object obj = fixture.getUserData();
-			System.out.println(obj);
 			if (obj != null && obj.getClass().equals(TurnTile.class)) {
 				corner = (GameObject)obj;
-
-				System.out.println("HERE3");
-
 				return false;
 			}
 			corner = null;
