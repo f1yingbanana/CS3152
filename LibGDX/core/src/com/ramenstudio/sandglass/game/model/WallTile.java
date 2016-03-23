@@ -16,7 +16,7 @@ public class WallTile extends GameObject {
   private static final float TILE_WIDTH = 1.0f;
   
   public enum WallType {
-    TOPLEFT, TOP, TOPRIGHT, LEFT, RIGHT, BOTLEFT, BOT, BOTRIGHT, 
+    TOPLEFT, HORIZONTAL, TOPRIGHT, VERTICAL, BOTLEFT, BOTRIGHT, 
     INSIDE_TOPLEFT, INSDIE_BOTLEFT, INSIDE_TOPRIGHT, INSIDE_BOTRIGHT
   }
   
@@ -93,34 +93,34 @@ public class WallTile extends GameObject {
       shape.setAsBox(THICKNESS / 2, (TILE_WIDTH + THICKNESS) / 4, c, 0);
       fixtureDefs[1].shape = shape;
       break;
-    case TOP:
+    case HORIZONTAL:
       fixtureDefs = new FixtureDef[1];
       
       fixtureDefs[0] = new FixtureDef();
       shape.setAsBox(TILE_WIDTH / 2, THICKNESS / 2);
       fixtureDefs[0].shape = shape;
       break;
-    case BOT:
-      fixtureDefs = new FixtureDef[1];
-      
-      fixtureDefs[0] = new FixtureDef();
-      shape.setAsBox(TILE_WIDTH / 2, THICKNESS / 2);
-      fixtureDefs[0].shape = shape;
-      break;
-    case LEFT:
-      fixtureDefs = new FixtureDef[1];
-      
-      fixtureDefs[0] = new FixtureDef();
-      shape.setAsBox(THICKNESS / 2, TILE_WIDTH / 2);
-      fixtureDefs[0].shape = shape;
-      break;
-    case RIGHT:
+//    case BOT:
+//      fixtureDefs = new FixtureDef[1];
+//      
+//      fixtureDefs[0] = new FixtureDef();
+//      shape.setAsBox(TILE_WIDTH / 2, THICKNESS / 2);
+//      fixtureDefs[0].shape = shape;
+//      break;
+    case VERTICAL:
       fixtureDefs = new FixtureDef[1];
       
       fixtureDefs[0] = new FixtureDef();
       shape.setAsBox(THICKNESS / 2, TILE_WIDTH / 2);
       fixtureDefs[0].shape = shape;
       break;
+//    case RIGHT:
+//      fixtureDefs = new FixtureDef[1];
+//      
+//      fixtureDefs[0] = new FixtureDef();
+//      shape.setAsBox(THICKNESS / 2, TILE_WIDTH / 2);
+//      fixtureDefs[0].shape = shape;
+//      break;
     }
   }
 }

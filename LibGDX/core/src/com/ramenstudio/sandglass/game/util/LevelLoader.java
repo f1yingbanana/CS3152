@@ -8,7 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.GameObject;
-
+import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
 
 /**
@@ -30,12 +30,12 @@ public class LevelLoader {
     TiledMapTileLayer groundLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
     TiledMapTileLayer objectLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Objects");
     
-    ArrayList<GameObject> wallTilearr = parseGround(groundLayer, "Collision");
+    ArrayList<GameObject> Tilearr = parseGround(groundLayer, "Collision");
     ArrayList<GameObject> playerTile = parseObject(objectLayer, "type", "player");
     ArrayList<GameObject> monsterTile = parseObject(objectLayer, "type", "monster");
     ArrayList<GameObject> resourceTile = parseObject(objectLayer, "type", "resource");
     
-    layerDict.put(Key.GROUND, wallTilearr);
+    layerDict.put(Key.GROUND, Tilearr);
     layerDict.put(Key.PLAYER, playerTile);
     layerDict.put(Key.MONSTER, monsterTile);
     layerDict.put(Key.RESOURCE, resourceTile);
@@ -53,15 +53,15 @@ public class LevelLoader {
   public ArrayList<GameObject> parseGround(TiledMapTileLayer layer, String str){
 	  int height = layer.getHeight();
 	  int width = layer.getWidth();
-	  ArrayList<GameObject> wtArr = new ArrayList<GameObject>();
+	  ArrayList<GameObject> tArr = new ArrayList<GameObject>();
 	  
 	  for (int i = 0 ; i < height ; i++){
 		  for (int j = 0 ; j < width; j ++){
 			  TiledMapTile this_tile = layer.getCell(i, j).getTile();
 			  if (this_tile.getProperties().containsKey(str)){
 				  String propval = (String) this_tile.getProperties().get(str);
-				  WallTile.WallType type = WallTile.WallType.TOP;
-				  
+				  WallTile.WallType type = WallTile.WallType.HORIZONTAL;
+				  TurnTile tt= new TurnTile();
 				  switch (propval){
 					  
 					  case "top_left": 
@@ -77,32 +77,40 @@ public class LevelLoader {
 						  type = WallTile.WallType.BOTRIGHT;
 						  break;
 					  case "horiz_edge": 
-						  type = WallTile.WallType.TOP;
+						  type = WallTile.WallType.HORIZONTAL;
 						  break;
 					  case "vert_edge": 
-						  type = WallTile.WallType.LEFT;
+						  type = WallTile.WallType.VERTICAL;
 						  break;
 					  case "inside_top_left":
 						  type = WallTile.WallType.INSIDE_TOPLEFT;
+						  tt.getBodyDef().position.set(new Vector2(i-0.25f,j-0.25f));
+						  tArr.add(tt);
 						  break;
 					  case "inside_top_right":
 						  type = WallTile.WallType.INSIDE_TOPRIGHT;
+						  tt.getBodyDef().position.set(new Vector2(i-0.25f,j+0.25f));
+						  tArr.add(tt);
 						  break;
 					  case "inside_bottom_left":
 						  type = WallTile.WallType.INSDIE_BOTLEFT;
+						  tt.getBodyDef().position.set(new Vector2(i+0.25f,j-0.25f));
+						  tArr.add(tt);
 						  break;
 					  case "inside_bottom_right":
 						  type = WallTile.WallType.INSIDE_BOTRIGHT;
+						  tt.getBodyDef().position.set(new Vector2(i+0.25f,j+0.25f));
+						  tArr.add(tt);
 						  break;
 				  }
 				  
 				  WallTile wt = new WallTile(type);
 				  wt.getBodyDef().position.set(new Vector2(i+0.5f, j+0.5f));
-				  wtArr.add(wt);
+				  tArr.add(wt);
 			  }
 		  }
 	  }
-	  return wtArr;
+	  return tArr;
   }
   
   public ArrayList<GameObject> parseObject(TiledMapTileLayer layer, String key, String value){
