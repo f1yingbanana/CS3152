@@ -150,6 +150,7 @@ public class CameraController extends AbstractController {
     // Creates the camera object.
     camera.body = handler.addBody(camera.bodyDef);
     camera.setPosition(initPos);
-    initPos = null;
+    goal = 0;
+//    initPos = null;
   }
 }

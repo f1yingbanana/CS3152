@@ -27,6 +27,8 @@ public class InputController extends AbstractController {
 	private boolean prevFlip;
 	/** Did we press the mouse button? */
 	private boolean pressedMouse;
+	/** Did we press the reset button? DUU DUU DUUUUUU DU */
+	private boolean pressedReset;
 	/** The mouse position on screen. */
 	private Vector2 mousePos;
 
@@ -83,6 +85,15 @@ public class InputController extends AbstractController {
 	public boolean didPressMouse() {
 		return pressedMouse;
 	}
+	
+	/**
+	 * Returns whether the reset button was pressed.
+	 * 
+	 * @return whether the mouse button was pressed.
+	 */
+	public boolean didPressReset() {
+		return pressedReset;
+	}
 
 	/**
 	 * Returns the last known mouse position on the screen.
@@ -101,13 +112,14 @@ public class InputController extends AbstractController {
 	 * Sets the private fields that can be accessed using getters.
 	 */
 	public void readKeyboard() {
-	    int up, left, right, down, jump, flip;
+	    int up, left, right, down, jump, flip, reset;
 	    up    = Input.Keys.UP; 
 	    down  = Input.Keys.DOWN;
 	    left  = Input.Keys.LEFT; 
 	    right = Input.Keys.RIGHT;
 	    jump  = Input.Keys.SPACE;
 	    flip  = Input.Keys.F;
+	    reset = Input.Keys.L;
 			
 	    // Convert keyboard state into game commands
 	    horizontal = vertical = 0;
@@ -134,6 +146,8 @@ public class InputController extends AbstractController {
 		// Flipping
 		pressedFlip = Gdx.input.isKeyPressed(flip) && ! prevFlip;	// Might be able to use isKeyJustPressed()
 		prevFlip = Gdx.input.isKeyPressed(flip);
+		
+		pressedReset = Gdx.input.isKeyPressed(reset);
 	}
 
 	/**

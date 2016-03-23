@@ -55,6 +55,11 @@ public class NormalTile extends GameObject implements SandglassTile {
 	}
 
 	@Override
+	public boolean isGoal() {
+		return false;
+	}
+	
+	@Override
 	public float getWidth() {
 		return width;
 	}

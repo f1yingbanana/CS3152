@@ -23,6 +23,8 @@ public class GDXRoot extends Game implements ScreenListener {
   private GameMode gameMode;
   private LoadingMode loadingMode;
   
+  private ApplicationMode currentMode;
+  
   public enum ApplicationMode {
     TITLE, GAME, LOADING
   }
@@ -44,6 +46,7 @@ public class GDXRoot extends Game implements ScreenListener {
    * to switch to.
    */
   public void setApplicationMode(ApplicationMode mode) {
+	  currentMode = mode;
     switch (mode) {
     case TITLE:
       setScreen(titleMode);

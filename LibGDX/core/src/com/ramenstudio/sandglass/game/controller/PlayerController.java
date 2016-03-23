@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.GoalTile;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.SandglassTile;
 import com.ramenstudio.sandglass.game.model.TurnTile;
@@ -56,10 +57,16 @@ public class PlayerController extends AbstractController {
 	
 	/** RayCastHandler that detects tiles in this one frame. Should always be set
 	 * to null after every update loop. */
-	private RayCastHandler oneFrameHandler;
+	private RayCastHandler oneFrameRayHandler;
+	
+	/** OverlapHandler that detects tiles in this one frame. Should always be set to null
+	 * after every update loop. */
+	private OverlapHandler oneFrameOverlapHandler;
 	
 	/** The direction the player's head is facing. */
 	private AngleEnum heading = AngleEnum.NORTH;
+	
+	private boolean isReset = false;
 	
 	private enum AngleEnum {
 		NORTH,
@@ -242,7 +249,7 @@ public class PlayerController extends AbstractController {
 		}
 		// Handle flipping
 		else if (inputController.didPressFlip() && canFlip() && !jump) {
-			SandglassTile under = oneFrameHandler.tileUnderneath;
+			SandglassTile under = oneFrameRayHandler.tileUnderneath;
 			
 			if (under.isFlippable()) {
 				cameraController.rotate(180);
@@ -262,7 +269,14 @@ public class PlayerController extends AbstractController {
 				isUnder ^= true;
 			}
 		}
-		oneFrameHandler = null;
+		// Handle goal collision
+		collidedWithGoal();
+		// Handle reset button
+		if (inputController.didPressReset()) {
+			isReset = true;
+		}
+		oneFrameRayHandler = null;
+		oneFrameOverlapHandler = null;
 	}
 
 	/**
@@ -288,9 +302,20 @@ public class PlayerController extends AbstractController {
 		RayCastHandler handler = new RayCastHandler();
 		delegate.rayCast(handler, footPos, endPos);
 
-		oneFrameHandler = handler;
+		oneFrameRayHandler = handler;
 		
 		return handler.isGrounded;
+	}
+	
+	/**
+	 * Returns whether or not the game should be reset, for various reasons
+	 * including but not limited to hitting a GoalTile or pressing the
+	 * reset button.
+	 * 
+	 * @return true iff the level should be reset.
+	 */
+	public boolean isReset() {
+		return isReset;
 	}
 
 	/**
@@ -298,8 +323,8 @@ public class PlayerController extends AbstractController {
 	 * 
 	 * @return whether player can flip
 	 */
-	public boolean canFlip() {
-		if (oneFrameHandler == null) {
+	private boolean canFlip() {
+		if (oneFrameRayHandler == null) {
 			Vector2 g = delegate.getGravity().nor();
 			Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
 			Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
@@ -307,60 +332,34 @@ public class PlayerController extends AbstractController {
 			RayCastHandler handler = new RayCastHandler();
 			delegate.rayCast(handler, footPos, endPos);
 
-			oneFrameHandler = handler;
+			oneFrameRayHandler = handler;
 			
 			return handler.isGrounded && handler.isFlip;
 		}
 		else {
-			return oneFrameHandler.isGrounded && oneFrameHandler.isFlip;
+			return oneFrameRayHandler.isGrounded && oneFrameRayHandler.isFlip;
 		}
 	}
-
-	private class RayCastHandler implements RayCastCallback {
-		boolean isGrounded = false;
-		boolean isFlip = false;
-		private SandglassTile tileUnderneath;
-
-		@Override
-		public float reportRayFixture(Fixture fixture, Vector2 point, 
-				Vector2 normal, float fraction) {
-			/**
-			 * Later we need to check whether this is actually tagged as ground.
-			 * For now, we ignore and return true for any objects!
-			 */
-			Object obj = fixture.getUserData();
-
-			if (obj != null && obj instanceof SandglassTile) {
-				SandglassTile tempGameObject = (SandglassTile)obj;
-				isGrounded = tempGameObject.isGround() || isGrounded;
-				isFlip = tempGameObject.isFlippable() || isFlip;
-				tileUnderneath = tempGameObject;
-				return 0;
-			}
-			return -1;
-		}
-	}
-
+	
 	/**
 	 * If we are not currently at a turning corner, we try to find one. Otherwise
 	 * we decide whether we want to flip or not.
 	 */
 	private void checkCorner() {
-		OverlapHandler handler = new OverlapHandler();
+		OverlapHandler handler;
+		if (oneFrameOverlapHandler == null) {
+			handler = new OverlapHandler();
+			Vector2 upper = getUpperRight();
+			Vector2 lower = getLowerLeft();
+			
+			delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
 
-		// At start this is 0 degrees
-		float rot = delegate.getGravity().angle() - 270;
-		Vector2 upper = getUpperRight();
-		Vector2 lower = getLowerLeft();
-//		System.out.println("This is upper " + upper + " and this is lower " + lower);
-//		System.out.println("This is player position " + player.getPosition());
-		
-		
-		delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
-
-		// We only set active corner if we WALKED into the corner. We can land on
-		// the corner too.
-		
+			// We only set active corner if we WALKED into the corner. We can land on
+			// the corner too.
+		}
+		else {
+			handler = oneFrameOverlapHandler;
+		}
 		GameObject corner = handler.corner;
 		if (corner != null) {
 			float coord;
@@ -382,6 +381,29 @@ public class PlayerController extends AbstractController {
 			} else {
 				activeCorner = null;
 			}
+		}
+	}
+	
+	/**
+	 * Return true if the player has collided with a tile that's marked as a
+	 * goal tile.
+	 * 
+	 * @return true iff the player has collided with the goal
+	 */
+	private void collidedWithGoal() {
+		OverlapHandler handler;
+		if (oneFrameOverlapHandler == null) {
+			handler = new OverlapHandler();
+			Vector2 upper = getUpperRight();
+			Vector2 lower = getLowerLeft();
+			delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
+		}
+		else {
+			handler = oneFrameOverlapHandler;
+		}
+		GameObject goal = handler.goal;
+		if (goal != null) {
+			isReset = true;
 		}
 	}
 	
@@ -424,18 +446,54 @@ public class PlayerController extends AbstractController {
 		return theUpperRight;
 	}
 
+	/**
+	 * Our implementation of the reportRayFixture for
+	 * detecting if the player can jump.
+	 */
+	private class RayCastHandler implements RayCastCallback {
+		boolean isGrounded = false;
+		boolean isFlip = false;
+		private SandglassTile tileUnderneath;
+
+		@Override
+		public float reportRayFixture(Fixture fixture, Vector2 point, 
+				Vector2 normal, float fraction) {
+			/**
+			 * Later we need to check whether this is actually tagged as ground.
+			 * For now, we ignore and return true for any objects!
+			 */
+			Object obj = fixture.getUserData();
+
+			if (obj != null && obj instanceof SandglassTile) {
+				SandglassTile tempGameObject = (SandglassTile)obj;
+				isGrounded = tempGameObject.isGround() || isGrounded;
+				isFlip = tempGameObject.isFlippable() || isFlip;
+				tileUnderneath = tempGameObject;
+				return 0;
+			}
+			return -1;
+		}
+	}
+
+	/**
+	 * Our implementation of the reportFixture
+	 * for detecting what kind of Tile the player has hit.
+	 */
 	private class OverlapHandler implements QueryCallback {
 		GameObject corner;
+		GameObject goal;
 
 		@Override
 		public boolean reportFixture(Fixture fixture) {
 			Object obj = fixture.getUserData();
 			if (obj != null && obj instanceof TurnTile) {
-				System.out.println(obj);	
 				corner = (TurnTile)obj;
-				return false;
+				return true;
 			}
-			corner = null;
+			if (obj != null && obj instanceof GoalTile) {
+				goal = (GoalTile) obj;
+				return true;
+			}
 			return true;
 		}
 	}

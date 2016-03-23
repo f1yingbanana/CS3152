@@ -76,5 +76,4 @@ public class GameMode extends AbstractMode implements Screen {
   public String[] getResourcePaths() {
     return null;
   }
-  
 }

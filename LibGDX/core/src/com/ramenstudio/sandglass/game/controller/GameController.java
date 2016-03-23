@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
+
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.NormalTile;
 import com.ramenstudio.sandglass.game.model.TurnTile;
@@ -125,6 +126,16 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public void update(float dt) {
     playerController.update(dt);
     stepPhysics(dt);
+    if (playerController.isReset()) {
+    	reset();
+    }
+  }
+  
+  private void reset() {
+	  	world.dispose();
+		world = new World(new Vector2(0, -9.8f), true);
+		playerController = new PlayerController();
+		objectSetup(this);
   }
   
   /**
@@ -183,5 +194,4 @@ public class GameController extends AbstractController implements PhysicsDelegat
     float upperX, float upperY) {
     world.QueryAABB(callback, lowerX, lowerY, upperX, upperY);
   }
-
 }
