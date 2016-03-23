@@ -57,6 +57,117 @@ public class PlayerController extends AbstractController {
 	/** RayCastHandler that detects tiles in this one frame. Should always be set
 	 * to null after every update loop. */
 	private RayCastHandler oneFrameHandler;
+	
+	/** The direction the player's head is facing. */
+	private AngleEnum heading = AngleEnum.NORTH;
+	
+	private enum AngleEnum {
+		NORTH,
+		EAST,
+		SOUTH,
+		WEST;
+		
+		/**
+		 * Returns the new compass direction of the
+		 * provided direction but rotated 180 degrees/flipped.
+		 * 
+		 * @param thisEnum is the direction to rotate 180 degrees/flip.
+		 * @return the angle rotated 180 degrees/flipped.
+		 */
+		private static AngleEnum flipEnum(AngleEnum thisEnum) {
+			if (thisEnum == NORTH) {
+				return SOUTH;
+			}
+			else if (thisEnum == SOUTH) {
+				return NORTH;
+			}
+			else if (thisEnum == WEST) {
+				return EAST;
+			}
+			else {
+				return WEST;
+			}
+		}
+		
+		/**
+		 * Returns the new compass direction of the
+		 * provided direction but rotated 90 degrees counterclockwise.
+		 * 
+		 * @param thisEnum is the direction to rotate 90 degrees counterclockwise.
+		 * @return the angle rotated 90 degrees counterclockwise.
+		 */
+		private static AngleEnum flipCounterClockWise(AngleEnum thisEnum) {
+			if (thisEnum == NORTH) {
+				return WEST;
+			}
+			else if (thisEnum == EAST) {
+				return NORTH;
+			}
+			else if (thisEnum == SOUTH) {
+				return EAST;
+			}
+			else {
+				return SOUTH;
+			}
+		}
+		
+		/**
+		 * Returns the new compass direction of the 
+		 * provided direction but rotated 90 degrees clockwise.
+		 * 
+		 * @param thisEnum is the direction to rotate 90 degrees clockwise.
+		 * @return the angle rotated 90 degrees clockwise.
+		 */
+		private static AngleEnum flipClockWise(AngleEnum thisEnum) {
+			if (thisEnum == NORTH) {
+				return EAST;
+			}
+			else if (thisEnum == EAST) {
+				return SOUTH;
+			}
+			else if (thisEnum == SOUTH) {
+				return WEST;
+			}
+			else {
+				return NORTH;
+			}
+		}
+		
+		/**
+		 * Converts the compass direction to an actual angle in radians.
+		 * 
+		 * @param thisEnum to convert to an angle
+		 * @return the angle in radians
+		 */
+		private static float convertToAngle(AngleEnum thisEnum) {
+			if (thisEnum == NORTH) {
+				return 0;
+			}
+			else if (thisEnum == EAST) {
+				return (float) (Math.PI/2);
+			}
+			else if (thisEnum == SOUTH) {
+				return (float) (Math.PI);
+			}
+			else {
+				return (float) (3*Math.PI/2);
+			}
+		}
+		
+		/**
+		 * Whether the given compass direction is vertical.
+		 * 
+		 * @param 	thisEnum to evaluate
+		 * @return	true if thisEnum points North or South, false otherwise 
+		 */
+		private static boolean isVertical (AngleEnum thisEnum) {
+			if (thisEnum == NORTH || thisEnum == SOUTH) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 
 	/**
 	 * Default constructor for player object.
@@ -91,18 +202,18 @@ public class PlayerController extends AbstractController {
 		
 		// Handle movement
 		boolean jump = false;
-		float x = underFactor* moveSpeed * inputController.getHorizontal();
-		float y = sideways ? vel.x: vel.y;
+		float x = underFactor * moveSpeed * inputController.getHorizontal();
+		float y = AngleEnum.isVertical(heading) ? vel.y: vel.x;
 		if (inputController.didPressJump() && isGrounded()) {
 			y = underFactor * jumpVelocity;
 			jump = true;
 		}
-		if (sideways) {
-			vel.x = y;
-			vel.y = x;
-		} else {
+		if (AngleEnum.isVertical(heading)) {
 			vel.x = x;
 			vel.y = y;
+		} else {
+			vel.x = y;
+			vel.y = x;
 		}
 		player.body.setLinearVelocity(vel);
 
@@ -110,46 +221,44 @@ public class PlayerController extends AbstractController {
 		// TODO
 		
 		checkCorner();
+		// TODO: add isUnder condition
 		if (activeCorner != null && isGrounded() && !jump) {
 			Vector2 cornerPos = activeCorner.getPosition();
-			float diff = (ang%Math.PI == 0) ? 
+			float diff = (AngleEnum.isVertical(heading))?
 					pos.x - cornerPos.x : pos.y - cornerPos.y;
-			diff *= (isUnder) ? -1 : 1;
-			System.out.println("HERE1");
-			System.out.println(pos);
-			System.out.println(cornerPos);
-
 			if (diff > 0) {
 				cameraController.rotate(-90);
-				Vector2 newGrav = new Vector2(-grav.y,grav.x);
-				delegate.setGravity(newGrav);
-				sideways ^= true;
-				activeCorner = null;
-			} else {	// TODO: rotate player
-				System.out.println("HERE2");
+				delegate.setGravity(delegate.getGravity().rotate(90));
+				heading = AngleEnum.flipClockWise(heading);
+				player.setRotation(AngleEnum.convertToAngle(heading));
+
+			} else {
 				cameraController.rotate(90);
-				Vector2 newGrav = new Vector2(grav.y,grav.x);
-				delegate.setGravity(newGrav);
-				sideways ^= true;
-				activeCorner = null;
+				delegate.setGravity(delegate.getGravity().rotate(-90));
+				heading = AngleEnum.flipCounterClockWise(heading);
+				player.setRotation(AngleEnum.convertToAngle(heading));
 			}
+			activeCorner = null;
 		}
 		// Handle flipping
 		else if (inputController.didPressFlip() && canFlip() && !jump) {
 			SandglassTile under = oneFrameHandler.tileUnderneath;
+			
 			if (under.isFlippable()) {
 				cameraController.rotate(180);
 				Vector2 size = player.getSize();
-				float dist = (ang%Math.PI < 1f) ? 
+				float flipDist = (AngleEnum.isVertical(heading)) ? 
 						under.getHeight() + size.y : under.getWidth() + size.x;
 				
-				pos.y -= dist * underFactor;
-				float rot = (float) (isUnder? 0 : Math.PI);
-				grav.y *= -1;
-				
+				grav.setLength(1.0f);
+				grav.scl(flipDist);
+				pos.x += grav.x;
+				pos.y += grav.y;
+				heading = AngleEnum.flipEnum(heading);
+
 				player.setPosition(pos);
-				player.setRotation(rot);
-				delegate.setGravity(grav);
+				player.setRotation(AngleEnum.convertToAngle(heading));
+				delegate.setGravity(delegate.getGravity().scl(-1));
 				isUnder ^= true;
 			}
 		}
@@ -245,18 +354,29 @@ public class PlayerController extends AbstractController {
 		Vector2 lower = player.getPosition().add(player.getSize().scl(-0.5f).rotate(rot));
 
 		delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
-
-		// We only set active corner if we WALKED into the corner. We can land on
-		// the corner too.
 		
-		
-		
-		
-		// if (activeCorner == null)
-
-		// activeCorner = handler.corner;
-
-		// Now we check 
+		GameObject corner = handler.corner;
+		if (corner != null) {
+			float coord;
+			float pos;
+			float vel;
+			if (AngleEnum.isVertical(heading)) {
+				coord = corner.getPosition().x;
+				pos = player.getPosition().x;
+				vel = player.body.getLinearVelocity().x;
+			} else {
+				coord = corner.getPosition().y;
+				pos = player.getPosition().y;
+				vel = player.body.getLinearVelocity().y;
+			}
+			if (coord < pos && vel < 0) {
+				activeCorner = corner;
+			} else if (coord > pos && vel > 0) {
+				activeCorner = corner;
+			} else {
+				activeCorner = null;
+			}
+		}
 	}
 
 	private class OverlapHandler implements QueryCallback {
@@ -268,30 +388,12 @@ public class PlayerController extends AbstractController {
 			System.out.println(obj);
 			if (obj != null && obj.getClass().equals(TurnTile.class)) {
 				corner = (GameObject)obj;
-				float coord;
-				float pos;
-				float vel;
+
 				System.out.println("HERE3");
 
-				if (player.getRotation()%Math.PI < 1f) {
-					coord = corner.getPosition().x;
-					pos = player.getPosition().x;
-					vel = player.body.getLinearVelocity().x;
-				} else {
-					coord = corner.getPosition().y;
-					pos = player.getPosition().y;
-					vel = player.body.getLinearVelocity().y;
-				}
-				if (coord < pos && vel < 0) {
-					activeCorner = corner;
-				} else if (coord > pos && vel > 0) {
-					activeCorner = corner;
-				} else {
-					activeCorner = null;
-				}
 				return false;
 			}
-			activeCorner = null;
+			corner = null;
 			return true;
 		}
 	}
