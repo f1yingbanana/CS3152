@@ -16,7 +16,8 @@ public class WallTile extends GameObject {
   private static final float TILE_WIDTH = 1.0f;
   
   public enum WallType {
-    TOPLEFT, TOP, TOPRIGHT, LEFT, RIGHT, BOTLEFT, BOT, BOTRIGHT
+    TOPLEFT, TOP, TOPRIGHT, LEFT, RIGHT, BOTLEFT, BOT, BOTRIGHT, 
+    INSIDE_TOPLEFT, INSDIE_BOTLEFT, INSIDE_TOPRIGHT, INSIDE_BOTRIGHT
   }
   
   /**
