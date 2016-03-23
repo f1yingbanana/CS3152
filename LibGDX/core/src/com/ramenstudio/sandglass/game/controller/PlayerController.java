@@ -48,6 +48,9 @@ public class PlayerController extends AbstractController {
 	/** Whether this player is in the underworld. */
 	private boolean isUnder = false;
 	
+	/** Whether this player is "sideways". */
+	private boolean sideways = false;
+	
 	/** RayCastHandler that detects tiles in this one frame. Should always be set
 	 * to null after every update loop. */
 	private RayCastHandler oneFrameHandler;
@@ -84,41 +87,60 @@ public class PlayerController extends AbstractController {
 		int underFactor = (isUnder)? -1 : 1;
 		
 		// Handle movement
-		vel.x = underFactor* moveSpeed * inputController.getHorizontal();
+		boolean jump = false;
+		float x = underFactor* moveSpeed * inputController.getHorizontal();
+		float y = vel.y;
 		if (inputController.didPressJump() && isGrounded()) {
-			vel.y = underFactor * 5.0f;
+			y = underFactor * 5.0f;
+			jump = true;
+		}
+		if (sideways) {
+			vel.x = y;
+			vel.y = x;
+		} else {
+			vel.x = x;
+			vel.y = y;
 		}
 		player.body.setLinearVelocity(vel);
 
 		// Handle rotating
 		// TODO
+		
 		checkCorner();
-		if (activeCorner != null && isGrounded()) {
+		if (activeCorner != null && isGrounded() && !jump) {
 			Vector2 cornerPos = activeCorner.getPosition();
 			float diff = (ang%Math.PI == 0) ? 
 					pos.x - cornerPos.x : pos.y - cornerPos.y;
+			diff *= (isUnder) ? -1 : 1;
 			if (diff > 0) {
 				cameraController.rotate(-90);
-				float temp = grav.x;
-				grav.x = -grav.y;
-				grav.y = temp;
-				delegate.setGravity(grav);
+				Vector2 newGrav = new Vector2(-grav.y,grav.x);
+				delegate.setGravity(newGrav);
+			} else {
+				cameraController.rotate(90);
+				Vector2 newGrav = new Vector2(-grav.y,grav.x);
+				delegate.setGravity(newGrav);
 			}
 		}
-
 		// Handle flipping
-		if (inputController.didPressFlip() && canFlip()) {
+		else if (inputController.didPressFlip() && canFlip() && !jump) {
 			SandglassTile under = oneFrameHandler.tileUnderneath;
-			if (under.isFlippable())
-			cameraController.rotate(180);
-			// TODO: Rotate player image
-			// TODO: Move player based on tile below
-			float dist = (ang%Math.PI == 0) ? under.getHeight() : under.getWidth();
-			pos.y -= dist * underFactor;
-			player.setPosition(pos);
-			grav.y *= -1;
-			delegate.setGravity(grav);
-			isUnder ^= true;
+			if (under.isFlippable()) {
+				cameraController.rotate(180);
+				// TODO: Rotate player image
+				// TODO: Move player based on tile below
+	
+				Vector2 size = player.getSize();
+				float dist = (ang%Math.PI < 1f) ? 
+						under.getHeight() + size.y : under.getWidth() + size.x;
+				pos.y -= dist * underFactor;
+				float rot = (float) (isUnder? 0 : Math.PI);
+				player.setRotation(rot);
+				player.setPosition(pos);
+				grav.y *= -1;
+				delegate.setGravity(grav);
+				isUnder ^= true;
+			}
 		}
 		oneFrameHandler = null;
 	}
