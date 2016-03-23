@@ -34,6 +34,9 @@ public class PlayerController extends AbstractController {
 
 	/** Maximum move speed in horizontal movement */
 	private float moveSpeed = 3.0f;
+	
+	/** Vertical jump velocity when jump is begun. */
+	private float jumpVelocity = 5.0f;
 
 	/** Saving an instance of the delegate */
 	private PhysicsDelegate delegate;
@@ -89,9 +92,9 @@ public class PlayerController extends AbstractController {
 		// Handle movement
 		boolean jump = false;
 		float x = underFactor* moveSpeed * inputController.getHorizontal();
-		float y = vel.y;
+		float y = sideways ? vel.x: vel.y;
 		if (inputController.didPressJump() && isGrounded()) {
-			y = underFactor * 5.0f;
+			y = underFactor * jumpVelocity;
 			jump = true;
 		}
 		if (sideways) {
@@ -112,14 +115,23 @@ public class PlayerController extends AbstractController {
 			float diff = (ang%Math.PI == 0) ? 
 					pos.x - cornerPos.x : pos.y - cornerPos.y;
 			diff *= (isUnder) ? -1 : 1;
+			System.out.println("HERE1");
+			System.out.println(pos);
+			System.out.println(cornerPos);
+
 			if (diff > 0) {
 				cameraController.rotate(-90);
 				Vector2 newGrav = new Vector2(-grav.y,grav.x);
 				delegate.setGravity(newGrav);
-			} else {
+				sideways ^= true;
+				activeCorner = null;
+			} else {	// TODO: rotate player
+				System.out.println("HERE2");
 				cameraController.rotate(90);
-				Vector2 newGrav = new Vector2(-grav.y,grav.x);
+				Vector2 newGrav = new Vector2(grav.y,grav.x);
 				delegate.setGravity(newGrav);
+				sideways ^= true;
+				activeCorner = null;
 			}
 		}
 		// Handle flipping
@@ -127,17 +139,16 @@ public class PlayerController extends AbstractController {
 			SandglassTile under = oneFrameHandler.tileUnderneath;
 			if (under.isFlippable()) {
 				cameraController.rotate(180);
-				// TODO: Rotate player image
-				// TODO: Move player based on tile below
-	
 				Vector2 size = player.getSize();
 				float dist = (ang%Math.PI < 1f) ? 
 						under.getHeight() + size.y : under.getWidth() + size.x;
+				
 				pos.y -= dist * underFactor;
 				float rot = (float) (isUnder? 0 : Math.PI);
-				player.setRotation(rot);
-				player.setPosition(pos);
 				grav.y *= -1;
+				
+				player.setPosition(pos);
+				player.setRotation(rot);
 				delegate.setGravity(grav);
 				isUnder ^= true;
 			}
@@ -250,18 +261,19 @@ public class PlayerController extends AbstractController {
 
 	private class OverlapHandler implements QueryCallback {
 		GameObject corner;
-		boolean rotate;
 
 		@Override
 		public boolean reportFixture(Fixture fixture) {
 			Object obj = fixture.getUserData();
-
+			System.out.println(obj);
 			if (obj != null && obj.getClass().equals(TurnTile.class)) {
 				corner = (GameObject)obj;
 				float coord;
 				float pos;
 				float vel;
-				if (player.getRotation()%Math.PI == 0) {
+				System.out.println("HERE3");
+
+				if (player.getRotation()%Math.PI < 1f) {
 					coord = corner.getPosition().x;
 					pos = player.getPosition().x;
 					vel = player.body.getLinearVelocity().x;
@@ -279,7 +291,7 @@ public class PlayerController extends AbstractController {
 				}
 				return false;
 			}
-			rotate = false;
+			activeCorner = null;
 			return true;
 		}
 	}
