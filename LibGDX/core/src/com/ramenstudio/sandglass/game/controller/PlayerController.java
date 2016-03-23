@@ -224,14 +224,15 @@ public class PlayerController extends AbstractController {
 		player.body.setLinearVelocity(vel);
 
 		// Handle rotating
-		// TODO
-		
 		checkCorner();
 		// TODO: add isUnder condition
 		if (activeCorner != null && isGrounded() && !jump) {
 			Vector2 cornerPos = activeCorner.getPosition();
 			float diff = (AngleEnum.isVertical(heading))?
 					pos.x - cornerPos.x : pos.y - cornerPos.y;
+			if (heading == AngleEnum.SOUTH || heading == AngleEnum.WEST) {
+				diff *= -1;
+			}
 			if (diff > 0) {
 				cameraController.rotate(-90);
 				delegate.setGravity(delegate.getGravity().rotate(90));
@@ -356,10 +357,16 @@ public class PlayerController extends AbstractController {
 
 		// At start this is 0 degrees
 		float rot = delegate.getGravity().angle() - 270;
-		Vector2 upper = player.getPosition().add(player.getSize().scl(0.5f).rotate(rot));
-		Vector2 lower = player.getPosition().add(player.getSize().scl(-0.5f).rotate(rot));
-
+		Vector2 upper = getUpperRight();
+		Vector2 lower = getLowerLeft();
+//		System.out.println("This is upper " + upper + " and this is lower " + lower);
+//		System.out.println("This is player position " + player.getPosition());
+		
+		
 		delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
+
+		// We only set active corner if we WALKED into the corner. We can land on
+		// the corner too.
 		
 		GameObject corner = handler.corner;
 		if (corner != null) {
@@ -384,6 +391,45 @@ public class PlayerController extends AbstractController {
 			}
 		}
 	}
+	
+	/**
+	 * This method gets the lower left point of the hit box. In this case,
+	 * lower left refers to the absolute lower left, regardless of the player's
+	 * current orientation.
+	 * 
+	 * @return the absolute lower left point of the player's bounding box.
+	 */
+	private Vector2 getLowerLeft() {
+		Vector2 playerPos = player.getPosition();
+		Vector2 playerSize = player.getSize().scl(.5f);
+		Vector2 theLowerLeft;
+		if (heading == AngleEnum.NORTH || heading == AngleEnum.SOUTH) {
+			theLowerLeft = new Vector2(playerPos.x - playerSize.x, playerPos.y - playerSize.y);
+		}
+		else {
+			theLowerLeft = new Vector2(playerPos.x - playerSize.y, playerPos.y - playerSize.x);
+		}
+		return theLowerLeft;
+	}
+	
+	/**
+	 * This method gets the upper right point of the hit box. In this case,
+	 * upper right refers to the absolute upper right, regarldess of the player's
+	 * current orientation.
+	 * @return the absolute upper right of the player's bounding box.
+	 */
+	private Vector2 getUpperRight() {
+		Vector2 playerPos = player.getPosition();
+		Vector2 playerSize = player.getSize().scl(.5f);
+		Vector2 theUpperRight;
+		if (heading == AngleEnum.NORTH || heading == AngleEnum.SOUTH) {
+			theUpperRight = new Vector2(playerPos.x + playerSize.x, playerPos.y + playerSize.y);
+		}
+		else {
+			theUpperRight = new Vector2(playerPos.x + playerSize.y, playerPos.y + playerSize.x);
+		}
+		return theUpperRight;
+	}
 
 	private class OverlapHandler implements QueryCallback {
 		GameObject corner;
@@ -391,8 +437,8 @@ public class PlayerController extends AbstractController {
 		@Override
 		public boolean reportFixture(Fixture fixture) {
 			Object obj = fixture.getUserData();
-			if (obj != null && obj.getClass().equals(TurnTile.class)) {
-				corner = (GameObject)obj;
+			if (obj != null && obj instanceof TurnTile) {
+				corner = (TurnTile)obj;
 				return false;
 			}
 			corner = null;
