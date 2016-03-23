@@ -16,14 +16,17 @@ public class TurnTile extends GameObject implements Drawable {
   
   public TurnTile() {
     super();
-    bodyDef.type = BodyDef.BodyType.StaticBody;
     
+    getBodyDef().type = BodyDef.BodyType.StaticBody;
+    
+    fixtureDefs = new FixtureDef[1];
     PolygonShape shape = new PolygonShape();
-    fixtureDef = new FixtureDef();
-    fixtureDef.isSensor = true;
+    fixtureDefs[0] = new FixtureDef();
+    fixtureDefs[0].isSensor = true;
     shape.setAsBox(0.5f, 0.5f);
-    fixtureDef.shape = shape;
+    fixtureDefs[0].shape = shape;
   }
+  
   @Override
   public void draw(GameCanvas canvas){
     canvas.draw(getTexture(), getPosition(), getSize());
