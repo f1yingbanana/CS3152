@@ -52,6 +52,8 @@ public class PlayerController extends AbstractController {
 	 * to null after every update loop. */
 	private RayCastHandler oneFrameHandler;
 	
+	private AngleEnum currentOrientation;
+	
 	private enum AngleEnum {
 		NORTH,
 		EAST,
@@ -306,8 +308,12 @@ public class PlayerController extends AbstractController {
 		float rot = delegate.getGravity().angle() - 270;
 		Vector2 upper = player.getPosition().add(player.getSize().scl(0.5f).rotate(rot));
 		Vector2 lower = player.getPosition().add(player.getSize().scl(-0.5f).rotate(rot));
-
-		delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
+		
+//		System.out.println("This is upper " + upper + " and this is lower " + lower);
+//		System.out.println("This is player position " + player.getPosition());
+		
+		
+		delegate.QueryAABB(handler, upper.x, upper.y, lower.x, lower.y);
 
 		// We only set active corner if we WALKED into the corner. We can land on
 		// the corner too.
@@ -323,6 +329,27 @@ public class PlayerController extends AbstractController {
 
 		// Now we check 
 	}
+	
+	/**
+	 * This method gets the lower left point of the hit box. In this case,
+	 * lower left refers to the absolute lower left, regardless of the player's
+	 * current orientation.
+	 * 
+	 * @return the absolute lower left point of the player's bounding box.
+	 */
+	private Vector2 getLowerLeft() {
+		
+	}
+	
+	/**
+	 * This method gets the upper right point of the hit box. In this case,
+	 * upper right refers to the absolute upper right, regarldess of the player's
+	 * current orientation.
+	 * @return the absolute upper right of the player's bounding box.
+	 */
+	private Vector2 getUpperRight() {
+		
+	}
 
 	private class OverlapHandler implements QueryCallback {
 		GameObject corner;
@@ -331,13 +358,10 @@ public class PlayerController extends AbstractController {
 		@Override
 		public boolean reportFixture(Fixture fixture) {
 			Object obj = fixture.getUserData();
-			System.out.println(obj);
-			if (obj != null && obj.getClass().equals(TurnTile.class)) {
-				corner = (GameObject)obj;
-//				float 
-//				if (corner.getPosition())
+			if (obj != null && obj instanceof TurnTile) {
+				corner = (TurnTile)obj;
 				rotate = true;
-				return false;
+				return true;
 			}
 			rotate = false;
 			return true;
