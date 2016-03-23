@@ -42,7 +42,31 @@ public class LevelLoader {
 	  for (Cell c: cellArr){
 		  if (c.property.containsKey(str)){
 			  String propVal = c.property.get(str);
-			  WallTile wt = new WallTile(WallTile.WallType.valueOf(propVal));
+			  WallTile.WallType type = WallTile.WallType.TOP;
+			  
+			  switch (propVal){
+				  
+				  case "top_left": 
+					  type = WallTile.WallType.TOPLEFT;
+					  break;
+				  case "bottom_left": 
+					  type = WallTile.WallType.BOTLEFT;
+					  break;
+				  case "top_right": 
+					  type = WallTile.WallType.TOPRIGHT;
+					  break;
+				  case "bottom_right": 
+					  type = WallTile.WallType.BOTRIGHT;
+					  break;
+				  case "horiz_edge": 
+					  type = WallTile.WallType.TOP;
+					  break;
+				  case "vert_edge": 
+					  type = WallTile.WallType.LEFT;
+					  break;
+			  }
+			  
+			  WallTile wt = new WallTile(type);
 			  wtArr.add(wt);
 		  }
 	  }
