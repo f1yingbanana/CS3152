@@ -10,6 +10,7 @@ import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.SandglassTile;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.sun.glass.ui.Size;
 
 /**
  * Handles player input and manages the player object.
@@ -34,7 +35,7 @@ public class PlayerController extends AbstractController {
 
 	/** Maximum move speed in horizontal movement */
 	private float moveSpeed = 3.0f;
-	
+
 	/** Vertical jump velocity when jump is begun. */
 	private float jumpVelocity = 5.0f;
 
@@ -46,27 +47,27 @@ public class PlayerController extends AbstractController {
 	private boolean enteredLeft;
 
 	/** The active corner we are tracking whether we should turn or not. */
-	private GameObject activeCorner;
+	private TurnTile activeCorner;
 
 	/** Whether this player is in the underworld. */
 	private boolean isUnder = false;
-	
+
 	/** Whether this player is "sideways". */
 	private boolean sideways = false;
-	
+
 	/** RayCastHandler that detects tiles in this one frame. Should always be set
 	 * to null after every update loop. */
 	private RayCastHandler oneFrameHandler;
-	
+
 	/** The direction the player's head is facing. */
 	private AngleEnum heading = AngleEnum.NORTH;
-	
+
 	private enum AngleEnum {
 		NORTH,
 		EAST,
 		SOUTH,
 		WEST;
-		
+
 		/**
 		 * Returns the new compass direction of the
 		 * provided direction but rotated 180 degrees/flipped.
@@ -88,7 +89,7 @@ public class PlayerController extends AbstractController {
 				return WEST;
 			}
 		}
-		
+
 		/**
 		 * Returns the new compass direction of the
 		 * provided direction but rotated 90 degrees counterclockwise.
@@ -110,7 +111,7 @@ public class PlayerController extends AbstractController {
 				return SOUTH;
 			}
 		}
-		
+
 		/**
 		 * Returns the new compass direction of the 
 		 * provided direction but rotated 90 degrees clockwise.
@@ -132,7 +133,7 @@ public class PlayerController extends AbstractController {
 				return NORTH;
 			}
 		}
-		
+
 		/**
 		 * Converts the compass direction to an actual angle in radians.
 		 * 
@@ -153,7 +154,7 @@ public class PlayerController extends AbstractController {
 				return (float) (3*Math.PI/2);
 			}
 		}
-		
+
 		/**
 		 * Whether the given compass direction is vertical.
 		 * 
@@ -193,12 +194,11 @@ public class PlayerController extends AbstractController {
 		cameraController.update(dt);
 		inputController.update(dt);
 
-		// Realizes player input
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.body.getLinearVelocity();
 		Vector2 grav = delegate.getGravity();
-		int underFactor = (isUnder)? -1 : 1;
-		
+		Vector2 size = player.getSize();
+
 		// Handle movement
 		boolean jump = false;
 		float x = moveSpeed * inputController.getHorizontal();
@@ -219,7 +219,6 @@ public class PlayerController extends AbstractController {
 		} else {
 			vel.x = jump? -y : y;
 			vel.y = x;
-			System.out.println(vel.y);
 		}
 		player.body.setLinearVelocity(vel);
 
@@ -230,18 +229,71 @@ public class PlayerController extends AbstractController {
 			Vector2 cornerPos = activeCorner.getPosition();
 			float diff = (AngleEnum.isVertical(heading))?
 					pos.x - cornerPos.x : pos.y - cornerPos.y;
-			if (heading == AngleEnum.SOUTH || heading == AngleEnum.WEST) {
+			if (heading == AngleEnum.SOUTH || heading == AngleEnum.EAST) {
 				diff *= -1;
 			}
+			float blockSize = activeCorner.getHeight();
+			Vector2 blockPos = activeCorner.getPosition();
+			float newX;
+			float newY;
+			if (heading == AngleEnum.NORTH) {
+				newX = blockPos.x + blockSize - size.y/2 - 0.015f;
+				newY = blockPos.y - blockSize - size.x/2;
+			} else if (heading == AngleEnum.EAST) {
+				newX = blockPos.x - blockSize - size.x/2;
+				newY = blockPos.y - blockSize + size.y/2 + 0.015f;
+			} else if (heading == AngleEnum.SOUTH) {
+				newX = blockPos.x - blockSize + size.y/2 + 0.015f;
+				newY = blockPos.y + blockSize + size.x/2;
+			} else {
+				newX = blockPos.x + blockSize + size.x/2;
+				newY = blockPos.y + blockSize - size.y/2 - 0.015f;
+			}
+			player.setPosition(new Vector2(newX, newY));
+			player.body.setLinearVelocity(0,0);
 			if (diff > 0) {
 				cameraController.rotate(-90);
 				delegate.setGravity(delegate.getGravity().rotate(90));
+
+				if (heading == AngleEnum.NORTH) {
+					newX = blockPos.x + blockSize - size.y/2 - 0.015f;
+					newY = blockPos.y - blockSize - size.x/2;
+				} else if (heading == AngleEnum.EAST) {
+					newX = blockPos.x - blockSize - size.x/2;
+					newY = blockPos.y - blockSize + size.y/2 + 0.015f;
+				} else if (heading == AngleEnum.SOUTH) {
+					newX = blockPos.x - blockSize + size.y/2 + 0.015f;
+					newY = blockPos.y + blockSize + size.x/2;
+				} else {
+					newX = blockPos.x + blockSize + size.x/2;
+					newY = blockPos.y + blockSize - size.y/2 - 0.015f;
+				}
+				
+				player.setPosition(new Vector2(newX, newY));
+				player.body.setLinearVelocity(0,0);
 				heading = AngleEnum.flipCounterClockWise(heading);
 				player.setRotation(AngleEnum.convertToAngle(heading));
 
 			} else {
 				cameraController.rotate(90);
 				delegate.setGravity(delegate.getGravity().rotate(-90));
+				
+				if (heading == AngleEnum.NORTH) {
+					newX = blockPos.x - blockSize + size.y/2 + 0.015f;
+					newY = blockPos.y - blockSize - size.x/2;
+				} else if (heading == AngleEnum.EAST) {
+					newX = blockPos.x - blockSize - size.x/2;
+					newY = blockPos.y + blockSize - size.y/2 - 0.015f;
+				} else if (heading == AngleEnum.SOUTH) {
+					newX = blockPos.x + blockSize - size.y/2 - 0.015f;
+					newY = blockPos.y + blockSize + size.x/2;
+				} else {
+					newX = blockPos.x + blockSize + size.x/2;
+					newY = blockPos.y - blockSize + size.y/2 + 0.015f;
+				}
+				
+				player.setPosition(new Vector2(newX, newY));
+				player.body.setLinearVelocity(0,0);
 				heading = AngleEnum.flipClockWise(heading);
 				player.setRotation(AngleEnum.convertToAngle(heading));
 			}
@@ -250,13 +302,12 @@ public class PlayerController extends AbstractController {
 		// Handle flipping
 		else if (inputController.didPressFlip() && canFlip() && !jump) {
 			SandglassTile under = oneFrameHandler.tileUnderneath;
-			
+
 			if (under.isFlippable()) {
 				cameraController.rotate(180);
-				Vector2 size = player.getSize();
 				float flipDist = (AngleEnum.isVertical(heading)) ? 
-						under.getHeight() + size.y : under.getWidth() + size.x;
-				
+						under.getHeight() + size.y : under.getWidth() + size.y;
+
 				grav.setLength(1.0f);
 				grav.scl(flipDist);
 				pos.x += grav.x;
@@ -296,7 +347,7 @@ public class PlayerController extends AbstractController {
 		delegate.rayCast(handler, footPos, endPos);
 
 		oneFrameHandler = handler;
-		
+
 		return handler.isGrounded;
 	}
 
@@ -315,7 +366,7 @@ public class PlayerController extends AbstractController {
 			delegate.rayCast(handler, footPos, endPos);
 
 			oneFrameHandler = handler;
-			
+
 			return handler.isGrounded && handler.isFlip;
 		}
 		else {
@@ -359,16 +410,14 @@ public class PlayerController extends AbstractController {
 		float rot = delegate.getGravity().angle() - 270;
 		Vector2 upper = getUpperRight();
 		Vector2 lower = getLowerLeft();
-//		System.out.println("This is upper " + upper + " and this is lower " + lower);
-//		System.out.println("This is player position " + player.getPosition());
-		
-		
+
+
 		delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
 
 		// We only set active corner if we WALKED into the corner. We can land on
 		// the corner too.
-		
-		GameObject corner = handler.corner;
+
+		TurnTile corner = handler.corner;
 		if (corner != null) {
 			float coord;
 			float pos;
@@ -391,7 +440,7 @@ public class PlayerController extends AbstractController {
 			}
 		}
 	}
-	
+
 	/**
 	 * This method gets the lower left point of the hit box. In this case,
 	 * lower left refers to the absolute lower left, regardless of the player's
@@ -411,7 +460,7 @@ public class PlayerController extends AbstractController {
 		}
 		return theLowerLeft;
 	}
-	
+
 	/**
 	 * This method gets the upper right point of the hit box. In this case,
 	 * upper right refers to the absolute upper right, regarldess of the player's
@@ -432,7 +481,7 @@ public class PlayerController extends AbstractController {
 	}
 
 	private class OverlapHandler implements QueryCallback {
-		GameObject corner;
+		TurnTile corner;
 
 		@Override
 		public boolean reportFixture(Fixture fixture) {
