@@ -53,9 +53,6 @@ public class PlayerController extends AbstractController {
 	/** Whether this player is in the underworld. */
 	private boolean isUnder = false;
 
-	/** Whether this player is "sideways". */
-	private boolean sideways = false;
-
 	/** RayCastHandler that detects tiles in this one frame. Should always be set
 	 * to null after every update loop. */
 	private RayCastHandler oneFrameRayHandler;
@@ -205,7 +202,7 @@ public class PlayerController extends AbstractController {
 		Vector2 vel = player.body.getLinearVelocity();
 		Vector2 grav = delegate.getGravity();
 		Vector2 size = player.getSize();
-
+		System.out.println(pos);
 		// Handle movement
 		boolean jump = false;
 		float x = moveSpeed * inputController.getHorizontal();
@@ -243,21 +240,7 @@ public class PlayerController extends AbstractController {
 			Vector2 blockPos = activeCorner.getPosition();
 			float newX;
 			float newY;
-			if (heading == AngleEnum.NORTH) {
-				newX = blockPos.x + blockSize - size.y/2 - 0.015f;
-				newY = blockPos.y - blockSize - size.x/2;
-			} else if (heading == AngleEnum.EAST) {
-				newX = blockPos.x - blockSize - size.x/2;
-				newY = blockPos.y - blockSize + size.y/2 + 0.015f;
-			} else if (heading == AngleEnum.SOUTH) {
-				newX = blockPos.x - blockSize + size.y/2 + 0.015f;
-				newY = blockPos.y + blockSize + size.x/2;
-			} else {
-				newX = blockPos.x + blockSize + size.x/2;
-				newY = blockPos.y + blockSize - size.y/2 - 0.015f;
-			}
-			player.setPosition(new Vector2(newX, newY));
-			player.body.setLinearVelocity(0,0);
+			
 			if (diff > 0) {
 				cameraController.rotate(-90);
 				delegate.setGravity(delegate.getGravity().rotate(90));
@@ -276,10 +259,7 @@ public class PlayerController extends AbstractController {
 					newY = blockPos.y + blockSize - size.y/2 - 0.015f;
 				}
 				
-				player.setPosition(new Vector2(newX, newY));
-				player.body.setLinearVelocity(0,0);
 				heading = AngleEnum.flipCounterClockWise(heading);
-				player.setRotation(AngleEnum.convertToAngle(heading));
 
 			} else {
 				cameraController.rotate(90);
@@ -299,11 +279,13 @@ public class PlayerController extends AbstractController {
 					newY = blockPos.y - blockSize + size.y/2 + 0.015f;
 				}
 				
-				player.setPosition(new Vector2(newX, newY));
-				player.body.setLinearVelocity(0,0);
 				heading = AngleEnum.flipClockWise(heading);
-				player.setRotation(AngleEnum.convertToAngle(heading));
 			}
+			newX = Math.round(newX*1000.0f)/1000.0f;
+			newY = Math.round(newY*1000.0f)/1000.0f;
+			player.setPosition(new Vector2(newX, newY));
+			player.body.setLinearVelocity(0,0);
+			player.setRotation(AngleEnum.convertToAngle(heading));
 			activeCorner = null;
 		}
 		// Handle flipping
@@ -315,9 +297,11 @@ public class PlayerController extends AbstractController {
 						under.getHeight() + size.y : under.getWidth() + size.y;
 
 				grav.setLength(1.0f);
-				grav.scl(flipDist);
+				grav.scl(flipDist + 2*0.015f);
 				pos.x += grav.x;
 				pos.y += grav.y;
+				pos.x = Math.round(pos.x*1000.0f)/1000.0f;
+				pos.y = Math.round(pos.y*1000.0f)/1000.0f;
 				heading = AngleEnum.flipEnum(heading);
 
 				player.setPosition(pos);
