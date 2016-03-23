@@ -29,13 +29,21 @@ public class CameraController extends AbstractController {
   
   /** The current rotation angle goal. */
   private float goal;
+  
   /** Whether to use smoothing. */
   private boolean instant;
-  /** The smoothing factor. */
-  private float factor = 1;
+  
+  /** The smoothing factors between 0 and 1. 
+   * 	0 means no movement
+   * 	1 means instant movement.
+   */
+  private static final float TRANSLATING_FACTOR = 0.05f;
+  private static final float ROTATING_FACTOR = 0.07f;
+  
   /** The standard for camera speed. */
   private static final float FRAME_TIME = 1f/60f;
   
+  // For debugging purposes
   private int count = 0;
   
   /**
@@ -72,45 +80,46 @@ public class CameraController extends AbstractController {
     target = targetObject;
   }
   
-  /**
-   * Sets the smoothing factor for the camera.
-   * 
-   * @param factor	the smoothing factor
-   * 				Must be between 0 and 1 inclusive
-   */
-  public void setSmoothing(float f) {
-    factor = f;
-  }
+//  /**
+//   * Sets the smoothing factor for the camera.
+//   * 
+//   * @param factor	the smoothing factor
+//   * 				Must be between 0 and 1 inclusive
+//   */
+//  public void setSmoothing(float f) {
+//    factor = f;
+//  }
 	  
   /**
    * Rotates the camera view given the amount, with an option to animate.
    * 
-   * @param radians is the amount to rotate.
+   * @param angle is the amount to rotate in degrees.
    * @param isInstant is the flag for whether rotation should be instant.
    */
-  public void rotate(float radians, boolean isInstant) {
-    goal = goal + radians;
+  public void rotate(float angle, boolean isInstant) {
+    goal = goal + angle;
     instant = isInstant;
   }
   
   @Override
   public void update(float dt) {
-	float time = (dt/FRAME_TIME) * factor;
+	float translateTime = (dt/FRAME_TIME) * TRANSLATING_FACTOR;
+	float rotateTime = (dt/FRAME_TIME) * ROTATING_FACTOR;
 
 	float camAngle = camera.getRotation();
 	if (goal != camAngle) {
 		if (instant) {
 		    camera.setRotation(goal);
 		} else {
-			float newAngle = (goal - camAngle)*time + camAngle;
+			float newAngle = (goal - camAngle)*rotateTime + camAngle;
 		    camera.setRotation(newAngle);
 		}
 	}
 	Vector2 targPos = target.getPosition();
     Vector2 camPos = camera.getPosition();
 	if (targPos != camPos) {
-		float x = (targPos.x - camPos.x)*time + camPos.x;
-	    float y = (targPos.y - camPos.y)*time + camPos.y;
+		float x = (targPos.x - camPos.x)*translateTime + camPos.x;
+	    float y = (targPos.y - camPos.y)*translateTime + camPos.y;
 	    Vector2 deltaPos = new Vector2(x,y);
 	    camera.setPosition(deltaPos);
 	}
@@ -120,7 +129,6 @@ public class CameraController extends AbstractController {
 	if (Gdx.input.isKeyPressed(Input.Keys.R) && count > 10) {
 		count = 0;
 		rotate(90,false);
-		factor = 0.1f;
 	}
   }
   
