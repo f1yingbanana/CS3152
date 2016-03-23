@@ -1,9 +1,6 @@
 package com.ramenstudio.sandglass.game.controller;
 
-<<<<<<< HEAD
 import com.badlogic.gdx.Gdx;
-=======
->>>>>>> 9c015a491abe6b9f769bc4183b1813af27c2638c
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -67,7 +64,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public void objectSetup(PhysicsDelegate handler) {
     // TESTING AREA. CREATE SOME OBJECTS FOR FUN!
-<<<<<<< HEAD
+
     //create box 1
     BodyDef box1Def = new BodyDef();
     box1Def.position.set(new Vector2(-3, -3));
@@ -118,7 +115,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     
     
     
-=======
+
 	  for (int i = 0; i < 20; i++){
 		  BodyDef boxDef = new BodyDef();
 		    boxDef.position.set(new Vector2(i, -3));
@@ -127,7 +124,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
 		    boxShape.setAsBox(1, 1);
 		    box.createFixture(boxShape, 0);
 	  }
->>>>>>> 9c015a491abe6b9f769bc4183b1813af27c2638c
+
     playerController.objectSetup(handler);
   }
   
