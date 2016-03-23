@@ -34,6 +34,9 @@ public class PlayerController extends AbstractController {
 
 	/** Maximum move speed in horizontal movement */
 	private float moveSpeed = 3.0f;
+	
+	/** Vertical jump velocity when jump is begun. */
+	private float jumpVelocity = 5.0f;
 
 	/** Saving an instance of the delegate */
 	private PhysicsDelegate delegate;
@@ -48,11 +51,15 @@ public class PlayerController extends AbstractController {
 	/** Whether this player is in the underworld. */
 	private boolean isUnder = false;
 	
+	/** Whether this player is "sideways". */
+	private boolean sideways = false;
+	
 	/** RayCastHandler that detects tiles in this one frame. Should always be set
 	 * to null after every update loop. */
 	private RayCastHandler oneFrameHandler;
 	
-	private AngleEnum currentOrientation;
+	/** The direction the player's head is facing. */
+	private AngleEnum heading = AngleEnum.NORTH;
 	
 	private enum AngleEnum {
 		NORTH,
@@ -146,6 +153,20 @@ public class PlayerController extends AbstractController {
 				return (float) (3*Math.PI/2);
 			}
 		}
+		
+		/**
+		 * Whether the given compass direction is vertical.
+		 * 
+		 * @param 	thisEnum to evaluate
+		 * @return	true if thisEnum points North or South, false otherwise 
+		 */
+		private static boolean isVertical (AngleEnum thisEnum) {
+			if (thisEnum == NORTH || thisEnum == SOUTH) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
 	/**
@@ -173,50 +194,73 @@ public class PlayerController extends AbstractController {
 		inputController.update(dt);
 
 		// Realizes player input
-		Vector2 p = player.body.getLinearVelocity();
+		Vector2 pos = player.getPosition();
+		Vector2 vel = player.body.getLinearVelocity();
+		float ang = player.getRotation();
+		Vector2 grav = delegate.getGravity();
 		int underFactor = (isUnder)? -1 : 1;
-		p.x = underFactor* moveSpeed * inputController.getHorizontal();
-
+		
+		// Handle movement
+		boolean jump = false;
+		float x = underFactor * moveSpeed * inputController.getHorizontal();
+		float y = AngleEnum.isVertical(heading) ? vel.y: vel.x;
 		if (inputController.didPressJump() && isGrounded()) {
-			p.y = underFactor * 5.0f;
+			y = underFactor * jumpVelocity;
+			jump = true;
 		}
-
-		player.body.setLinearVelocity(p);
+		if (AngleEnum.isVertical(heading)) {
+			vel.x = x;
+			vel.y = y;
+		} else {
+			vel.x = y;
+			vel.y = x;
+		}
+		player.body.setLinearVelocity(vel);
 
 		// Handle rotating
 		// TODO
+		
 		checkCorner();
+		// TODO: add isUnder condition
+		if (activeCorner != null && isGrounded() && !jump) {
+			Vector2 cornerPos = activeCorner.getPosition();
+			float diff = (AngleEnum.isVertical(heading))?
+					pos.x - cornerPos.x : pos.y - cornerPos.y;
+			if (diff > 0) {
+				cameraController.rotate(-90);
+				delegate.setGravity(delegate.getGravity().rotate(90));
+				heading = AngleEnum.flipClockWise(heading);
+				player.setRotation(AngleEnum.convertToAngle(heading));
 
+			} else {
+				cameraController.rotate(90);
+				delegate.setGravity(delegate.getGravity().rotate(-90));
+				heading = AngleEnum.flipCounterClockWise(heading);
+				player.setRotation(AngleEnum.convertToAngle(heading));
+			}
+			activeCorner = null;
+		}
 		// Handle flipping
-		if (inputController.didPressFlip() && canFlip()) {
+		else if (inputController.didPressFlip() && canFlip() && !jump) {
 			SandglassTile under = oneFrameHandler.tileUnderneath;
-			if (under.isFlippable())
-			cameraController.rotate(180, false);
-			// Rotate player box
-			// player.setRotation((float) Math.PI);
-			// TODO: Rotate player image
-			// TODO: Move player based on tile below
-			Vector2 pos = player.getPosition();
-			float dist = player.getRotation()%Math.PI < .01f? 
-					under.getHeight() : under.getWidth();
-			dist += player.getRotation()%Math.PI < .01f?
-					player.getSize().y : player.getSize().x;
-			player.setRotation((float) (player.getRotation() + Math.PI));
-			pos.y -= dist * underFactor;
 			
-			Vector2 gravity = delegate.getGravity();
-			gravity.setLength(1.0f);
-			gravity.scl(dist);
-			Vector2 playerPos = new Vector2(player.getPosition());
-			playerPos.x += gravity.x;
-			playerPos.y += gravity.y;
-			player.setPosition(playerPos);
-			
-//			player.setPosition(pos);
-			Vector2 grav = delegate.getGravity();
-			grav.y *= -1;
-			delegate.setGravity(grav);
-			isUnder ^= true;
+			if (under.isFlippable()) {
+				cameraController.rotate(180);
+				Vector2 size = player.getSize();
+				float flipDist = (AngleEnum.isVertical(heading)) ? 
+						under.getHeight() + size.y : under.getWidth() + size.x;
+				
+				grav.setLength(1.0f);
+				grav.scl(flipDist);
+				pos.x += grav.x;
+				pos.y += grav.y;
+				heading = AngleEnum.flipEnum(heading);
+
+				player.setPosition(pos);
+				player.setRotation(AngleEnum.convertToAngle(heading));
+				delegate.setGravity(delegate.getGravity().scl(-1));
+				isUnder ^= true;
+			}
 		}
 		oneFrameHandler = null;
 	}
@@ -306,28 +350,39 @@ public class PlayerController extends AbstractController {
 
 		// At start this is 0 degrees
 		float rot = delegate.getGravity().angle() - 270;
-		Vector2 upper = player.getPosition().add(player.getSize().scl(0.5f).rotate(rot));
-		Vector2 lower = player.getPosition().add(player.getSize().scl(-0.5f).rotate(rot));
-		
+		Vector2 upper = getUpperRight();
+		Vector2 lower = getLowerLeft();
 //		System.out.println("This is upper " + upper + " and this is lower " + lower);
 //		System.out.println("This is player position " + player.getPosition());
 		
 		
-		delegate.QueryAABB(handler, upper.x, upper.y, lower.x, lower.y);
+		delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
 
 		// We only set active corner if we WALKED into the corner. We can land on
 		// the corner too.
-		if (handler.rotate) {
-			
+		
+		GameObject corner = handler.corner;
+		if (corner != null) {
+			float coord;
+			float pos;
+			float vel;
+			if (AngleEnum.isVertical(heading)) {
+				coord = corner.getPosition().x;
+				pos = player.getPosition().x;
+				vel = player.body.getLinearVelocity().x;
+			} else {
+				coord = corner.getPosition().y;
+				pos = player.getPosition().y;
+				vel = player.body.getLinearVelocity().y;
+			}
+			if (coord < pos && vel < 0) {
+				activeCorner = corner;
+			} else if (coord > pos && vel > 0) {
+				activeCorner = corner;
+			} else {
+				activeCorner = null;
+			}
 		}
-		
-		
-		
-		// if (activeCorner == null)
-
-		// activeCorner = handler.corner;
-
-		// Now we check 
 	}
 	
 	/**
@@ -338,7 +393,16 @@ public class PlayerController extends AbstractController {
 	 * @return the absolute lower left point of the player's bounding box.
 	 */
 	private Vector2 getLowerLeft() {
-		
+		Vector2 playerPos = player.getPosition();
+		Vector2 playerSize = player.getSize().scl(.5f);
+		Vector2 theLowerLeft;
+		if (heading == AngleEnum.NORTH || heading == AngleEnum.SOUTH) {
+			theLowerLeft = new Vector2(playerPos.x - playerSize.x, playerPos.y - playerSize.y);
+		}
+		else {
+			theLowerLeft = new Vector2(playerPos.x - playerSize.y, playerPos.y - playerSize.x);
+		}
+		return theLowerLeft;
 	}
 	
 	/**
@@ -348,22 +412,30 @@ public class PlayerController extends AbstractController {
 	 * @return the absolute upper right of the player's bounding box.
 	 */
 	private Vector2 getUpperRight() {
-		
+		Vector2 playerPos = player.getPosition();
+		Vector2 playerSize = player.getSize().scl(.5f);
+		Vector2 theUpperRight;
+		if (heading == AngleEnum.NORTH || heading == AngleEnum.SOUTH) {
+			theUpperRight = new Vector2(playerPos.x + playerSize.x, playerPos.y + playerSize.y);
+		}
+		else {
+			theUpperRight = new Vector2(playerPos.x + playerSize.y, playerPos.y + playerSize.x);
+		}
+		return theUpperRight;
 	}
 
 	private class OverlapHandler implements QueryCallback {
 		GameObject corner;
-		boolean rotate;
 
 		@Override
 		public boolean reportFixture(Fixture fixture) {
 			Object obj = fixture.getUserData();
 			if (obj != null && obj instanceof TurnTile) {
+				System.out.println(obj);	
 				corner = (TurnTile)obj;
-				rotate = true;
-				return true;
+				return false;
 			}
-			rotate = false;
+			corner = null;
 			return true;
 		}
 	}
