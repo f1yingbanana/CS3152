@@ -70,6 +70,8 @@ public class GDXRoot extends Game implements ScreenListener {
     // mode. We don't need to load anything yet, though.
     titleMode = new TitleMode();
     gameMode = new GameMode();
+    loadingMode = new LoadingMode(manager);
+    loadingMode.setScreenListener(this);
     
 //    String[] textureList = gameMode.getTexturePaths();
 //    String[] soundList = gameMode.getSoundPaths();
@@ -100,6 +102,19 @@ public class GDXRoot extends Game implements ScreenListener {
   
   @Override
   public void exitScreen(Screen screen, int exitCode) {
+	  
+	  switch (exitCode){
+	  
+	  	case 0:
+	  		setApplicationMode(ApplicationMode.GAME);
+	  		setScreen(gameMode);
+	  		break;
+	  		
+	  	case 1:
+	  		setApplicationMode(ApplicationMode.LOADING);
+	  		setScreen(loadingMode);
+	  		
+	  }
     // When the given mode wants to exit the mode. This happens when title chose
     // a level to play on, or when game mode is done, or when loading is done.
   }

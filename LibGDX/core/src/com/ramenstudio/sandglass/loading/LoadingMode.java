@@ -72,7 +72,7 @@ public class LoadingMode extends AbstractMode implements Screen, InputProcessor 
 	private TextureRegion statusFrgMiddle;
 	/** Right cap to the status forground (colored region) */
 	private TextureRegion statusFrgRight;
-	/** */
+	/** Sprite batch for drawing LoadingMode */
 	private SpriteBatch spriteBatch = new SpriteBatch();
 
 	/** AssetManager to be loading in the background */
