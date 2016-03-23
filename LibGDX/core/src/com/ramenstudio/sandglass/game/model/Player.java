@@ -16,6 +16,12 @@ import com.ramenstudio.sandglass.util.Drawable;
  * @author flyingbanana
  */
 public class Player extends GameObject implements Drawable {
+	
+	/** The density of this player model. */
+	private static final float PLAYER_DENSITY = 10.0f;
+	/** The friction for this player model. */
+	private static final float PLAYER_FRICTION = 2.0f;
+	
 	/**
 	 * Creates the player at the given initial position.
 	 * 
@@ -31,7 +37,7 @@ public class Player extends GameObject implements Drawable {
 		fixtureDef = new FixtureDef();
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.4f, 0.75f);
-		fixtureDef.density = 10.0f;
+		fixtureDef.density = PLAYER_DENSITY;
 		fixtureDef.shape = shape;
 	}
 
