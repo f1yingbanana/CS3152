@@ -1,21 +1,20 @@
 package com.ramenstudio.sandglass.game.controller;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameModel;
+import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
-import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.TurnTile;
+import com.ramenstudio.sandglass.game.model.WallTile;
 
 /**
  * This takes care of the game initialization, maintains update and drawing
@@ -49,10 +48,12 @@ public class GameController extends AbstractController implements PhysicsDelegat
   // The player controller for the game
   private PlayerController playerController;
   
+  public LevelLoader loader = new LevelLoader();
+  
   public GameController() {
     playerController = new PlayerController();
     
-    
+    loader.loadLevel("example.tmx");
     // Set up the world!
     objectSetup(this);
   }
@@ -78,28 +79,39 @@ public class GameController extends AbstractController implements PhysicsDelegat
     
     //set up turn tiles at corners
     TurnTile tt1 = new TurnTile();
-    tt1.bodyDef.position.set(new Vector2(-11.5f, -7.5f));
-    tt1.body = world.createBody(tt1.bodyDef);
-    Fixture f = tt1.body.createFixture(tt1.fixtureDef);
-    f.setUserData(tt1);
+    tt1.getBodyDef().position.set(new Vector2(-11.5f, -7.5f));
+    activatePhysics(handler, tt1);
     
     TurnTile tt2 = new TurnTile();
-    tt2.bodyDef.position.set(new Vector2(-11.5f, 1.5f));
-    tt2.body = world.createBody(tt2.bodyDef);
-    f = tt2.body.createFixture(tt2.fixtureDef);
-    f.setUserData(tt2);
+    tt2.getBodyDef().position.set(new Vector2(-11.5f, 1.5f));
+    activatePhysics(handler, tt2);
     
-    /*
-    TurnTile tt3 = new TurnTile();
-    tt3.position = new Vector2(5.66f, -3.66f);
-    tt3.shape.setAsBox(0.5f, 0.5f, tt3.position,0);
-    TurnTile tt4 = new TurnTile();
-    tt4.position = new Vector2(5.66f, 5.66f);
-    tt4.shape.setAsBox(0.5f, 0.5f, tt4.position,0);
-    TurnTile tt5 = new TurnTile();
-    tt5.position = new Vector2(0.33f, 5.66f);
-    tt5.shape.setAsBox(0.5f, 0.5f, tt5.position,0);*/
-
+    WallTile wt = new WallTile(WallTile.WallType.TOPLEFT);
+    wt.getBodyDef().position.set(new Vector2(-14, 0));
+    activatePhysics(handler, wt);
+    
+    wt = new WallTile(WallTile.WallType.BOTLEFT);
+    wt.getBodyDef().position.set(new Vector2(-14, -2));
+    activatePhysics(handler, wt);
+    wt = new WallTile(WallTile.WallType.BOTRIGHT);
+    wt.getBodyDef().position.set(new Vector2(-12, -2));
+    activatePhysics(handler, wt);
+    wt = new WallTile(WallTile.WallType.TOPRIGHT);
+    wt.getBodyDef().position.set(new Vector2(-12, 0));
+    activatePhysics(handler, wt);
+    wt = new WallTile(WallTile.WallType.TOP);
+    wt.getBodyDef().position.set(new Vector2(-13, 0));
+    activatePhysics(handler, wt);
+    wt = new WallTile(WallTile.WallType.BOT);
+    wt.getBodyDef().position.set(new Vector2(-13, -2));
+    activatePhysics(handler, wt);
+    wt = new WallTile(WallTile.WallType.LEFT);
+    wt.getBodyDef().position.set(new Vector2(-14, -1));
+    activatePhysics(handler, wt);
+    wt = new WallTile(WallTile.WallType.RIGHT);
+    wt.getBodyDef().position.set(new Vector2(-12, -1));
+    activatePhysics(handler, wt);
+    
     
     //GameObject boxobj = new GameObject();
     //boxobj.setTexture(new Texture(Gdx.files.internal("paper.png")));
@@ -107,8 +119,6 @@ public class GameController extends AbstractController implements PhysicsDelegat
     //GameObject[] a = {boxobj};
     
     //gameModel.setGameObjects(a);
-    
-    
     
     playerController.objectSetup(handler);
   }
@@ -166,6 +176,13 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public void QueryAABB(QueryCallback callback, float lowerX, float lowerY,
     float upperX, float upperY) {
     world.QueryAABB(callback, lowerX, lowerY, upperX, upperY);
+  }
+
+  /**
+   * @return the main camera used by the game
+   */
+  public OrthographicCamera getMainCamera() {
+    return playerController.getMainCamera();
   }
 
 }

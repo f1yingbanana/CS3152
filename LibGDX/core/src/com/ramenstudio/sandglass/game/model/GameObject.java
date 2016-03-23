@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.graphics.Texture;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
@@ -21,30 +20,22 @@ public class GameObject implements Drawable{
   /** 
    * The physical object of this game object.
    */
-  public Body body;
+  protected Body body;
   
   /**
    * The definition for this body for this object. Every game object has a
    * position at least.
    */
-  public BodyDef bodyDef = new BodyDef();
+  protected BodyDef bodyDef = new BodyDef();
   
-  /** 
-   * Stores the fixture information for this object. Make sure userData for
-   * fixture points back to the game object it belongs to! 
-   */
-  public FixtureDef fixtureDef;
-  
-  /**
-   * Stores the custom mass information for this object. Leave null for default.
-   */
-  public MassData massdata;
+  // The fixture definitions. It is up to the controller to create them.
+  protected FixtureDef[] fixtureDefs;
   
   // Stores the size of this object for purposes of drawing
-  private Vector2 size = new Vector2();
+  protected Vector2 size = new Vector2();
   
   // Stores the texture associated with this object, can be null if game camera
-  private Texture texture = null;
+  protected Texture texture = null;
   
   /**
    * Default initializer.
@@ -66,7 +57,7 @@ public class GameObject implements Drawable{
    * @return a copy of this object's world position.
    */
   public Vector2 getPosition() {
-    return body.getPosition().cpy();
+    return getBody().getPosition().cpy();
   }
   
   /**
@@ -75,14 +66,14 @@ public class GameObject implements Drawable{
    * @param position  the position we want to set to.
    */
   public void setPosition(Vector2 position) {
-    body.setTransform(position, body.getAngle());
+    getBody().setTransform(position, getBody().getAngle());
   }
 
   /**
    * @return the rotation of this object in radians.
    */
   public float getRotation() {
-    return body.getAngle();
+    return getBody().getAngle();
   }
   
   /**
@@ -91,7 +82,7 @@ public class GameObject implements Drawable{
    * @param rotation is the rotation we want to set to in radians.
    */
   public void setRotation(float rotation) {
-    body.setTransform(body.getPosition(), rotation);
+    getBody().setTransform(getBody().getPosition(), rotation);
   }
   
   /**@return the size of this object as a Vector2*/
@@ -118,6 +109,42 @@ public class GameObject implements Drawable{
   
   @Override
   public void draw(GameCanvas canvas){
-	  canvas.draw(texture, body.getPosition(), size);
+	  canvas.draw(texture, getBody().getPosition(), size);
+  }
+
+  /**
+   * @return the body of this game object.
+   */
+  public Body getBody() {
+    return body;
+  }
+
+  /**
+   * Sets the body of this game object.
+   */
+  public void setBody(Body body) {
+    this.body = body;
+  }
+
+  /**
+   * @return the body definition of this game object. The returned def can be
+   * modified or used to create the body.
+   */
+  public BodyDef getBodyDef() {
+    return bodyDef;
+  }
+
+  /**
+   * @return the fixtureDefs
+   */
+  public FixtureDef[] getFixtureDefs() {
+    return fixtureDefs;
+  }
+
+  /**
+   * Set the list of fixture defs that will get created.
+   */
+  public void setFixtureDefs(FixtureDef[] fixtureDefs) {
+    this.fixtureDefs = fixtureDefs;
   }
 }

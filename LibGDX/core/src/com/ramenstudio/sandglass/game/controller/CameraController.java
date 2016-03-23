@@ -2,6 +2,7 @@ package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.GameCamera;
@@ -130,8 +131,15 @@ public class CameraController extends AbstractController {
   @Override
   public void objectSetup(PhysicsDelegate handler) {
     // Creates the camera object.
-    camera.body = handler.addBody(camera.bodyDef);
+    camera.setBody(handler.addBody(camera.getBodyDef()));
     camera.setPosition(initPos);
     initPos = null;
+  }
+
+  /**
+   * @return the camera managed by this controller
+   */
+  public OrthographicCamera getCamera() {
+    return camera.getCamera();
   }
 }

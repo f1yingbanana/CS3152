@@ -1,5 +1,6 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -55,9 +56,9 @@ public class PlayerController extends AbstractController {
   @Override
   public void objectSetup(PhysicsDelegate handler) {
     delegate = handler;
-    player.body = handler.addBody(player.bodyDef);
-    player.body.createFixture(player.fixtureDef);
-    player.body.setFixedRotation(true);
+    
+    activatePhysics(handler, player);
+    player.getBody().setFixedRotation(true);
     
     cameraController.setTarget(player);
     cameraController.objectSetup(handler);
@@ -69,14 +70,14 @@ public class PlayerController extends AbstractController {
     inputController.update(dt);
     
     // Realizes player input
-    Vector2 p = player.body.getLinearVelocity();
+    Vector2 p = player.getBody().getLinearVelocity();
     p.x = moveSpeed * inputController.getHorizontal();
 
     if (inputController.didPressJump() && isGrounded()) {
       p.y = 5.0f;
     }
     
-    player.body.setLinearVelocity(p);
+    player.getBody().setLinearVelocity(p);
     
     // Check corners
     checkCorner();
@@ -86,7 +87,7 @@ public class PlayerController extends AbstractController {
    * @return the matrix transformation from world to screen. Used in drawing.
    */
   public Matrix4 world2ScreenMatrix() {
-    return cameraController.world2ScreenMatrix();
+    return getMainCamera().combined;
   }
 
   @Override
@@ -160,5 +161,13 @@ public class PlayerController extends AbstractController {
       
       return true;
     }
+  }
+
+  
+  /**
+   * @return the main camera of the game.
+   */
+  public OrthographicCamera getMainCamera() {
+    return cameraController.getCamera();
   }
 }
