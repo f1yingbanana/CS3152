@@ -51,6 +51,100 @@ public class PlayerController extends AbstractController {
 	/** RayCastHandler that detects tiles in this one frame. Should always be set
 	 * to null after every update loop. */
 	private RayCastHandler oneFrameHandler;
+	
+	private enum AngleEnum {
+		NORTH,
+		EAST,
+		SOUTH,
+		WEST;
+		
+		/**
+		 * Returns the new compass direction of the
+		 * provided direction but rotated 180 degrees/flipped.
+		 * 
+		 * @param thisEnum is the direction to rotate 180 degrees/flip.
+		 * @return the angle rotated 180 degrees/flipped.
+		 */
+		private static AngleEnum flipEnum(AngleEnum thisEnum) {
+			if (thisEnum == NORTH) {
+				return SOUTH;
+			}
+			else if (thisEnum == SOUTH) {
+				return NORTH;
+			}
+			else if (thisEnum == WEST) {
+				return EAST;
+			}
+			else {
+				return WEST;
+			}
+		}
+		
+		/**
+		 * Returns the new compass direction of the
+		 * provided direction but rotated 90 degrees counterclockwise.
+		 * 
+		 * @param thisEnum is the direction to rotate 90 degrees counterclockwise.
+		 * @return the angle rotated 90 degrees counterclockwise.
+		 */
+		private static AngleEnum flipCounterClockWise(AngleEnum thisEnum) {
+			if (thisEnum == NORTH) {
+				return WEST;
+			}
+			else if (thisEnum == EAST) {
+				return NORTH;
+			}
+			else if (thisEnum == SOUTH) {
+				return EAST;
+			}
+			else {
+				return SOUTH;
+			}
+		}
+		
+		/**
+		 * Returns the new compass direction of the 
+		 * provided direction but rotated 90 degrees clockwise.
+		 * 
+		 * @param thisEnum is the direction to rotate 90 degrees clockwise.
+		 * @return the angle rotated 90 degrees clockwise.
+		 */
+		private static AngleEnum flipClockWise(AngleEnum thisEnum) {
+			if (thisEnum == NORTH) {
+				return EAST;
+			}
+			else if (thisEnum == EAST) {
+				return SOUTH;
+			}
+			else if (thisEnum == SOUTH) {
+				return WEST;
+			}
+			else {
+				return NORTH;
+			}
+		}
+		
+		/**
+		 * Converts the compass direction to an actual angle in radians.
+		 * 
+		 * @param thisEnum to convert to an angle
+		 * @return the angle in radians
+		 */
+		private static float convertToAngle(AngleEnum thisEnum) {
+			if (thisEnum == NORTH) {
+				return 0;
+			}
+			else if (thisEnum == EAST) {
+				return (float) (Math.PI/2);
+			}
+			else if (thisEnum == SOUTH) {
+				return (float) (Math.PI);
+			}
+			else {
+				return (float) (3*Math.PI/2);
+			}
+		}
+	}
 
 	/**
 	 * Default constructor for player object.
@@ -97,16 +191,26 @@ public class PlayerController extends AbstractController {
 			if (under.isFlippable())
 			cameraController.rotate(180, false);
 			// Rotate player box
-//			player.setRotation((float) Math.PI);
+			// player.setRotation((float) Math.PI);
 			// TODO: Rotate player image
 			// TODO: Move player based on tile below
 			Vector2 pos = player.getPosition();
-			float dist = player.getRotation()%Math.PI == 0? 
+			float dist = player.getRotation()%Math.PI < .01f? 
 					under.getHeight() : under.getWidth();
-			dist += player.getRotation()%Math.PI == 0?
+			dist += player.getRotation()%Math.PI < .01f?
 					player.getSize().y : player.getSize().x;
+			player.setRotation((float) (player.getRotation() + Math.PI));
 			pos.y -= dist * underFactor;
-			player.setPosition(pos);
+			
+			Vector2 gravity = delegate.getGravity();
+			gravity.setLength(1.0f);
+			gravity.scl(dist);
+			Vector2 playerPos = new Vector2(player.getPosition());
+			playerPos.x += gravity.x;
+			playerPos.y += gravity.y;
+			player.setPosition(playerPos);
+			
+//			player.setPosition(pos);
 			Vector2 grav = delegate.getGravity();
 			grav.y *= -1;
 			delegate.setGravity(grav);
@@ -227,7 +331,7 @@ public class PlayerController extends AbstractController {
 		@Override
 		public boolean reportFixture(Fixture fixture) {
 			Object obj = fixture.getUserData();
-
+			System.out.println(obj);
 			if (obj != null && obj.getClass().equals(TurnTile.class)) {
 				corner = (GameObject)obj;
 //				float 

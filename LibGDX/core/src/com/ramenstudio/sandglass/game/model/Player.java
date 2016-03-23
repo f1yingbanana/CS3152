@@ -40,6 +40,5 @@ public class Player extends GameObject implements Drawable {
 		canvas.draw(getTextureRegion(), getPosition().add(getSize().cpy().scl(-0.5f)), getSize(),
 				new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 		
-		// new Vector2(getSize()).scl(.5f)
 	}
 }
