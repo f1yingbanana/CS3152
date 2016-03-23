@@ -10,7 +10,7 @@ import com.ramenstudio.sandglass.game.model.GoalTile;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.SandglassTile;
 import com.ramenstudio.sandglass.game.model.TurnTile;
-import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.ramenstudio.sandglass.game.view.*;
 import com.sun.glass.ui.Size;
 
 /**
@@ -202,7 +202,8 @@ public class PlayerController extends AbstractController {
 		Vector2 vel = player.body.getLinearVelocity();
 		Vector2 grav = delegate.getGravity();
 		Vector2 size = player.getSize();
-		System.out.println(pos);
+//		FilmStrip playerSprite = player.getFilmStrip();
+
 		// Handle movement
 		boolean jump = false;
 		float x = moveSpeed * inputController.getHorizontal();
@@ -224,6 +225,9 @@ public class PlayerController extends AbstractController {
 			vel.x = jump? -y : y;
 			vel.y = x;
 		}
+//		if (x != 0) {
+//			playerSprite.setFrame((playerSprite.getFrame()+1)%playerSprite.getSize());
+//		}
 		player.body.setLinearVelocity(vel);
 
 		// Handle rotating
