@@ -38,7 +38,7 @@ public class CameraController extends AbstractController {
    * 	1 means instant movement.
    */
   private static final float TRANSLATING_FACTOR = 0.05f;
-  private static final float ROTATING_FACTOR = 0.07f;
+  private static final float ROTATING_FACTOR = 0.05f;
   
   /** The standard for camera speed. */
   private static final float FRAME_TIME = 1f/60f;
