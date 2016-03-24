@@ -67,22 +67,6 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public void objectSetup(PhysicsDelegate handler) {
     // TESTING AREA. CREATE SOME OBJECTS FOR FUN!
-    //create box 1
-    BodyDef box1Def = new BodyDef();
-    box1Def.position.set(new Vector2(-3, -3));
-    Body box1 = world.createBody(box1Def);
-    PolygonShape boxShape1 = new PolygonShape();
-    boxShape1.setAsBox(8, 4);
-    box1.createFixture(boxShape1, 0);
-    
-    //create box 2
-    BodyDef box2Def = new BodyDef();
-    box2Def.position.set(new Vector2(1, 5));
-    Body box2 = world.createBody(box2Def);
-    PolygonShape boxShape2 = new PolygonShape();
-    boxShape2.setAsBox(4, 4);
-    box2.createFixture(boxShape2, 0);
-    
     List<GameObject> mapTiles = mapObjects.get(LevelLoader.LayerKey.GROUND);
     
     for (GameObject o : mapTiles) {

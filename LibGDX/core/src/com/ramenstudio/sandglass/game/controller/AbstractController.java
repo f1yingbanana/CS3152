@@ -43,6 +43,7 @@ public abstract class AbstractController {
    */
   public void activatePhysics(PhysicsDelegate handler, GameObject gameObject) {
     gameObject.setBody(handler.addBody(gameObject.getBodyDef()));
+    gameObject.getBody().setUserData(gameObject);
     
     if (gameObject.getFixtureDefs() != null) {
       for (FixtureDef def : gameObject.getFixtureDefs()) {

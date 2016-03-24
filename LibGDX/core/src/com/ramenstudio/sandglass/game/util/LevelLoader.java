@@ -59,6 +59,8 @@ public class LevelLoader {
     
     for (int i = 0 ; i < height ; i++){
       for (int j = 0 ; j < width; j ++){
+        if (layer.getCell(i, j) == null)
+          continue;
         TiledMapTile this_tile = layer.getCell(i, j).getTile();
         if (this_tile != null && this_tile.getProperties().containsKey(str)) {
           String propval = (String) this_tile.getProperties().get(str);
@@ -78,30 +80,36 @@ public class LevelLoader {
             case "bottom_right": 
               type = WallTile.WallType.BOTRIGHT;
               break;
-            case "horiz_edge": 
+            case "top": 
               type = WallTile.WallType.TOP;
               break;
-            case "vert_edge": 
+            case "left": 
               type = WallTile.WallType.LEFT;
               break;
+            case "bottom": 
+              type = WallTile.WallType.BOT;
+              break;
+            case "right": 
+              type = WallTile.WallType.RIGHT;
+              break;
             case "inside_top_left":
-              type = WallTile.WallType.TOPLEFT;
-              tt.getBodyDef().position.set(new Vector2(i-0.25f,j-0.25f));
+              type = WallTile.WallType.BOTRIGHT;
+              tt.getBodyDef().position.set(new Vector2(i+1,j));
               tArr.add(tt);
               break;
             case "inside_top_right":
-              type = WallTile.WallType.TOPRIGHT;
-              tt.getBodyDef().position.set(new Vector2(i-0.25f,j+0.25f));
+              type = WallTile.WallType.BOTLEFT;
+              tt.getBodyDef().position.set(new Vector2(i,j));
               tArr.add(tt);
               break;
             case "inside_bottom_left":
-              type = WallTile.WallType.BOTLEFT;
-              tt.getBodyDef().position.set(new Vector2(i+0.25f,j-0.25f));
+              type = WallTile.WallType.TOPRIGHT;
+              tt.getBodyDef().position.set(new Vector2(i+1,j+1));
               tArr.add(tt);
               break;
             case "inside_bottom_right":
-              type = WallTile.WallType.BOTRIGHT;
-              tt.getBodyDef().position.set(new Vector2(i+0.25f,j+0.25f));
+              type = WallTile.WallType.TOPLEFT;
+              tt.getBodyDef().position.set(new Vector2(i,j+1));
               tArr.add(tt);
               break;
             default:
@@ -120,6 +128,9 @@ public class LevelLoader {
   }
   
   public ArrayList<GameObject> parseObject(TiledMapTileLayer layer, String key, String value){
+    if (layer == null)
+      return null;
+    
     int height = layer.getHeight();
     int width = layer.getWidth();
     ArrayList<GameObject> objArr = new ArrayList<GameObject>();

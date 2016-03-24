@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -24,6 +25,9 @@ public class Player extends GameObject implements Drawable {
    */
   public Player(Vector2 initialPos) {
     super();
+
+    fixtureDefs = new FixtureDef[3];
+    
     setTexture(new Texture(Gdx.files.internal("badlogic.jpg")));
     setSize(new Vector2(0.8f, 1.5f));
     getBodyDef().position.set(initialPos);
@@ -31,11 +35,24 @@ public class Player extends GameObject implements Drawable {
     
     FixtureDef fixtureDef = new FixtureDef();
     PolygonShape shape = new PolygonShape();
-    shape.setAsBox(0.4f, 0.75f);
+    shape.setAsBox(0.4f, 0.35f);
     fixtureDef.density = 10.0f;
     fixtureDef.shape = shape;
-    fixtureDefs = new FixtureDef[1];
     fixtureDefs[0] = fixtureDef;
+    
+    CircleShape c = new CircleShape();
+    c.setRadius(0.4f);
+    c.setPosition(new Vector2(0, -0.35f));
+    FixtureDef fixtureDef2 = new FixtureDef();
+    fixtureDef2.shape = c;
+    fixtureDefs[1] = fixtureDef2;
+
+    CircleShape c2 = new CircleShape();
+    c2.setRadius(0.4f);
+    c2.setPosition(new Vector2(0, 0.35f));
+    FixtureDef fixtureDef3 = new FixtureDef();
+    fixtureDef3.shape = c2;
+    fixtureDefs[2] = fixtureDef3;
   }
   
   @Override

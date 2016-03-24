@@ -177,7 +177,7 @@ public class PlayerController extends AbstractController {
    * Default constructor for player object.
    */
   public PlayerController() {
-    player = new Player(new Vector2(-5, 5));
+    player = new Player(new Vector2(10, 25));
     cameraController = new CameraController(new Vector2(5, 5));
   }
 
@@ -396,10 +396,10 @@ public class PlayerController extends AbstractController {
 
       // We only set active corner if we WALKED into the corner. We can land on
       // the corner too.
-    }
-    else {
+    } else {
       handler = oneFrameOverlapHandler;
     }
+    
     TurnTile corner = handler.corner;
     if (corner != null) {
       float coord;
@@ -497,20 +497,16 @@ public class PlayerController extends AbstractController {
 
     @Override
     public float reportRayFixture(Fixture fixture, Vector2 point, 
-        Vector2 normal, float fraction) {
-      /**
-       * Later we need to check whether this is actually tagged as ground.
-       * For now, we ignore and return true for any objects!
-       */
-      Object obj = fixture.getUserData();
+      Vector2 normal, float fraction) {
+      Object obj = fixture.getBody().getUserData();
 
       if (obj != null && obj instanceof AbstractTile) {
         AbstractTile tempGameObject = (AbstractTile)obj;
         isGrounded = tempGameObject.isGround() || isGrounded;
         isFlip = tempGameObject.isFlippable() || isFlip;
         tileUnderneath = tempGameObject;
-        return 0;
       }
+      
       return -1;
     }
   }
