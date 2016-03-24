@@ -127,6 +127,16 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public void update(float dt) {
     playerController.update(dt);
     stepPhysics(dt);
+    if (playerController.isReset()) {
+    	reset();
+    }
+  }
+  
+  private void reset() {
+	  	world.dispose();
+		world = new World(new Vector2(0, -9.8f), true);
+		playerController = new PlayerController();
+		objectSetup(this);
   }
   
   /**
@@ -164,6 +174,14 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public Vector2 getGravity() {
     return world.getGravity().cpy();
+  }
+  
+  /**
+   * @return a copy of the current gravity.
+   */
+  @Override
+  public void setGravity(Vector2 gravity) {
+	  world.setGravity(gravity);
   }
 
   @Override

@@ -27,6 +27,11 @@ public interface PhysicsDelegate {
   public Vector2 getGravity();
   
   /**
+   * @param the vector of the new gravity direction.
+   */
+  public void setGravity(Vector2 gravity);
+  
+  /**
    * See rayCast method in World class.
    */
   public void rayCast(RayCastCallback callback, Vector2 point1, Vector2 point2);
