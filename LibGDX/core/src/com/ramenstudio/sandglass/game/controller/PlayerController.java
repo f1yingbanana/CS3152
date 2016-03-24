@@ -21,6 +21,7 @@ import com.ramenstudio.sandglass.game.view.*;
  * @author Jonathan Park
  */
 public class PlayerController extends AbstractController {
+	
 	/** The camera controller we are controlling */
 	private CameraController cameraController;
 

@@ -22,7 +22,7 @@ public class TurnTile extends AbstractTile {
     PolygonShape shape = new PolygonShape();
     fixtureDefs[0] = new FixtureDef();
     fixtureDefs[0].isSensor = true;
-    shape.setAsBox(0.5f, 0.5f);
+    shape.setAsBox(0.25f, 0.25f);
     fixtureDefs[0].shape = shape;
   }
 }

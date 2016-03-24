@@ -94,22 +94,22 @@ public class LevelLoader {
               break;
             case "inside_top_left":
               type = WallTile.WallType.BOTRIGHT;
-              tt.getBodyDef().position.set(new Vector2(i+1,j));
+              tt.getBodyDef().position.set(new Vector2(i+0.75f,j+0.25f));
               tArr.add(tt);
               break;
             case "inside_top_right":
               type = WallTile.WallType.BOTLEFT;
-              tt.getBodyDef().position.set(new Vector2(i,j));
+              tt.getBodyDef().position.set(new Vector2(i+0.25f,j+0.25f));
               tArr.add(tt);
               break;
             case "inside_bottom_left":
               type = WallTile.WallType.TOPRIGHT;
-              tt.getBodyDef().position.set(new Vector2(i+1,j+1));
+              tt.getBodyDef().position.set(new Vector2(i+0.75f,j+0.75f));
               tArr.add(tt);
               break;
             case "inside_bottom_right":
               type = WallTile.WallType.TOPLEFT;
-              tt.getBodyDef().position.set(new Vector2(i,j+1));
+              tt.getBodyDef().position.set(new Vector2(i+0.25f,j+0.75f));
               tArr.add(tt);
               break;
             default:

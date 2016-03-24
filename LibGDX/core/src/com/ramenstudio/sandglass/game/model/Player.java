@@ -25,7 +25,7 @@ public class Player extends GameObject implements Drawable {
    */
   public Player(Vector2 initialPos) {
     super();
-
+    
     fixtureDefs = new FixtureDef[3];
     
     setTexture(new Texture(Gdx.files.internal("character2.png")));
@@ -39,6 +39,7 @@ public class Player extends GameObject implements Drawable {
     fixtureDef.density = 10.0f;
     fixtureDef.shape = shape;
     fixtureDefs[0] = fixtureDef;
+    fixtureDef.friction = 0;
     
     CircleShape c = new CircleShape();
     c.setRadius(0.4f);
