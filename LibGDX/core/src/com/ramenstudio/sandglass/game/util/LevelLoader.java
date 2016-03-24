@@ -2,6 +2,7 @@ package com.ramenstudio.sandglass.game.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -26,9 +27,9 @@ public class LevelLoader {
   
   public TiledMap tiledMap;
   
-  public Map<LayerKey, ArrayList<GameObject>> loadLevel(String filename) {
+  public Map<LayerKey, List<GameObject>> loadLevel(String filename) {
     tiledMap = new TmxMapLoader().load("Levels/" + filename);
-    HashMap<LayerKey, ArrayList<GameObject>> layerDict = new HashMap<LayerKey, ArrayList<GameObject>>();
+    Map<LayerKey, List<GameObject>> layerDict = new HashMap<LayerKey, List<GameObject>>();
     TiledMapTileLayer groundLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
     TiledMapTileLayer objectLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Objects");
     

@@ -1,5 +1,8 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -13,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
 
@@ -50,10 +54,12 @@ public class GameController extends AbstractController implements PhysicsDelegat
   
   public LevelLoader loader = new LevelLoader();
   
+  private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
+  
   public GameController() {
     playerController = new PlayerController();
     
-    loader.loadLevel("example.tmx");
+    mapObjects = loader.loadLevel("example.tmx");
     // Set up the world!
     objectSetup(this);
   }
@@ -77,48 +83,11 @@ public class GameController extends AbstractController implements PhysicsDelegat
     boxShape2.setAsBox(4, 4);
     box2.createFixture(boxShape2, 0);
     
-    //set up turn tiles at corners
-    TurnTile tt1 = new TurnTile();
-    tt1.getBodyDef().position.set(new Vector2(-11.5f, -7.5f));
-    activatePhysics(handler, tt1);
+    List<GameObject> mapTiles = mapObjects.get(LevelLoader.LayerKey.GROUND);
     
-    TurnTile tt2 = new TurnTile();
-    tt2.getBodyDef().position.set(new Vector2(-11.5f, 1.5f));
-    activatePhysics(handler, tt2);
-    
-    WallTile wt = new WallTile(WallTile.WallType.TOPLEFT);
-    wt.getBodyDef().position.set(new Vector2(-14, 0));
-    activatePhysics(handler, wt);
-    
-    wt = new WallTile(WallTile.WallType.BOTLEFT);
-    wt.getBodyDef().position.set(new Vector2(-14, -2));
-    activatePhysics(handler, wt);
-    wt = new WallTile(WallTile.WallType.BOTRIGHT);
-    wt.getBodyDef().position.set(new Vector2(-12, -2));
-    activatePhysics(handler, wt);
-    wt = new WallTile(WallTile.WallType.TOPRIGHT);
-    wt.getBodyDef().position.set(new Vector2(-12, 0));
-    activatePhysics(handler, wt);
-    wt = new WallTile(WallTile.WallType.TOP);
-    wt.getBodyDef().position.set(new Vector2(-13, 0));
-    activatePhysics(handler, wt);
-    wt = new WallTile(WallTile.WallType.BOT);
-    wt.getBodyDef().position.set(new Vector2(-13, -2));
-    activatePhysics(handler, wt);
-    wt = new WallTile(WallTile.WallType.LEFT);
-    wt.getBodyDef().position.set(new Vector2(-14, -1));
-    activatePhysics(handler, wt);
-    wt = new WallTile(WallTile.WallType.RIGHT);
-    wt.getBodyDef().position.set(new Vector2(-12, -1));
-    activatePhysics(handler, wt);
-    
-    
-    //GameObject boxobj = new GameObject();
-    //boxobj.setTexture(new Texture(Gdx.files.internal("paper.png")));
-    //boxobj.setSize(new Vector2(8,8));
-    //GameObject[] a = {boxobj};
-    
-    //gameModel.setGameObjects(a);
+    for (GameObject o : mapTiles) {
+      activatePhysics(handler, o);
+    }
     
     playerController.objectSetup(handler);
   }
