@@ -4,7 +4,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
-public class GoalTile extends GameObject implements SandglassTile{
+public class GoalTile extends GameObject implements GameTile{
 
 	private PolygonShape thePolygonShape;
 	private FixtureDef theFixtureDef;

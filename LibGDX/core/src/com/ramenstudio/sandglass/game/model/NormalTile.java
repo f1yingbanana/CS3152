@@ -11,7 +11,7 @@ import com.ramenstudio.sandglass.game.controller.GameController;
 import com.ramenstudio.sandglass.game.controller.PhysicsDelegate;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 
-public class NormalTile extends GameObject implements SandglassTile {
+public class NormalTile extends GameObject implements GameTile {
 	
 	private boolean isFlip;
 	private Body theBox;

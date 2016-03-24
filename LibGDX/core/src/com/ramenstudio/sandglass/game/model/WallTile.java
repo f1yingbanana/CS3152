@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
  * 
  * @author Jiacong Xu
  */
-public class WallTile extends GameObject {
+public class WallTile extends AbstractTile {
   // Thickness of the border.
   private static final float THICKNESS = 0.1f;
   private static final float TILE_WIDTH = 1.0f;
@@ -26,6 +26,9 @@ public class WallTile extends GameObject {
    * @param type specifies fixture geometry.
    */
   public WallTile(WallType type) {
+    isFlippable = true;
+    isGround = true;
+    
     getBodyDef().type = BodyDef.BodyType.StaticBody;
     
     PolygonShape shape = new PolygonShape();
