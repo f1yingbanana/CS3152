@@ -393,7 +393,7 @@ public class PlayerController extends AbstractController {
       Vector2 lower = getLowerLeft();
       
       delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
-
+      
       // We only set active corner if we WALKED into the corner. We can land on
       // the corner too.
     } else {

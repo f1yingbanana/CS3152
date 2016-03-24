@@ -71,6 +71,10 @@ public class GameController extends AbstractController implements PhysicsDelegat
     
     for (GameObject o : mapTiles) {
       activatePhysics(handler, o);
+//      if (o instanceof TurnTile) {
+//    	  TurnTile temp = (TurnTile) o;
+//    	  System.out.println(temp.getPosition());
+//      }
     }
     
     playerController.objectSetup(handler);

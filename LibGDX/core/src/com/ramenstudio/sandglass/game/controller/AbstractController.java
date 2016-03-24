@@ -1,5 +1,6 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -47,7 +48,8 @@ public abstract class AbstractController {
     
     if (gameObject.getFixtureDefs() != null) {
       for (FixtureDef def : gameObject.getFixtureDefs()) {
-        gameObject.getBody().createFixture(def);
+        Fixture tempFixture = gameObject.getBody().createFixture(def);
+        tempFixture.setUserData(gameObject);
       }
     }
   }
