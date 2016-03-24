@@ -247,6 +247,9 @@ public class PlayerController extends AbstractController {
       if (diff > 0) {
         cameraController.rotate(-90);
         delegate.setGravity(delegate.getGravity().rotate(90));
+        System.out.println(player.getBody().getLinearVelocity());
+        //player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().cpy().rotate(-90));
+        System.out.println(player.getBody().getLinearVelocity());
 
         if (heading == AngleEnum.NORTH) {
           newX = blockPos.x + blockSize - size.y/2 - 0.015f;
@@ -267,6 +270,7 @@ public class PlayerController extends AbstractController {
       } else {
         cameraController.rotate(90);
         delegate.setGravity(delegate.getGravity().rotate(-90));
+        //player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().cpy().rotate(90));
         
         if (heading == AngleEnum.NORTH) {
           newX = blockPos.x - blockSize + size.y/2 + 0.015f;
@@ -476,6 +480,9 @@ public class PlayerController extends AbstractController {
   private Vector2 getUpperRight() {
     Vector2 playerPos = player.getPosition();
     Vector2 playerSize = player.getSize().scl(.5f);
+    
+    playerSize.y = 0.2f;
+    
     Vector2 theUpperRight;
     if (heading == AngleEnum.NORTH || heading == AngleEnum.SOUTH) {
       theUpperRight = new Vector2(playerPos.x + playerSize.x, playerPos.y + playerSize.y);
