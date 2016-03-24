@@ -28,7 +28,7 @@ public class Player extends GameObject implements Drawable {
 
     fixtureDefs = new FixtureDef[3];
     
-    setTexture(new Texture(Gdx.files.internal("badlogic.jpg")));
+    setTexture(new Texture(Gdx.files.internal("character2.png")));
     setSize(new Vector2(0.8f, 1.5f));
     getBodyDef().position.set(initialPos);
     getBodyDef().type = BodyDef.BodyType.DynamicBody;
@@ -57,7 +57,8 @@ public class Player extends GameObject implements Drawable {
   
   @Override
   public void draw(GameCanvas canvas) {
-    canvas.draw(getTexture(), getPosition().add(getSize().cpy().scl(-0.5f)), getSize());
+	  canvas.draw(getTextureRegion(), getPosition().add(getSize().cpy().scl(-0.5f)), getSize(),
+				new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
   }
   
   @Override

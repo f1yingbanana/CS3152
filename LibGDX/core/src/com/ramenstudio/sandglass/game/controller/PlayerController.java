@@ -231,7 +231,7 @@ public class PlayerController extends AbstractController {
     // Handle rotating
     checkCorner();
     // TODO: add isUnder condition
-    if (activeCorner != null && isGrounded() && !jump) {
+    if (activeCorner != null && isGrounded() && !jump && isUnder) {
       Vector2 cornerPos = activeCorner.getPosition();
       float diff = (AngleEnum.isVertical(heading))?
           pos.x - cornerPos.x : pos.y - cornerPos.y;
@@ -239,7 +239,7 @@ public class PlayerController extends AbstractController {
         diff *= -1;
       }
       
-      float blockSize = 1;
+      float blockSize = activeCorner.getSize().x;
       Vector2 blockPos = activeCorner.getPosition();
       float newX;
       float newY;
