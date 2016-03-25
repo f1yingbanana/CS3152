@@ -1,5 +1,7 @@
 package com.ramenstudio.sandglass.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -24,7 +26,7 @@ public class GameMode extends AbstractMode implements Screen {
   // A debug renderer
   Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   
-  TiledMapRenderer tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/32f);
+  TiledMapRenderer tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/450f);
   
   /**
    * Initializes an instance of the game with all the controllers, model and
@@ -59,7 +61,8 @@ public class GameMode extends AbstractMode implements Screen {
 
     // DEBUG RENDERS. We can have more render passes later implemented here.
     
-    debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
+    if (Gdx.input.isKeyPressed(Input.Keys.D))
+      debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
     
   }
 
