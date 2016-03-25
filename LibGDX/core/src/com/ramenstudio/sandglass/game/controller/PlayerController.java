@@ -241,7 +241,7 @@ public class PlayerController extends AbstractController {
 				diff *= -1;
 			}
 
-			float blockSize = 0.5f;
+			float blockSize = activeCorner.getSize().x / 2;
 			Vector2 blockPos = activeCorner.getPosition();
 			float newX;
 			float newY;

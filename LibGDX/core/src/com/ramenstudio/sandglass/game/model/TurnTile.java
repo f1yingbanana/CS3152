@@ -15,14 +15,14 @@ public class TurnTile extends AbstractTile {
   
   public TurnTile() {
     super();
-    
+    size.x = 0.05f;
+    size.y = 0.05f;
     getBodyDef().type = BodyDef.BodyType.StaticBody;
-    
     fixtureDefs = new FixtureDef[1];
     PolygonShape shape = new PolygonShape();
     fixtureDefs[0] = new FixtureDef();
     fixtureDefs[0].isSensor = true;
-    shape.setAsBox(0.25f, 0.25f);
+    shape.setAsBox(0.05f, 0.05f);
     fixtureDefs[0].shape = shape;
   }
 }
