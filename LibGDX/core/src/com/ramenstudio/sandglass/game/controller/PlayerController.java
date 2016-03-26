@@ -397,21 +397,29 @@ public class PlayerController extends AbstractController {
 	 * we decide whether we want to flip or not.
 	 */
 	private void checkCorner() {
-		OverlapHandler handler;
-		if (oneFrameOverlapHandler == null) {
-			handler = new OverlapHandler();
-			Vector2 upper = getUpperRight();
-			Vector2 lower = getLowerLeft();
+		RayCastHandler handler;
+		if (oneFrameRayHandler == null) {
+//			handler = new OverlapHandler();
+//			Vector2 upper = getUpperRight();
+//			Vector2 lower = getLowerLeft();
+//
+//			delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
+			
+			Vector2 g = delegate.getGravity().nor();
+			Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
+			Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
 
-			delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
+			handler = new RayCastHandler();
+			delegate.rayCast(handler, footPos, endPos);
+			oneFrameRayHandler = handler;
 
 			// We only set active corner if we WALKED into the corner. We can land on
 			// the corner too.
 		} else {
-			handler = oneFrameOverlapHandler;
+			handler = oneFrameRayHandler;
 		}
 
-		TurnTile corner = handler.corner;
+		TurnTile corner = handler.cornerTile;
 		if (corner != null) {
 			float coord;
 			float pos;
@@ -504,18 +512,25 @@ public class PlayerController extends AbstractController {
 	private class RayCastHandler implements RayCastCallback {
 		boolean isGrounded = false;
 		boolean isFlip = false;
+		boolean isCorner = false;
 		private AbstractTile tileUnderneath;
+		private TurnTile cornerTile;
 
 		@Override
 		public float reportRayFixture(Fixture fixture, Vector2 point, 
 				Vector2 normal, float fraction) {
 			Object obj = fixture.getBody().getUserData();
 
-			if (obj != null && obj instanceof AbstractTile) {
+			if (obj != null && obj instanceof AbstractTile && !(obj instanceof TurnTile)) {
 				AbstractTile tempGameObject = (AbstractTile)obj;
 				isGrounded = tempGameObject.isGround() || isGrounded;
 				isFlip = tempGameObject.isFlippable() || isFlip;
 				tileUnderneath = tempGameObject;
+			}
+			if (obj != null && obj instanceof TurnTile) {
+				TurnTile tempCorner = (TurnTile) obj;
+				isCorner = true;
+				cornerTile = tempCorner;
 			}
 
 			return -1;
