@@ -3,6 +3,9 @@ package com.ramenstudio.sandglass.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -23,6 +26,9 @@ public class GameMode extends AbstractMode implements Screen {
   // The game canvas.
   private GameCanvas canvas = new GameCanvas();
 
+  // BG renderer
+  private ShapeRenderer shapeRenderer = new ShapeRenderer();
+  
   // A debug renderer
   Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   
@@ -48,7 +54,13 @@ public class GameMode extends AbstractMode implements Screen {
     // Now we render all objects that we can render
     canvas.clear();
     
+    // Render background.
+    shapeRenderer.begin(ShapeType.Filled);
+    Color botColor = new Color(242/255f, 250/255f, 172/255f, 1);
+    Color topColor = new Color(242/255f, 144/255f, 132/255f, 1);
     
+    shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), topColor, topColor, botColor, botColor);
+    shapeRenderer.end();
 
     // MAP RENDER
     tiledMapRenderer.setView(gameplayController.getMainCamera());
