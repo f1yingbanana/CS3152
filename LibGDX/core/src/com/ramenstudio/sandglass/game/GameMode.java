@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.ramenstudio.sandglass.game.controller.GameController;
+import com.ramenstudio.sandglass.game.controller.UIController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.AbstractMode;
 
@@ -22,6 +23,9 @@ import com.ramenstudio.sandglass.util.AbstractMode;
 public class GameMode extends AbstractMode implements Screen {
   // The game play controller that handles the basic logic of the game
   private GameController gameplayController = new GameController();
+  
+  // THe UI controller that handles UI stuff.
+  private UIController uiController = new UIController();
   
   // The game canvas.
   private GameCanvas canvas = new GameCanvas();
@@ -49,6 +53,7 @@ public class GameMode extends AbstractMode implements Screen {
   public void render(float delta) {
     // Implements an update-draw loop
     gameplayController.update(delta);
+    uiController.update(delta);
 
     
     // Now we render all objects that we can render
@@ -76,6 +81,8 @@ public class GameMode extends AbstractMode implements Screen {
     if (Gdx.input.isKeyPressed(Input.Keys.D))
       debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
     
+    // UI RENDER
+    uiController.draw(canvas);
   }
 
   @Override
