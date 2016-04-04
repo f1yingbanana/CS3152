@@ -8,13 +8,10 @@
  */
 package com.ramenstudio.sandglass.game.controller;
 
-import java.util.*;
-
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.Monster;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
-import com.ramenstudio.sandglass.game.model.SandglassMonster;
 
 /** 
  * InputController corresponding to AI control.
@@ -43,7 +40,7 @@ public class MonsterController extends AbstractController {
 
 	// Instance Attributes
 	/** The monster being controlled by this AIController */
-	private SandglassMonster monster;
+	private Monster monster;
 //	private Monster monster;
 	/** The game board; used for pathfinding */
 	private GameModel gamemodel;
@@ -59,6 +56,7 @@ public class MonsterController extends AbstractController {
 	private boolean setGoal;
 	/** Unique monster identifier */
 	private int id;
+	private PhysicsDelegate delegate;
 	
 	/**
 	 * Creates an AIController for the monster with the given id.
@@ -68,54 +66,82 @@ public class MonsterController extends AbstractController {
 	 * @param gmodel is the board state used for tracking
 	 * @param player is the target of this monster
 	 */
-	public MonsterController(int id, SandglassMonster argMonster, GameModel gmodel, Player player) {
+	public MonsterController(int id, Monster monster, GameModel gmodel, Player player) {
 		this.id = id;
-		monster = argMonster;
+		this.monster = monster;
 		gamemodel = gmodel;
 		target = player;
+		
+		switch (monster.getType()) {
+		case OVER:
+			break;
+		case UNDER:
+			if (monster.getLevel()==1){
+				
+			}
+			else if (monster.getLevel()==2){
+				
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
+	
+	/**
+	 * Returns the action selected by this MonsterController
+	 * 
+	 * 
+	 * @return the action selected by this MonsterController
+	 */
+	public int getAction() {
+		// Increment the number of ticks.
+		ticks++;
+
+		// Do not need to rework ourselves every frame. Just every 10 ticks.
+		if ((monster.getId() + ticks) % 10 == 0) {
+			// Process the FSM
+			changeStateIfApplicable();
+			// Pathfinding
+			markGoalTiles();
+			move = getMoveAlongPathToGoalTile();
+		}
+
+		int action = move;
+		return action;
 	}
 
-//	/**
-//	 * Returns the action selected by this InputController
-//	 *
-//	 * The returned int is a bit-vector of more than one possible input 
-//	 * option. This is why we do not use an enumeration of Control Codes;
-//	 * Java does not (nicely) provide bitwise operation support for enums. 
-//	 *
-//	 * This function tests the environment and uses the FSM to chose the next
-//	 * action of the monster. This function SHOULD NOT need to be modified.  It
-//	 * just contains code that drives the functions that you need to implement.
-//	 *
-//	 * @return the action selected by this InputController
-//	 */
+
+	/** The following three are path-finding methods*/
 	
-	
-//	/**
-//	 * Returns the action selected by this MonsterController
-//	 * 
-//	 * 
-//	 * @return the action selected by this MonsterController
-//	 */
-//	public int getAction() {
-//		// Increment the number of ticks.
-//		ticks++;
-//
-//		// Do not need to rework ourselves every frame. Just every 10 ticks.
-//		if ((monster.getId() + ticks) % 10 == 0) {
-//			// Process the FSM
-//			changeStateIfApplicable();
-//			// Pathfinding
-//			markGoalTiles();
-//			move = getMoveAlongPathToGoalTile();
-//		}
-//
-//		int action = move;
-//		return action;
-//	}
+	private int getMoveAlongPathToGoalTile() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+
+
+	private void markGoalTiles() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	private void changeStateIfApplicable() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 	@Override
 	public void update(float dt) {
-		monster.update(dt);
+		int action = getAction();
+		monster.update(action);
 	}
 
 	@Override
@@ -125,7 +151,8 @@ public class MonsterController extends AbstractController {
 
 	@Override
 	public void objectSetup(PhysicsDelegate handler) {
-		// TODO Auto-generated method stub
-		
+		delegate = handler;
+		activatePhysics(handler, monster);
+		monster.getBody().setFixedRotation(true);
 	}
 }

@@ -13,18 +13,25 @@ package com.ramenstudio.sandglass.game.model;
 
 import java.util.Random;
 import com.badlogic.gdx.math.*;
-import com.ramenstudio.sandglass.util.controller.SoundController;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.ramenstudio.sandglass.util.Drawable;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.*;
+import com.badlogic.gdx.graphics.Texture;
 
 /**
  * A model class representing a monster.
  */
-public class Monster {
+public class Monster extends GameObject implements Drawable{
 
-	protected static enum MType {
+	public static enum MType {
 		/* For over world */
 		OVER,
-		/* For under world*/
+		/*For under world*/
 		UNDER
 	}
 	/** Static random number generator shared across all monsters */
@@ -56,14 +63,10 @@ public class Monster {
 	/** Velocity */
 	private Vector2 velocity;
 	/** The current angle of orientation (in degrees) */
-	private float angle; 
-	/** The angle we want to go to (for momentum) */
-	private float dstAng;
+	private float angle;
 	
 	/** Boolean to track if we are dead yet */
 	private boolean isAlive;
-	// * The number of frames until we can fire again 
-	// private int firecool;
 	
 	/** The sound currently associated with this monster */
 	private Sound sound;
@@ -77,19 +80,76 @@ public class Monster {
 	 * @param x The initial x-coordinate of the monster
 	 * @param y The initial y-coordinate of the monster
 	 */
-	public Monster(int id, float x, float y, MType mType) {
+	public Monster(int id, Vector2 initialPos, MType mType, int level) {
+		super();
+		fixtureDefs = new FixtureDef[3];
+	    
+	    setTexture(new Texture(Gdx.files.internal("character2.png")));
+	    setSize(new Vector2(0.8f, 1.5f));
+	    getBodyDef().position.set(initialPos);
+	    getBodyDef().type = BodyDef.BodyType.DynamicBody;
+	    
+	    FixtureDef fixtureDef = new FixtureDef();
+	    PolygonShape shape = new PolygonShape();
+	    shape.setAsBox(0.4f, 0.35f);
+	    fixtureDef.density = 10.0f;
+	    fixtureDef.shape = shape;
+	    fixtureDefs[0] = fixtureDef;
+	    fixtureDef.friction = 0;
+	    
+	    CircleShape c = new CircleShape();
+	    c.setRadius(0.4f);
+	    c.setPosition(new Vector2(0, -0.35f));
+	    FixtureDef fixtureDef2 = new FixtureDef();
+	    fixtureDef2.shape = c;
+	    fixtureDefs[1] = fixtureDef2;
+
+	    CircleShape c2 = new CircleShape();
+	    c2.setRadius(0.4f);
+	    c2.setPosition(new Vector2(0, 0.35f));
+	    FixtureDef fixtureDef3 = new FixtureDef();
+	    fixtureDef3.shape = c2;
+	    fixtureDefs[2] = fixtureDef3;
+
+		
 		this.id = id;
 		this.mType = mType;
-		position = new Vector2(x,y);
+		
+		
+		switch (mType){
+		case OVER:
+				setTexture(new Texture(Gdx.files.internal("overmonster.png")));
+			break;
+		case UNDER:
+			if (level ==1) {
+				setTexture(new Texture(Gdx.files.internal("undermonster1.png")));
+			}
+			else {
+			}
+			break;
+		default:
+			break;
+		}
+		
+		
 		velocity = new Vector2();
 		angle  = 90.0f;
-		dstAng = 0.0f;
 		
 		isAlive = true;
-		// firecool = 0;
 		
 		sound = null;
 		sndcue = -1;
+		
+		fixtureDefs = new FixtureDef[3];
+	}
+	
+	/** 
+	 * Returns the monster level 
+	 * 
+	 * @return the monster level 
+	 */
+	public int getLevel(){
+		return level;
 	}
 	
 	/** 
@@ -111,24 +171,6 @@ public class Monster {
 	}
 
 	/**
-	 * Returns the monster ypte
-	 *
-	 * @return the monster type
-	 */
-	public MType getType() {
-		return mType;
-	}
-
-	/**
-	 * Sets the x-coordinate of the monster position
-	 *
-	 * @param value the x-coordinate of the monster position
-	 */
-	public void setX(float value) {
-		position.x = value;
-	}
-
-	/**
 	 * Returns the y-coordinate of the monster position
 	 *
 	 * @return the y-coordinate of the monster position
@@ -136,14 +178,14 @@ public class Monster {
 	public float getY() {
 		return position.y;
 	}
-
+	
 	/**
-	 * Sets the y-coordinate of the monster position
+	 * Returns the monster ypte
 	 *
-	 * @param value the y-coordinate of the monster position
+	 * @return the monster type
 	 */
-	public void setY(float value) {
-		position.y = value;
+	public MType getType() {
+		return mType;
 	}
 	
 	/**
@@ -168,30 +210,12 @@ public class Monster {
 	}
 
 	/**
-	 * Sets the x-coordinate of the monster velocity
-	 *
-	 * @param value the x-coordinate of the monster velocity
-	 */
-	public void setVX(float value) {
-		velocity.x = value;
-	}
-
-	/**
 	 * Returns the y-coordinate of the monster velocity
 	 *
 	 * @return the y-coordinate of the monster velocity
 	 */
 	public float getVY() {
 		return velocity.y;
-	}
-
-	/**
-	 * Sets the y-coordinate of the monster velocity
-	 *
-	 * @param value the y-coordinate of the monster velocity
-	 */
-	public void setVY(float value) {
-		velocity.y = value;
 	}
 
 	/**
@@ -217,6 +241,42 @@ public class Monster {
 	public float getAngle() {
 		return angle;
 	}
+
+	/**
+	 * Sets the x-coordinate of the monster position
+	 *
+	 * @param value the x-coordinate of the monster position
+	 */
+	public void setX(float value) {
+		position.x = value;
+	}
+
+	/**
+	 * Sets the y-coordinate of the monster position
+	 *
+	 * @param value the y-coordinate of the monster position
+	 */
+	public void setY(float value) {
+		position.y = value;
+	}
+
+	/**
+	 * Sets the x-coordinate of the monster velocity
+	 *
+	 * @param value the x-coordinate of the monster velocity
+	 */
+	public void setVX(float value) {
+		velocity.x = value;
+	}
+	
+	/**
+	 * Sets the y-coordinate of the monster velocity
+	 *
+	 * @param value the y-coordinate of the monster velocity
+	 */
+	public void setVY(float value) {
+		velocity.y = value;
+	}
 	
 	/**
 	 * Returns whether or not the monster is alive.
@@ -232,16 +292,6 @@ public class Monster {
 	}
 	
 	/**
-	 * Push the monster so that it starts to fall.
-	 * 
-	 * This method will not destroy the monster immediately.  It will tumble and fall 
-	 * offscreen before dying. To instantly kill a monster, use setAlive().
-	 */
-	public void destroy() {
-		// TODO: Implement
-	}
-	
-	/**
 	 * Sets whether or not the monster is alive.
 	 *
 	 * This method should only be used if we need to kill the monster immediately.
@@ -251,6 +301,16 @@ public class Monster {
 	 */
 	public void setAlive(boolean value) {
 		isAlive = value;
+	}
+	
+	/**
+	 * Push the monster so that it starts to fall.
+	 * 
+	 * This method will not destroy the monster immediately.  It will tumble and fall 
+	 * offscreen before dy	ing. To instantly kill a monster, use setAlive().
+	 */
+	public void destroy() {
+		// TODO: Implement
 	}
 	
 	/**
@@ -267,105 +327,41 @@ public class Monster {
 	 * the position or create photons.  The later interact with other objects (position
 	 * can cause collisions) so they are processed in a controller.  Method in a model
 	 * object should only modify state of that specific object and no others.
+	 * 
+	 * 0 is for up, 1 is for down, 2 is for left, 3 is for right
 	 *
 	 * @param controlCode The movement controlCode (from InputController).
 	 */
-	public void update(int controlCode) {
-		// If we are dead do nothing.
+	public void update(int move) {
 		if (!isAlive) {
 			return;
-		} else if (fallAmount >= MIN_FALL_AMOUNT) {
-			// Animate the fall, but quit
-			fallAmount += FALL_RATE;
-			isAlive = !(fallAmount > MAX_FALL_AMOUNT);
-			return;
-		}
-
-		// Determine how we are moving.
-		boolean movingLeft  = (controlCode & InputController.CONTROL_MOVE_LEFT) != 0;
-		boolean movingRight = (controlCode & InputController.CONTROL_MOVE_RIGHT) != 0;
-		boolean movingUp    = (controlCode & InputController.CONTROL_MOVE_UP) != 0;
-		boolean movingDown  = (controlCode & InputController.CONTROL_MOVE_DOWN) != 0;
-
-		// Process movement command.
-		if (movingLeft) {
-			dstAng = 0.0f;
-			velocity.x = -MOVE_SPEED;
-			velocity.y = 0;
-		} else if (movingRight) {
-			dstAng = 180.0f;
-			velocity.x = MOVE_SPEED;
-			velocity.y = 0;
-		} else if (movingUp) {
-			dstAng = 90.0f;
-			velocity.y = -MOVE_SPEED;
-			velocity.x = 0;
-		} else if (movingDown) {
-			dstAng = 270.0f;
-			velocity.y = MOVE_SPEED;
-			velocity.x = 0;
-		} else {
-			// NOT MOVING, SO SLOW DOWN
-			velocity.x *= SPEED_DAMPNING;
-			velocity.y *= SPEED_DAMPNING;
-			if (Math.abs(velocity.x) < EPSILON_CLAMP) {
-				velocity.x = 0.0f;
-			}
-			if (Math.abs(velocity.y) < EPSILON_CLAMP) {
-				velocity.y = 0.0f;
-			}
-		}
-
-		updateRotation();
-	}
-
-	/**
-	 * Update the monster rotation so that angle gets closer to dstAng
-	 *
-	 * This allows us to have some delay in rotation, even though
-	 * movement is always left-right/up-down.  The result is a much
-	 * smoother animation.
-	 */
-	private void updateRotation() {
-		// Change angle to get closer to dstAng
-		if (angle > dstAng) {
-			float angleDifference = angle - dstAng;
-			if (angleDifference <= TURN_SPEED) {
-				angle = dstAng;
-			} else {
-				if (angleDifference == HALF_CIRCLE) {
-					angleDifference += random.nextFloat()*RAND_FACTOR-RAND_OFFSET;
-				}
-				if (angleDifference > HALF_CIRCLE) {
-					angle += TURN_SPEED;
-				} else {
-					angle -= TURN_SPEED;
-				}
-			}
-			velocity.setZero();
-		} else if (angle < dstAng) {
-			float angleDifference = dstAng - angle;
-			if (angleDifference <= TURN_SPEED) {
-				angle = dstAng;
-			} else {
-				if (angleDifference == HALF_CIRCLE) {
-					angleDifference += random.nextFloat()*RAND_FACTOR-RAND_OFFSET;
-				}
-				if (angleDifference > HALF_CIRCLE) {
-					angle -= TURN_SPEED;
-				} else {
-					angle += TURN_SPEED;
-				}
-			}
-			velocity.setZero();
 		}
 		
-		// Get rid of overspins.
-		while (angle > FULL_CIRCLE) {
-			angle -= FULL_CIRCLE;
-		}
-		while (angle < 0.0f) {
-			angle += FULL_CIRCLE;
-		}
+		switch (move){
+		case 0:
+			velocity.y = MOVE_SPEED;
+			velocity.x = 0;
+			break;
+		case 1:
+			velocity.y = -MOVE_SPEED;
+			velocity.x = 0;
+			break;
+		case 2:
+			velocity.x = -MOVE_SPEED;
+			velocity.y = 0;
+			break;
+		case 3:
+			velocity.x = MOVE_SPEED;
+			velocity.y = 0;
+			break;
+		default:
+			break;
+		}		
+	}
+
+	@Override
+	public void draw(GameCanvas canvas){
+		canvas.draw(getTextureRegion(), getPosition().add(getSize().cpy().scl(-0.5f)), getSize(),
+				new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 	}
 }
