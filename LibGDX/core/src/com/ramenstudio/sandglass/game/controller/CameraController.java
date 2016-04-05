@@ -81,16 +81,6 @@ public class CameraController extends AbstractController {
         target = targetObject;
     }
 
-    //  /**
-    //   * Sets the smoothing factor for the camera.
-    //   * 
-    //   * @param factor	the smoothing factor
-    //   * 				Must be between 0 and 1 inclusive
-    //   */
-    //  public void setSmoothing(float f) {
-    //    factor = f;
-    //  }
-
     /**
      * Rotates the camera view given the amount, with an option to animate.
      * 
