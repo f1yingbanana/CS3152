@@ -8,8 +8,10 @@
  */
 package com.ramenstudio.sandglass.game.controller;
 
+import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Monster.MType;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 
@@ -40,22 +42,21 @@ public class MonsterController extends AbstractController {
 
 	// Instance Attributes
 	/** The monster being controlled by this AIController */
-	private Monster monster;
+	public Monster monster;
 //	private Monster monster;
 	/** The game board; used for pathfinding */
 	private GameModel gamemodel;
 	/** The monster's current state in the FSM */
 	private FSMState state;
-	/** The target monster (to chase or attack). */
-	private Player target; 
 	/** The monster's next action  */
 	private int move; // A ControlCode
+	
+	private int umove = -1;
 	/** The number of ticks since we started this controller */
 	private long ticks;
 	/** is player in the same world*/
 	private boolean setGoal;
-	/** Unique monster identifier */
-	private int id;
+	
 	private PhysicsDelegate delegate;
 	
 	/**
@@ -66,26 +67,9 @@ public class MonsterController extends AbstractController {
 	 * @param gmodel is the board state used for tracking
 	 * @param player is the target of this monster
 	 */
-	public MonsterController(int id, Monster monster, GameModel gmodel, Player player) {
-		this.id = id;
-		this.monster = monster;
-		gamemodel = gmodel;
-		target = player;
-		
-		switch (monster.getType()) {
-		case OVER:
-			break;
-		case UNDER:
-			if (monster.getLevel()==1){
-				
-			}
-			else if (monster.getLevel()==2){
-				
-			}
-			break;
-		default:
-			break;
-		}
+	public MonsterController(int id, Vector2 initialPos, MType mType, int level) {
+		this.monster = new Monster(id, initialPos, mType, level);
+		move = -1;
 	}
 	
 	
@@ -100,18 +84,57 @@ public class MonsterController extends AbstractController {
 		ticks++;
 
 		// Do not need to rework ourselves every frame. Just every 10 ticks.
-		if ((monster.getId() + ticks) % 10 == 0) {
-			// Process the FSM
-			changeStateIfApplicable();
-			// Pathfinding
-			markGoalTiles();
-			move = getMoveAlongPathToGoalTile();
+		switch (monster.getType()){
+        case OVER:
+//            if (ticks<100){
+//                return -1;
+//            }
+//            if (ticks%100 == 0){
+//                move = 1 - move;
+//                umove = 2 + move;
+//            }
+//            return umove;
+            break;
+        case UNDER:
+            if (monster.getLevel() ==1){
+                if (ticks%100< 50){
+                    move = 1;
+                }
+                else {
+                    move = 0;
+                }
+            }
+            else{
+                if (ticks%100 <25){
+                    move = 3;
+                }
+                else if (ticks%100 <50){
+                    move = 1;
+                }
+                else if (ticks%100 < 75){
+                    move = 0;
+                }
+                else{
+                    move = 2;
+                }
+            }
+            
+        default:
+            break;
 		}
-
-		int action = move;
-		return action;
+		return move;
+		
+		
+		
+//		if ((monster.getId() + ticks) % 10 == 0) {
+//			// Process the FSM
+//			changeStateIfApplicable();
+//			// Pathfinding
+//			markGoalTiles();
+//			move = getMoveAlongPathToGoalTile();
+//		}
 	}
-
+	
 
 	/** The following three are path-finding methods*/
 	
@@ -125,6 +148,33 @@ public class MonsterController extends AbstractController {
 
 	private void markGoalTiles() {
 		// TODO Auto-generated method stub
+		setGoal = false;
+		
+		if (monster.getType() == Monster.MType.OVER){
+			switch (state){
+			case ATTACK:
+				break;
+			case CHASE:
+				break;
+			case SPAWN:
+				break;
+			case WANDER:
+				break;
+			default:
+				break;
+		
+			}
+		}
+//		else {
+//		    switch (monster.getLevel()){
+//		    case 1:
+//		        monster.setGoal();
+//		        break;
+//		    case 2:
+//		        break;
+//		    }
+//		    
+//		}
 		
 	}
 
@@ -133,7 +183,18 @@ public class MonsterController extends AbstractController {
 
 	private void changeStateIfApplicable() {
 		// TODO Auto-generated method stub
-		
+		switch (state){
+		case ATTACK:
+			break;
+		case CHASE:
+			break;
+		case SPAWN:
+			break;
+		case WANDER:
+			break;
+		default:
+			break;
+		}
 	}
 
 

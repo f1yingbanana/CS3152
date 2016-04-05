@@ -8,15 +8,21 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.Monster.MType;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
 
@@ -26,7 +32,7 @@ import com.ramenstudio.sandglass.game.model.WallTile;
  * 
  * @author Jiacong Xu
  */
-public class GameController extends AbstractController implements PhysicsDelegate {
+public class GameController extends AbstractController implements PhysicsDelegate, ContactListener {
 
   // The physics world object
   public World world = new World(new Vector2(0, -9.8f), true);
@@ -52,12 +58,16 @@ public class GameController extends AbstractController implements PhysicsDelegat
   // The player controller for the game
   private PlayerController playerController;
   
+  private Array<MonsterController> monsterController = new Array<MonsterController>();
+  
   public LevelLoader loader = new LevelLoader();
   
   private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
   
   public GameController() {
     playerController = new PlayerController();
+    monsterController.add(new MonsterController(1, new Vector2(15,20), MType.UNDER, 1));
+    monsterController.add(new MonsterController(2, new Vector2(8,21), MType.UNDER, 2));
     
     mapObjects = loader.loadLevel("example.tmx");
     // Set up the world!
@@ -78,11 +88,17 @@ public class GameController extends AbstractController implements PhysicsDelegat
     }
     
     playerController.objectSetup(handler);
+    for (MonsterController m: monsterController){
+        m.objectSetup(handler);
+    }
   }
   
   @Override
   public void update(float dt) {
     playerController.update(dt);
+    for (MonsterController m: monsterController){
+        m.update(dt);
+    }
     stepPhysics(dt);
     if (playerController.isReset()) {
     	reset();
@@ -112,6 +128,9 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public void draw(GameCanvas canvas) {
     playerController.draw(canvas);
+    for (MonsterController m: monsterController){
+        m.draw(canvas);
+    }
     gameModel.draw(canvas);
   }
   
@@ -159,5 +178,29 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public OrthographicCamera getMainCamera() {
     return playerController.getMainCamera();
   }
+
+@Override
+public void beginContact(Contact contact) {
+    // TODO Auto-generated method stub
+    
+}
+
+@Override
+public void endContact(Contact contact) {
+    // TODO Auto-generated method stub
+    
+}
+
+@Override
+public void preSolve(Contact contact, Manifold oldManifold) {
+    // TODO Auto-generated method stub
+    
+}
+
+@Override
+public void postSolve(Contact contact, ContactImpulse impulse) {
+    // TODO Auto-generated method stub
+    
+}
 
 }

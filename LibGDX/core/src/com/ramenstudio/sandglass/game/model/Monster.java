@@ -21,6 +21,7 @@ import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.*;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
@@ -39,7 +40,7 @@ public class Monster extends GameObject implements Drawable{
 
 	// CONSTANTS FOR monster HANDLING
 	/** How far forward this monster can move in a single turn */
-	private static final float MOVE_SPEED = 6.5f;
+	private static final float MOVE_SPEED = 3.5f;
 	/** How much this monster can turn in a single turn */
 	private static final float TURN_SPEED = 15.0f;
 	/** For animating turning movement */
@@ -60,11 +61,14 @@ public class Monster extends GameObject implements Drawable{
 	private int level;
 	/** Position */
 	private Vector2 position;
+	/** Initial Position*/
+	public Vector2 initial;
 	/** Velocity */
 	private Vector2 velocity;
+	/** Goal */
+	private Vector2 goal;
 	/** The current angle of orientation (in degrees) */
 	private float angle;
-	
 	/** Boolean to track if we are dead yet */
 	private boolean isAlive;
 	
@@ -82,55 +86,68 @@ public class Monster extends GameObject implements Drawable{
 	 */
 	public Monster(int id, Vector2 initialPos, MType mType, int level) {
 		super();
-		fixtureDefs = new FixtureDef[3];
-	    
-	    setTexture(new Texture(Gdx.files.internal("character2.png")));
-	    setSize(new Vector2(0.8f, 1.5f));
-	    getBodyDef().position.set(initialPos);
-	    getBodyDef().type = BodyDef.BodyType.DynamicBody;
-	    
-	    FixtureDef fixtureDef = new FixtureDef();
-	    PolygonShape shape = new PolygonShape();
-	    shape.setAsBox(0.4f, 0.35f);
-	    fixtureDef.density = 10.0f;
-	    fixtureDef.shape = shape;
-	    fixtureDefs[0] = fixtureDef;
-	    fixtureDef.friction = 0;
-	    
-	    CircleShape c = new CircleShape();
-	    c.setRadius(0.4f);
-	    c.setPosition(new Vector2(0, -0.35f));
-	    FixtureDef fixtureDef2 = new FixtureDef();
-	    fixtureDef2.shape = c;
-	    fixtureDefs[1] = fixtureDef2;
+		initial = initialPos;
+		switch (mType){
+        case OVER:
+            setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
+            fixtureDefs = new FixtureDef[1];
+            setSize(new Vector2(0.8f, 1.2f));
+            getBodyDef().position.set(initialPos);
+            getBodyDef().type = BodyDef.BodyType.DynamicBody;
+            
+            
+            FixtureDef fixtureDef = new FixtureDef();
+            PolygonShape shape = new PolygonShape();
+            shape.setAsBox(0.4f, 0.6f);
+            fixtureDef.density = 1.0f;
+            fixtureDef.shape = shape;
+            fixtureDefs[0] = fixtureDef;
+            fixtureDef.friction = 0;
+            break;
+        case UNDER:
+            if (level ==1) {
+                setTexture(new Texture(Gdx.app.getFiles().internal("undermonster1.png")));
+                fixtureDefs = new FixtureDef[1];
+                setSize(new Vector2(0.8f, 0.8f));
+                getBodyDef().position.set(initialPos);
+                getBodyDef().type = BodyDef.BodyType.KinematicBody;
+                
+                
+                FixtureDef underFixtureDef = new FixtureDef();
+                PolygonShape underShape = new PolygonShape();
+                underShape.setAsBox(0.4f, 0.4f);
+                underFixtureDef.density = 10.0f;
+                underFixtureDef.shape = underShape;
+                fixtureDefs[0] = underFixtureDef;
+                underFixtureDef.friction = 10;
+            }
+            else {
+                setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
+                fixtureDefs = new FixtureDef[1];
+                setSize(new Vector2(0.8f, 1.2f));
+                getBodyDef().position.set(initialPos);
+                getBodyDef().type = BodyDef.BodyType.KinematicBody;
+                
+                
+                FixtureDef under2fixtureDef = new FixtureDef();
+                PolygonShape under2shape = new PolygonShape();
+                under2shape.setAsBox(0.4f, 0.6f);
+                under2fixtureDef.density = 1.0f;
+                under2fixtureDef.shape = under2shape;
+                fixtureDefs[0] = under2fixtureDef;
+                under2fixtureDef.friction = 0;
+                break;
+            }
+            break;
+        default:
+            break;
+        }
 
-	    CircleShape c2 = new CircleShape();
-	    c2.setRadius(0.4f);
-	    c2.setPosition(new Vector2(0, 0.35f));
-	    FixtureDef fixtureDef3 = new FixtureDef();
-	    fixtureDef3.shape = c2;
-	    fixtureDefs[2] = fixtureDef3;
-
+		
 		
 		this.id = id;
 		this.mType = mType;
-		
-		
-		switch (mType){
-		case OVER:
-				setTexture(new Texture(Gdx.files.internal("overmonster.png")));
-			break;
-		case UNDER:
-			if (level ==1) {
-				setTexture(new Texture(Gdx.files.internal("undermonster1.png")));
-			}
-			else {
-			}
-			break;
-		default:
-			break;
-		}
-		
+		this.level = level;
 		
 		velocity = new Vector2();
 		angle  = 90.0f;
@@ -139,8 +156,6 @@ public class Monster extends GameObject implements Drawable{
 		
 		sound = null;
 		sndcue = -1;
-		
-		fixtureDefs = new FixtureDef[3];
 	}
 	
 	/** 
@@ -243,6 +258,26 @@ public class Monster extends GameObject implements Drawable{
 	}
 
 	/**
+	 * Returns the goal of this monster
+	 *
+	 * @return the goal
+	 */
+	
+	public Vector2 getGoal(){
+		return goal;
+	}
+	
+	/**
+	 * Sets the goal of this monster
+	 * 
+	 * @param the goal of this monster
+	 */
+	
+	public void setGoal(Vector2 goal){
+		this.goal = goal;
+	}
+	
+	/**
 	 * Sets the x-coordinate of the monster position
 	 *
 	 * @param value the x-coordinate of the monster position
@@ -291,6 +326,10 @@ public class Monster extends GameObject implements Drawable{
 		return isAlive;
 	}
 	
+	public boolean isAtGoal(){
+	    return position.epsilonEquals(goal, 0.0f);
+	}
+	
 	/**
 	 * Sets whether or not the monster is alive.
 	 *
@@ -336,7 +375,6 @@ public class Monster extends GameObject implements Drawable{
 		if (!isAlive) {
 			return;
 		}
-		
 		switch (move){
 		case 0:
 			velocity.y = MOVE_SPEED;
@@ -356,12 +394,12 @@ public class Monster extends GameObject implements Drawable{
 			break;
 		default:
 			break;
-		}		
+		}
+		this.getBody().setLinearVelocity(velocity);
 	}
 
 	@Override
 	public void draw(GameCanvas canvas){
-		canvas.draw(getTextureRegion(), getPosition().add(getSize().cpy().scl(-0.5f)), getSize(),
-				new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+		canvas.draw(getTextureRegion(), getBody().getPosition().add(getSize().cpy().scl(-0.5f)), getSize(), new Vector2(getSize()).scl(.5f), 0);
 	}
 }

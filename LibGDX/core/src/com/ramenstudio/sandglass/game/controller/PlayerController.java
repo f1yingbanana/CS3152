@@ -52,7 +52,7 @@ public class PlayerController extends AbstractController {
 	private TurnTile activeCorner;
 
 	/** Whether this player is in the underworld. */
-	private boolean isUnder = false;
+	public boolean isUnder = false;
 
 	/** RayCastHandler that detects tiles in this one frame. Should always be set
 	 * to null after every update loop. */
