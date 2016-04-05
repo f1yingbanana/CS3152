@@ -232,7 +232,6 @@ public class PlayerController extends AbstractController {
 		
 		// Handle rotating
 		checkCorner();
-		// TODO: add isUnder condition
 		if (activeCorner != null && isGrounded() && !jump && isUnder) {
 			Vector2 cornerPos = activeCorner.getPosition();
 			float diff = (AngleEnum.isVertical(heading))?
@@ -257,17 +256,8 @@ public class PlayerController extends AbstractController {
 					newX = blockPos.x - blockSize - size.x/2;
 					newY = blockPos.y - blockSize + size.y/2 + 0.015f;
 				} else if (heading == AngleEnum.SOUTH) {
-					System.out.println("here");
-					System.out.println(blockPos);
-					System.out.println(blockSize);
-					System.out.println(size);
-
 					newX = blockPos.x - blockSize + size.y/2 + 0.015f;
-					System.out.println(newX);
-
 					newY = blockPos.y + blockSize + size.x/2;
-					System.out.println(newY);
-
 				} else {
 					newX = blockPos.x + blockSize + size.x/2;
 					newY = blockPos.y + blockSize - size.y/2 - 0.015f;

@@ -32,6 +32,11 @@ public class GameMode extends AbstractMode implements Screen {
   // A debug renderer
   Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
   
+  // Toggle debug
+  private boolean debug = false;
+  // Debug timer
+  private int count = 0;
+  
   TiledMapRenderer tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/450f);
   
   /**
@@ -74,7 +79,14 @@ public class GameMode extends AbstractMode implements Screen {
     // DEBUG RENDERS. We can have more render passes later implemented here.
     
     if (Gdx.input.isKeyPressed(Input.Keys.D))
-      debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
+      count++;
+      if (count > 5) {
+    	  debug ^= true;
+    	  count = 0;
+      }
+      if (debug) {
+          debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
+      }
     
   }
 
