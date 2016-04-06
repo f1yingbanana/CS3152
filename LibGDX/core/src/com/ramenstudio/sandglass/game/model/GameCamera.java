@@ -2,6 +2,8 @@ package com.ramenstudio.sandglass.game.model;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * The game rener camera object that is maintained inside a game object.
@@ -10,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class GameCamera extends GameObject {
   private OrthographicCamera camera;
+  private Viewport viewport;
   
   /**
    * Initializes the camera with the given viewport size.
@@ -17,7 +20,7 @@ public class GameCamera extends GameObject {
    */
   public GameCamera(Vector2 size) {
     camera = new OrthographicCamera(size.x, size.y);
-    
+    this.viewport = new FitViewport(size.x,size.y,camera);
   }
   
   /**
@@ -25,6 +28,10 @@ public class GameCamera extends GameObject {
    */
   public OrthographicCamera getCamera() {
     return camera;
+  }
+  
+  public Viewport getViewport() {
+	  return viewport;
   }
   
   @Override

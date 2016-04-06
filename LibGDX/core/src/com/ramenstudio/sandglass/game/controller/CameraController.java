@@ -47,6 +47,8 @@ public class CameraController extends AbstractController {
   // For debugging purposes
   private int count = 0;
   
+  public boolean okeydokey = false;
+  
   /**
    * Creates a camera controller and initializes the game camera.
    */
@@ -108,9 +110,20 @@ public class CameraController extends AbstractController {
    * @param angle is the amount to rotate in degrees.
    */
   public void rotate(float angle) {
-	    goal = goal + angle;
-	    instant = false;
-	  }
+      goal = goal + angle;
+      instant = false;
+      if (angle - 90 < 1f) {
+          float viewportWidth = camera.getCamera().viewportWidth;
+          float viewportHeight = camera.getCamera().viewportHeight;
+          camera.getCamera().viewportHeight = viewportWidth;
+          camera.getCamera().viewportWidth = viewportHeight;
+          okeydokey = !okeydokey;
+      }
+//      else {
+//          goal = goal + angle;
+//          instant = false;
+//      }
+  }
   
   @Override
   public void update(float dt) {
@@ -133,6 +146,13 @@ public class CameraController extends AbstractController {
 	    float y = (targPos.y - camPos.y)*translateTime + camPos.y;
 	    Vector2 deltaPos = new Vector2(x,y);
 	    camera.setPosition(deltaPos);
+	}
+	
+	if (okeydokey) {
+        float viewportWidth = camera.getCamera().viewportWidth;
+        float viewportHeight = camera.getCamera().viewportHeight;
+        camera.getCamera().viewportHeight = viewportWidth;
+        camera.getCamera().viewportWidth = viewportHeight;
 	}
 	
 	// TESTING

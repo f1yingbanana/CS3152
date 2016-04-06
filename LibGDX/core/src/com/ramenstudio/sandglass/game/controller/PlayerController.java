@@ -23,7 +23,7 @@ import com.ramenstudio.sandglass.game.view.*;
 public class PlayerController extends AbstractController {
 	
 	/** The camera controller we are controlling */
-	private CameraController cameraController;
+	public CameraController cameraController;
 
 	/** The input controller for player. */
 	private InputController inputController = new InputController();

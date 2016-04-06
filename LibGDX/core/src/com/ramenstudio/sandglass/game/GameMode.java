@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -63,7 +64,16 @@ public class GameMode extends AbstractMode implements Screen {
     shapeRenderer.end();
 
     // MAP RENDER
+//    OrthographicCamera tempCamera = gameplayController.getMainCamera();
     tiledMapRenderer.setView(gameplayController.getMainCamera());
+    
+    if (gameplayController.playerController.cameraController.okeydokey) {
+        float viewportWidth = gameplayController.getMainCamera().viewportWidth;
+        float viewportHeight = gameplayController.getMainCamera().viewportHeight;
+        gameplayController.getMainCamera().viewportHeight = viewportWidth;
+        gameplayController.getMainCamera().viewportWidth = viewportHeight;
+    }
+    
     tiledMapRenderer.render();
     
     //

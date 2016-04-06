@@ -50,7 +50,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
   private GameModel gameModel = new GameModel();
   
   // The player controller for the game
-  private PlayerController playerController;
+  public PlayerController playerController;
   
   public LevelLoader loader = new LevelLoader();
   
@@ -87,6 +87,8 @@ public class GameController extends AbstractController implements PhysicsDelegat
     if (playerController.isReset()) {
     	reset();
     }
+    
+    // Call updates
   }
   
   private void reset() {
