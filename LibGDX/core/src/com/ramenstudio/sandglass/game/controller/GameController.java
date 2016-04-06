@@ -1,5 +1,6 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -66,8 +67,10 @@ public class GameController extends AbstractController implements PhysicsDelegat
   
   public GameController() {
     playerController = new PlayerController();
-    monsterController.add(new MonsterController(1, new Vector2(15,20), MType.UNDER, 1));
-    monsterController.add(new MonsterController(2, new Vector2(8,21), MType.UNDER, 2));
+    //ArrayList<GameObject> monsterArray = (ArrayList<GameObject>) mapObjects.get(LevelLoader.LayerKey.MONSTER);
+
+    monsterController.add(new MonsterController(new Vector2(15,20), MType.UNDER, 1));
+    monsterController.add(new MonsterController(new Vector2(8,21), MType.UNDER, 2));
     
     mapObjects = loader.loadLevel("example.tmx");
     // Set up the world!

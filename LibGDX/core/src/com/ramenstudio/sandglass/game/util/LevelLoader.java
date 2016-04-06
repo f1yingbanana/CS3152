@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.Monster;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
 
@@ -143,6 +144,9 @@ public class LevelLoader {
           if (this_tile.getProperties().get(key) == value){
             GameObject object = new GameObject();
             object.getBodyDef().position.set(new Vector2(i+0.5f, j+0.5f));
+            if (value=="monster"){
+                Monster monster = (Monster) object;
+            }
             objArr.add(object);
           }
         }

@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.Monster;
 import com.ramenstudio.sandglass.game.model.Monster.MType;
-import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 
 /** 
@@ -34,6 +33,113 @@ public class MonsterController extends AbstractController {
 		ATTACK;
 	}
 
+	private enum AngleEnum {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST;
+
+        /**
+         * Returns the new compass direction of the
+         * provided direction but rotated 180 degrees/flipped.
+         * 
+         * @param thisEnum is the direction to rotate 180 degrees/flip.
+         * @return the angle rotated 180 degrees/flipped.
+         */
+        private static AngleEnum flipEnum(AngleEnum thisEnum) {
+            if (thisEnum == NORTH) {
+                return SOUTH;
+            }
+            else if (thisEnum == SOUTH) {
+                return NORTH;
+            }
+            else if (thisEnum == WEST) {
+                return EAST;
+            }
+            else {
+                return WEST;
+            }
+        }
+
+        /**
+         * Returns the new compass direction of the
+         * provided direction but rotated 90 degrees counterclockwise.
+         * 
+         * @param thisEnum is the direction to rotate 90 degrees counterclockwise.
+         * @return the angle rotated 90 degrees counterclockwise.
+         */
+        private static AngleEnum flipCounterClockWise(AngleEnum thisEnum) {
+            if (thisEnum == NORTH) {
+                return WEST;
+            }
+            else if (thisEnum == EAST) {
+                return NORTH;
+            }
+            else if (thisEnum == SOUTH) {
+                return EAST;
+            }
+            else {
+                return SOUTH;
+            }
+        }
+
+        /**
+         * Returns the new compass direction of the 
+         * provided direction but rotated 90 degrees clockwise.
+         * 
+         * @param thisEnum is the direction to rotate 90 degrees clockwise.
+         * @return the angle rotated 90 degrees clockwise.
+         */
+        private static AngleEnum flipClockWise(AngleEnum thisEnum) {
+            if (thisEnum == NORTH) {
+                return EAST;
+            }
+            else if (thisEnum == EAST) {
+                return SOUTH;
+            }
+            else if (thisEnum == SOUTH) {
+                return WEST;
+            }
+            else {
+                return NORTH;
+            }
+        }
+
+        /**
+         * Converts the compass direction to an actual angle in radians.
+         * 
+         * @param thisEnum to convert to an angle
+         * @return the angle in radians
+         */
+        private static float convertToAngle(AngleEnum thisEnum) {
+            if (thisEnum == NORTH) {
+                return 0;
+            }
+            else if (thisEnum == WEST) {
+                return (float) (Math.PI/2);
+            }
+            else if (thisEnum == SOUTH) {
+                return (float) (Math.PI);
+            }
+            else {
+                return (float) (3*Math.PI/2);
+            }
+        }
+
+        /**
+         * Whether the given compass direction is vertical.
+         * 
+         * @param   thisEnum to evaluate
+         * @return  true if thisEnum points North or South, false otherwise 
+         */
+        private static boolean isVertical (AngleEnum thisEnum) {
+            if (thisEnum == NORTH || thisEnum == SOUTH) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 	// Constants for chase algorithms
 	/** How close a target must be for us to chase it */
 	private static final int CHASE_DIST = 99999;
@@ -43,19 +149,16 @@ public class MonsterController extends AbstractController {
 	// Instance Attributes
 	/** The monster being controlled by this AIController */
 	public Monster monster;
-//	private Monster monster;
-	/** The game board; used for pathfinding */
-	private GameModel gamemodel;
 	/** The monster's current state in the FSM */
 	private FSMState state;
 	/** The monster's next action  */
 	private int move; // A ControlCode
-	
-	private int umove = -1;
 	/** The number of ticks since we started this controller */
 	private long ticks;
 	/** is player in the same world*/
 	private boolean setGoal;
+	/** how long does it take to change direction?*/
+	private int period = (int) ((Math.random()+0.1)*200);
 	
 	private PhysicsDelegate delegate;
 	
@@ -67,8 +170,8 @@ public class MonsterController extends AbstractController {
 	 * @param gmodel is the board state used for tracking
 	 * @param player is the target of this monster
 	 */
-	public MonsterController(int id, Vector2 initialPos, MType mType, int level) {
-		this.monster = new Monster(id, initialPos, mType, level);
+	public MonsterController(Vector2 initialPos, MType mType, int level) {
+		this.monster = new Monster(initialPos, mType, level);
 		move = -1;
 	}
 	
@@ -97,21 +200,23 @@ public class MonsterController extends AbstractController {
             break;
         case UNDER:
             if (monster.getLevel() ==1){
-                if (ticks%100< 50){
+                if (ticks%period< period/2){
                     move = 1;
+                    monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
                 }
                 else {
                     move = 0;
+                    monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
                 }
             }
             else{
-                if (ticks%100 <25){
+                if (ticks%period < period/4){
                     move = 3;
                 }
-                else if (ticks%100 <50){
+                else if (ticks%period <period/2){
                     move = 1;
                 }
-                else if (ticks%100 < 75){
+                else if (ticks%period < 3*period/4){
                     move = 0;
                 }
                 else{

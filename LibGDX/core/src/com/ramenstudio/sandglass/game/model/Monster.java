@@ -84,7 +84,7 @@ public class Monster extends GameObject implements Drawable{
 	 * @param x The initial x-coordinate of the monster
 	 * @param y The initial y-coordinate of the monster
 	 */
-	public Monster(int id, Vector2 initialPos, MType mType, int level) {
+	public Monster(Vector2 initialPos, MType mType, int level) {
 		super();
 		initial = initialPos;
 		switch (mType){
@@ -142,10 +142,6 @@ public class Monster extends GameObject implements Drawable{
         default:
             break;
         }
-
-		
-		
-		this.id = id;
 		this.mType = mType;
 		this.level = level;
 		
@@ -400,6 +396,7 @@ public class Monster extends GameObject implements Drawable{
 
 	@Override
 	public void draw(GameCanvas canvas){
-		canvas.draw(getTextureRegion(), getBody().getPosition().add(getSize().cpy().scl(-0.5f)), getSize(), new Vector2(getSize()).scl(.5f), 0);
+		canvas.draw(getTextureRegion(), getBody().getPosition().add(getSize().cpy().scl(-0.5f)), 
+		        getSize(), new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 	}
 }
