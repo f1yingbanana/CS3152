@@ -76,6 +76,8 @@ public class Monster extends GameObject implements Drawable{
 	private Sound sound;
 	/** The associated sound cue (if monster is making a sound). */
 	private long sndcue;
+	
+	public int span;
 
 	/**
 	 * Create monster # id at the given position.
@@ -84,8 +86,9 @@ public class Monster extends GameObject implements Drawable{
 	 * @param x The initial x-coordinate of the monster
 	 * @param y The initial y-coordinate of the monster
 	 */
-	public Monster(Vector2 initialPos, MType mType, int level) {
+	public Monster(Vector2 initialPos, MType mType, int level, int span) {
 		super();
+		this.span = span;
 		initial = initialPos;
 		switch (mType){
         case OVER:

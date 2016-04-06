@@ -23,7 +23,9 @@ import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.Monster;
 import com.ramenstudio.sandglass.game.model.Monster.MType;
+import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
 
@@ -67,12 +69,13 @@ public class GameController extends AbstractController implements PhysicsDelegat
   
   public GameController() {
     playerController = new PlayerController();
-    //ArrayList<GameObject> monsterArray = (ArrayList<GameObject>) mapObjects.get(LevelLoader.LayerKey.MONSTER);
 
-    monsterController.add(new MonsterController(new Vector2(15,20), MType.UNDER, 1));
-    monsterController.add(new MonsterController(new Vector2(8,21), MType.UNDER, 2));
-    
     mapObjects = loader.loadLevel("example.tmx");
+    ArrayList<GameObject> monsterArray = (ArrayList<GameObject>) 
+            mapObjects.get(LevelLoader.LayerKey.MONSTER);
+    for (GameObject m: monsterArray){
+        monsterController.add(new MonsterController((Monster) m));
+    }    
     // Set up the world!
     objectSetup(this);
   }
@@ -94,6 +97,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     for (MonsterController m: monsterController){
         m.objectSetup(handler);
     }
+    world.setContactListener(this);
   }
   
   @Override
@@ -185,13 +189,16 @@ public class GameController extends AbstractController implements PhysicsDelegat
 @Override
 public void beginContact(Contact contact) {
     // TODO Auto-generated method stub
-    
+    System.out.println(contact.getFixtureA().getUserData().getClass().getName());
 }
 
 @Override
 public void endContact(Contact contact) {
     // TODO Auto-generated method stub
-    
+    if (contact.getFixtureB().getUserData().getClass()==Player.class &&
+            contact.getFixtureA().getUserData().getClass()==Monster.class){
+        System.out.println("montertouch");
+    }
 }
 
 @Override

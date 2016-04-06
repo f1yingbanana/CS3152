@@ -158,7 +158,7 @@ public class MonsterController extends AbstractController {
 	/** is player in the same world*/
 	private boolean setGoal;
 	/** how long does it take to change direction?*/
-	private int period = (int) ((Math.random()+0.1)*200);
+	private int period;
 	
 	private PhysicsDelegate delegate;
 	
@@ -170,8 +170,9 @@ public class MonsterController extends AbstractController {
 	 * @param gmodel is the board state used for tracking
 	 * @param player is the target of this monster
 	 */
-	public MonsterController(Vector2 initialPos, MType mType, int level) {
-		this.monster = new Monster(initialPos, mType, level);
+	public MonsterController(Monster monster) {
+		this.monster = monster;
+		period = monster.span;
 		move = -1;
 	}
 	
@@ -212,15 +213,19 @@ public class MonsterController extends AbstractController {
             else{
                 if (ticks%period < period/4){
                     move = 3;
+                    monster.setRotation(AngleEnum.convertToAngle(AngleEnum.EAST));
                 }
                 else if (ticks%period <period/2){
                     move = 1;
+                    monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
                 }
                 else if (ticks%period < 3*period/4){
                     move = 0;
+                    monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
                 }
                 else{
                     move = 2;
+                    monster.setRotation(AngleEnum.convertToAngle(AngleEnum.WEST));
                 }
             }
             
