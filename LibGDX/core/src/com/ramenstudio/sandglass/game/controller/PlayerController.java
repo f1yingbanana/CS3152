@@ -63,6 +63,17 @@ public class PlayerController extends AbstractController {
 
 	private boolean isReset = false;
 	
+	/** Number of rows in the player image filmstrip */
+	private static final int PLAYER_ROWS = 1;
+	/** Number of columns in the player image filmstrip */
+	private static final int PLAYER_COLS = 8;
+	/** Number of elements in the player image filmstrip */
+	private static final int PLAYER_SIZE = 8;
+	/** Frame cooldown (frames are too quick) */
+	private static final int COOLDOWN = 3;
+	/** Frame counter */
+	private int counter = 0;
+
 	private float rotateAngle;
 
 
@@ -96,6 +107,7 @@ public class PlayerController extends AbstractController {
 		// Handle movement
 		boolean jump = false;
 		float x = moveSpeed * inputController.getHorizontal();
+		player.direction = inputController.getHorizontal();
 		float y = AngleEnum.isVertical(heading) ? vel.y: vel.x;
 		if (inputController.didPressJump() && isGrounded()) {
 			y = jumpVelocity;
@@ -114,9 +126,13 @@ public class PlayerController extends AbstractController {
 			vel.x = jump? -y : y;
 			vel.y = x;
 		}
-		//    if (x != 0) {
-		//      playerSprite.setFrame((playerSprite.getFrame()+1)%playerSprite.getSize());
-		//    }
+	    if (x != 0) {
+	    	counter++;
+	    	if (counter > COOLDOWN) {
+	    		counter = 0;
+		    	player.setFrame((player.getFrame()+1)%PLAYER_SIZE);
+	    	}
+	    }
 		player.getBody().setLinearVelocity(vel);
 		
 		// Handle rotating
