@@ -1,12 +1,14 @@
 package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.view.ui.GameView;
+import com.ramenstudio.sandglass.game.view.ui.OptionsView;
 import com.ramenstudio.sandglass.game.view.ui.PauseView;
 
 /**
@@ -19,13 +21,27 @@ public class UIController extends AbstractController {
   private Stage stage;
   private Skin skin = new Skin(Gdx.files.internal("UI/Skin/uiskin.json"));
   
-  // For caching purposes.
-  private GameState gameState;
+  public enum UIState {
+    PLAYING, PAUSED, OPTIONS, LOST, WON
+  }
   
+  // For caching purposes.
+  private UIState uiState;
+  
+  /**
+   * The main game UI view.
+   */
   public GameView gameView = new GameView(skin);
+  
+  /**
+   * The paused UI view.
+   */
   public PauseView pauseView = new PauseView(skin);
   
-  // Outlets for paused table
+  /**
+   * The options UI view.
+   */
+  public OptionsView optionsView = new OptionsView(skin);
   
   public UIController() {
     stage = new Stage(new ScreenViewport());
@@ -37,7 +53,25 @@ public class UIController extends AbstractController {
     // Add paused UI.
     stage.addActor(pauseView);
     
-    setGameState(GameState.PLAYING);
+    pauseView.optionsButton.addListener(new ChangeListener() {
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        setGameState(UIController.UIState.OPTIONS);
+      }
+    });
+    
+    // Add options UI.
+    stage.addActor(optionsView);
+    
+    optionsView.backButton.addListener(new ChangeListener() {
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        setGameState(UIController.UIState.PAUSED);
+      }
+    });
+    
+    // Finally, let the game play.
+    setGameState(UIState.PLAYING);
   }
   
   /**
@@ -46,25 +80,29 @@ public class UIController extends AbstractController {
    * 
    * @param state is the current play status of the game.
    */
-  public void setGameState(GameState state) {
-    if (state == gameState) {
+  public void setGameState(UIState state) {
+    if (state == uiState) {
       return;
     }
     
     // Hide all tables
     gameView.setVisible(false);
     pauseView.setVisible(false);
+    optionsView.setVisible(false);
     
     switch (state) {
-    case LOST:
+    case PLAYING:
+      gameView.setVisible(true);
       break;
     case PAUSED:
       pauseView.setVisible(true);
       break;
-    case PLAYING:
-      gameView.setVisible(true);
+    case OPTIONS:
+      optionsView.setVisible(true);
       break;
     case WON:
+      break;
+    case LOST:
       break;
     }
   }

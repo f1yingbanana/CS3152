@@ -11,9 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
@@ -70,38 +68,57 @@ public class GameController extends AbstractController implements PhysicsDelegat
     objectSetup(this);
     
     // Set up UI callbacks
-    // Pause Button
-    uiController.gameView.pauseButton.addListener(new ClickListener() {
-      public void clicked(InputEvent event, float x, float y) {
-        uiController.setGameState(GameState.PAUSED);
-        gameModel.setGameState(GameState.PAUSED);
-      }
-    });
-    
-    // Resume Button
-    uiController.pauseView.resumeButton.addListener(new ClickListener() {
-      public void clicked(InputEvent event, float x, float y) {
-        uiController.setGameState(GameState.PLAYING);
-        gameModel.setGameState(GameState.PLAYING);
-      }
-    });
-
-    // Restart Button
-    uiController.pauseView.restartButton.addListener(new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        reset();
-        uiController.setGameState(gameModel.getGameState());
-      }
-    });
-    
-    // Main Menu Button
-    uiController.pauseView.mainMenuButton.addListener(new ClickListener() {
-      public void clicked(InputEvent event, float x, float y) {
-        // TODO go back to main menu.
-      }
-    });
+    uiController.gameView.pauseButton.addListener(pauseButtonCallback);
+    uiController.pauseView.resumeButton.addListener(resumeButtonCallback);
+    uiController.pauseView.restartButton.addListener(restartButtonCallback);
+    uiController.pauseView.mainMenuButton.addListener(mainMenuButtonCallback);
   }
+  
+  /**
+   * UI Callbacks
+   */
+  
+  /**
+   * Called when pause button from the main playing screen is clicked.
+   */
+  private ClickListener pauseButtonCallback = new ClickListener() {
+    @Override
+    public void clicked(InputEvent event, float x, float y) {
+      uiController.setGameState(UIController.UIState.PAUSED);
+      gameModel.setGameState(GameState.PAUSED);
+    }
+  };
+  
+  /**
+   * Called when resume button from the paused screen is clicked.
+   */
+  private ClickListener resumeButtonCallback = new ClickListener() {
+    @Override
+    public void clicked(InputEvent event, float x, float y) {
+      uiController.setGameState(UIController.UIState.PLAYING);
+      gameModel.setGameState(GameState.PLAYING);
+    }
+  };
+  
+  /**
+   * Called when restart button from the paused screen is clicked.
+   */
+  private ClickListener restartButtonCallback = new ClickListener() {
+    @Override
+    public void clicked(InputEvent event, float x, float y) {
+      reset();
+      uiController.setGameState(UIController.UIState.PLAYING);
+    }
+  };
+  
+  /**
+   * Called when main menu button from the paused screen is clicked.
+   */
+  private ClickListener mainMenuButtonCallback = new ClickListener() {
+    public void clicked(InputEvent event, float x, float y) {
+      // TODO go back to main menu.
+    }
+  };
   
   @Override
   public void objectSetup(PhysicsDelegate handler) {

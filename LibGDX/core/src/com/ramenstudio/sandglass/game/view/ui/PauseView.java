@@ -21,7 +21,7 @@ public class PauseView extends Table {
   public final TextButton resumeButton;
 
   /** The option button of the paused screen. */
-  public final TextButton optionButton;
+  public final TextButton optionsButton;
 
   /** The go back to main menu button of the paused screen. */
   public final TextButton mainMenuButton;
@@ -65,16 +65,16 @@ public class PauseView extends Table {
     
     row();
     
-    optionButton = new TextButton("OPTIONS", skin);
+    optionsButton = new TextButton("OPTIONS", skin);
     //optionButton.setDisabled(true);
     //optionButton.setTouchable(Touchable.disabled);
-    add(optionButton).prefSize(160, 50).pad(20);
-    optionButton.addListener(new ClickListener() {
+    add(optionsButton).prefSize(160, 50).pad(20);
+    optionsButton.addListener(new ClickListener() {
       public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        optionButton.setText("-     OPTIONS     -");
+        optionsButton.setText("-     OPTIONS     -");
       }
       public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        optionButton.setText("OPTIONS");
+        optionsButton.setText("OPTIONS");
       }
     });
     
