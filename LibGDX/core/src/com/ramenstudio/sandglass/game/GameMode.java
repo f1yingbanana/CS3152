@@ -54,7 +54,6 @@ public class GameMode extends AbstractMode implements Screen {
   public void render(float delta) {
     // Implements an update-draw loop
     gameplayController.update(delta);
-
     
     // Now we render all objects that we can render
     canvas.clear();
@@ -93,6 +92,8 @@ public class GameMode extends AbstractMode implements Screen {
           debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
       }
     
+    // UI RENDER - special case. UI has to be rendered outside loop.
+    gameplayController.uiController.draw(canvas);
   }
 
   @Override
