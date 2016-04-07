@@ -11,12 +11,12 @@ import com.ramenstudio.sandglass.GDXRoot;
  * @author Jiacong Xu
  */
 public class DesktopLauncher {
-	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 1280;
-		config.height = 720;
-		config.fullscreen = false;
-		
-		new LwjglApplication(new GDXRoot(), config);
-	}
+    public static void main (String[] arg) {
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.width = 1280;
+        config.height = 720;
+        config.fullscreen = false;
+        
+        new LwjglApplication(new GDXRoot(), config);
+    }
 }
