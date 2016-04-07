@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.ramenstudio.sandglass.game.model.AbstractTile;
+import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.GoalTile;
 import com.ramenstudio.sandglass.game.model.Player;
@@ -21,12 +22,9 @@ import com.ramenstudio.sandglass.game.view.*;
  * @author Jonathan Park
  */
 public class PlayerController extends AbstractController {
-	
-	/** The camera controller we are controlling */
-	public CameraController cameraController;
 
 	/** The input controller for player. */
-	private InputController inputController = new InputController();
+	private InputController inputController = InputController.getInstance();
 
 	/** The player we are managing */
 	private Player player;
@@ -66,6 +64,8 @@ public class PlayerController extends AbstractController {
 	private AngleEnum heading = AngleEnum.NORTH;
 
 	private boolean isReset = false;
+	
+	private float rotateAngle;
 
 	private enum AngleEnum {
 		NORTH,
@@ -180,7 +180,6 @@ public class PlayerController extends AbstractController {
 	 */
 	public PlayerController() {
 		player = new Player(new Vector2(10, 25));
-		cameraController = new CameraController(new Vector2(5, 5));
 	}
 
 	@Override
@@ -188,16 +187,15 @@ public class PlayerController extends AbstractController {
 		delegate = handler;
 		activatePhysics(handler, player);
 		player.getBody().setFixedRotation(true);
-
-		cameraController.setTarget(player);
-		cameraController.objectSetup(handler);
 	}
 
 	@Override
 	public void update(float dt) {
-		cameraController.update(dt);
 		inputController.update(dt);
 
+		// Reset variables
+		rotateAngle = 0f;
+		
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.getBody().getLinearVelocity();
 		Vector2 grav = delegate.getGravity();
@@ -247,7 +245,7 @@ public class PlayerController extends AbstractController {
 			float newY;
 
 			if (diff > 0) {
-				cameraController.rotate(-90);
+				rotateAngle = -90;
 				delegate.setGravity(delegate.getGravity().rotate(90));
 
 				if (heading == AngleEnum.NORTH) {
@@ -276,7 +274,7 @@ public class PlayerController extends AbstractController {
 				heading = AngleEnum.flipCounterClockWise(heading);
 
 			} else {
-				cameraController.rotate(90);
+				rotateAngle = 90;;
 				delegate.setGravity(delegate.getGravity().rotate(-90));
 
 				if (heading == AngleEnum.NORTH) {
@@ -306,7 +304,7 @@ public class PlayerController extends AbstractController {
 		else if (inputController.didPressFlip() && canFlip() && !jump) {
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
-				cameraController.rotate(180);
+				rotateAngle = 180;
 				float flipDist = (AngleEnum.isVertical(heading)) ? 
 						under.getSize().y + size.y : under.getSize().x + size.y;
 
@@ -334,12 +332,12 @@ public class PlayerController extends AbstractController {
 		oneFrameOverlapHandler = null;
 	}
 
-	/**
-	 * @return the matrix transformation from world to screen. Used in drawing.
-	 */
-	public Matrix4 world2ScreenMatrix() {
-		return cameraController.world2ScreenMatrix();
-	}
+//	/**
+//	 * @return the matrix transformation from world to screen. Used in drawing.
+//	 */
+//	public Matrix4 world2ScreenMatrix() {
+//		return cameraController.world2ScreenMatrix();
+//	}
 
 	@Override
 	public void draw(GameCanvas canvas) {
@@ -369,6 +367,17 @@ public class PlayerController extends AbstractController {
 	 */
 	public boolean isReset() {
 		return isReset;
+	}
+	
+	/**
+	 * @return the angle to rotate the camera by
+	 */
+	public float getRotateAngle() {
+		return rotateAngle;
+	}
+	
+	public GameObject getPlayer() {
+		return player;
 	}
 
 	/**
@@ -558,12 +567,5 @@ public class PlayerController extends AbstractController {
 			}
 			return true;
 		}
-	}
-
-	/**
-	 * @return the camera used by the player.
-	 */
-	public OrthographicCamera getMainCamera() {
-		return cameraController.getCamera();
 	}
 }
