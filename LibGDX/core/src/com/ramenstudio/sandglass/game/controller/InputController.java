@@ -31,12 +31,18 @@ public class InputController extends AbstractController {
 	private boolean pressedReset;
 	/** The mouse position on screen. */
 	private Vector2 mousePos;
+	
+	private static InputController singletonInstance = new InputController();
 
-	public InputController() {
+	private InputController() {
 		// TODO: Constructor
 		prevJump = prevFlip = false;
 	}
 
+	public static InputController getInstance() {
+	    return singletonInstance;
+	}
+	
 	/**
 	 * Returns the amount of sideways movement. 
 	 *

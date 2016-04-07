@@ -10,7 +10,7 @@ import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 
 /**
- * A camera controller that supports complex behavior of the camera, like
+ * A viewCamera controller that supports complex behavior of the viewCamera, like
  * smooth follow, panning to important objects temporarily, position weighting,
  * etc.
  * 
@@ -21,11 +21,12 @@ public class CameraController extends AbstractController {
   // The game object to follow
   private GameObject target;
   
-  // The underlying math-doing camera.
-  private GameCamera camera;
+  // The underlying math-doing viewCamera.
+  private GameCamera viewCamera;
   
-  // The position used to store the position to move the camera to. Due to
-  // orthogonal camera only offers translate instead of set position, we can't
+  
+  // The position used to store the position to move the viewCamera to. Due to
+  // orthogonal viewCamera only offers translate instead of set position, we can't
   // initialize box2d body with initial position, but set it afterwards.
   private Vector2 initPos;
   
@@ -42,26 +43,26 @@ public class CameraController extends AbstractController {
   private static final float TRANSLATING_FACTOR = 0.05f;
   private static final float ROTATING_FACTOR = 0.05f;
   
-  /** The standard for camera speed. */
+  /** The standard for viewCamera speed. */
   private static final float FRAME_TIME = 1f/60f;
   
   // For debugging purposes
   private int count = 0;
   
-  public boolean okeydokey = false;
+  private boolean okeydokey = false;
   
   /**
-   * Creates a camera controller and initializes the game camera.
+   * Creates a viewCamera controller and initializes the game viewCamera.
    */
   public CameraController() {
     float ratio = (float)Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-    camera = new GameCamera(new Vector2(9 * ratio, 9));
+    viewCamera = new GameCamera(new Vector2(9 * ratio, 9));
   }
   
   /**
-   * Creates a camera controller with the given starting position.
+   * Creates a viewCamera controller with the given starting position.
    * 
-   * @param initialPosition is the position where the camera is created.
+   * @param initialPosition is the position where the viewCamera is created.
    */
   public CameraController(Vector2 initialPosition) {
     this();
@@ -72,20 +73,20 @@ public class CameraController extends AbstractController {
    * @return the current matrix used to translate world space position to screen
    */
   public Matrix4 world2ScreenMatrix() {
-    return camera.getCamera().combined;
+    return viewCamera.getCamera().combined;
   }
   
   /**
-   * Sets the target object for the camera to follow.
+   * Sets the target object for the viewCamera to follow.
    * 
-   * @param targetObject is the game object that the camera will smoothly pan to
+   * @param targetObject is the game object that the viewCamera will smoothly pan to
    */
   public void setTarget(GameObject targetObject) {
     target = targetObject;
   }
   
 //  /**
-//   * Sets the smoothing factor for the camera.
+//   * Sets the smoothing factor for the viewCamera.
 //   * 
 //   * @param factor	the smoothing factor
 //   * 				Must be between 0 and 1 inclusive
@@ -95,7 +96,7 @@ public class CameraController extends AbstractController {
 //  }
 	  
   /**
-   * Rotates the camera view given the amount, with an option to animate.
+   * Rotates the viewCamera view given the amount, with an option to animate.
    * 
    * @param angle is the amount to rotate in degrees.
    * @param isInstant is the flag for whether rotation should be instant.
@@ -106,18 +107,19 @@ public class CameraController extends AbstractController {
   }
   
   /**
-   * Rotates the camera view given the amount with animation.
+   * Rotates the viewCamera view given the amount with animation.
    * 
    * @param angle is the amount to rotate in degrees.
    */
   public void rotate(float angle) {
       goal = goal + angle;
       instant = false;
-      if (angle - 90 < 1f) {
-          float viewportWidth = camera.getCamera().viewportWidth;
-          float viewportHeight = camera.getCamera().viewportHeight;
-          camera.getCamera().viewportHeight = viewportWidth;
-          camera.getCamera().viewportWidth = viewportHeight;
+      if (Math.abs(Math.abs(angle) - 90) < 1f) {
+		  OrthographicCamera realCamera = viewCamera.getCamera();
+	      float viewportWidth = realCamera.viewportWidth;
+	      float viewportHeight = realCamera.viewportHeight;
+	      realCamera.viewportHeight = viewportWidth;
+	      realCamera.viewportWidth = viewportHeight;
           okeydokey = !okeydokey;
       }
 //      else {
@@ -126,35 +128,40 @@ public class CameraController extends AbstractController {
 //      }
   }
   
+  public void swapCameraDimensions() {
+	  if (okeydokey) {
+		  OrthographicCamera realCamera = viewCamera.getCamera();
+	      float viewportWidth = realCamera.viewportWidth;
+	      float viewportHeight = realCamera.viewportHeight;
+	      realCamera.viewportHeight = viewportWidth;
+	      realCamera.viewportWidth = viewportHeight;
+	  }
+  }
+  
   @Override
   public void update(float dt) {
 	float translateTime = (dt/FRAME_TIME) * TRANSLATING_FACTOR;
 	float rotateTime = (dt/FRAME_TIME) * ROTATING_FACTOR;
 
-	float camAngle = camera.getRotation();
+	float camAngle = viewCamera.getRotation();
 	if (goal != camAngle) {
 		if (instant) {
-		    camera.setRotation(goal);
+		    viewCamera.setRotation(goal);
 		} else {
 			float newAngle = (goal - camAngle)*rotateTime + camAngle;
-		    camera.setRotation(newAngle);
+		    viewCamera.setRotation(newAngle);
 		}
 	}
 	Vector2 targPos = target.getPosition();
-    Vector2 camPos = camera.getPosition();
+    Vector2 camPos = viewCamera.getPosition();
 	if (targPos != camPos) {
 		float x = (targPos.x - camPos.x)*translateTime + camPos.x;
 	    float y = (targPos.y - camPos.y)*translateTime + camPos.y;
 	    Vector2 deltaPos = new Vector2(x,y);
-	    camera.setPosition(deltaPos);
+	    viewCamera.setPosition(deltaPos);
 	}
 	
-	if (okeydokey) {
-        float viewportWidth = camera.getCamera().viewportWidth;
-        float viewportHeight = camera.getCamera().viewportHeight;
-        camera.getCamera().viewportHeight = viewportWidth;
-        camera.getCamera().viewportWidth = viewportHeight;
-	}
+	swapCameraDimensions();
 	
 	// TESTING
     count++;
@@ -169,17 +176,17 @@ public class CameraController extends AbstractController {
 
   @Override
   public void objectSetup(PhysicsDelegate handler) {
-    // Creates the camera object.
-    camera.setBody(handler.addBody(camera.getBodyDef()));
-    camera.setPosition(initPos);
+    // Creates the viewCamera object.
+    viewCamera.setBody(handler.addBody(viewCamera.getBodyDef()));
+    viewCamera.setPosition(initPos);
     goal = 0;
 //    initPos = null;
   }
 
   /**
-   * @return the camera managed by this controller
+   * @return the viewCamera managed by this controller
    */
-  public OrthographicCamera getCamera() {
-    return camera.getCamera();
+  public OrthographicCamera getViewCamera() {
+    return viewCamera.getCamera();
   }
 }

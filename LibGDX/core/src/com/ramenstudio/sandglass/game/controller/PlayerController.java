@@ -1,7 +1,5 @@
 package com.ramenstudio.sandglass.game.controller;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
@@ -12,6 +10,7 @@ import com.ramenstudio.sandglass.game.model.GoalTile;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.view.*;
+import com.ramenstudio.sandglass.game.controller.AngleEnum;
 
 /**
  * Handles player input and manages the player object.
@@ -21,12 +20,9 @@ import com.ramenstudio.sandglass.game.view.*;
  * @author Jonathan Park
  */
 public class PlayerController extends AbstractController {
-	
-	/** The camera controller we are controlling */
-	public CameraController cameraController;
 
 	/** The input controller for player. */
-	private InputController inputController = new InputController();
+	private InputController inputController = InputController.getInstance();
 
 	/** The player we are managing */
 	private Player player;
@@ -78,121 +74,14 @@ public class PlayerController extends AbstractController {
 	/** Frame counter */
 	private int counter = 0;
 
-	private enum AngleEnum {
-		NORTH,
-		EAST,
-		SOUTH,
-		WEST;
+	private float rotateAngle;
 
-		/**
-		 * Returns the new compass direction of the
-		 * provided direction but rotated 180 degrees/flipped.
-		 * 
-		 * @param thisEnum is the direction to rotate 180 degrees/flip.
-		 * @return the angle rotated 180 degrees/flipped.
-		 */
-		private static AngleEnum flipEnum(AngleEnum thisEnum) {
-			if (thisEnum == NORTH) {
-				return SOUTH;
-			}
-			else if (thisEnum == SOUTH) {
-				return NORTH;
-			}
-			else if (thisEnum == WEST) {
-				return EAST;
-			}
-			else {
-				return WEST;
-			}
-		}
-
-		/**
-		 * Returns the new compass direction of the
-		 * provided direction but rotated 90 degrees counterclockwise.
-		 * 
-		 * @param thisEnum is the direction to rotate 90 degrees counterclockwise.
-		 * @return the angle rotated 90 degrees counterclockwise.
-		 */
-		private static AngleEnum flipCounterClockWise(AngleEnum thisEnum) {
-			if (thisEnum == NORTH) {
-				return WEST;
-			}
-			else if (thisEnum == EAST) {
-				return NORTH;
-			}
-			else if (thisEnum == SOUTH) {
-				return EAST;
-			}
-			else {
-				return SOUTH;
-			}
-		}
-
-		/**
-		 * Returns the new compass direction of the 
-		 * provided direction but rotated 90 degrees clockwise.
-		 * 
-		 * @param thisEnum is the direction to rotate 90 degrees clockwise.
-		 * @return the angle rotated 90 degrees clockwise.
-		 */
-		private static AngleEnum flipClockWise(AngleEnum thisEnum) {
-			if (thisEnum == NORTH) {
-				return EAST;
-			}
-			else if (thisEnum == EAST) {
-				return SOUTH;
-			}
-			else if (thisEnum == SOUTH) {
-				return WEST;
-			}
-			else {
-				return NORTH;
-			}
-		}
-
-		/**
-		 * Converts the compass direction to an actual angle in radians.
-		 * 
-		 * @param thisEnum to convert to an angle
-		 * @return the angle in radians
-		 */
-		private static float convertToAngle(AngleEnum thisEnum) {
-			if (thisEnum == NORTH) {
-				return 0;
-			}
-			else if (thisEnum == WEST) {
-				return (float) (Math.PI/2);
-			}
-			else if (thisEnum == SOUTH) {
-				return (float) (Math.PI);
-			}
-			else {
-				return (float) (3*Math.PI/2);
-			}
-		}
-
-		/**
-		 * Whether the given compass direction is vertical.
-		 * 
-		 * @param   thisEnum to evaluate
-		 * @return  true if thisEnum points North or South, false otherwise 
-		 */
-		private static boolean isVertical (AngleEnum thisEnum) {
-			if (thisEnum == NORTH || thisEnum == SOUTH) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	}
 
 	/**
 	 * Default constructor for player object.
 	 */
 	public PlayerController() {
 		player = new Player(new Vector2(10, 25));
-		cameraController = new CameraController(new Vector2(5, 5));
-		
 	}
 
 	@Override
@@ -200,16 +89,15 @@ public class PlayerController extends AbstractController {
 		delegate = handler;
 		activatePhysics(handler, player);
 		player.getBody().setFixedRotation(true);
-
-		cameraController.setTarget(player);
-		cameraController.objectSetup(handler);
 	}
 
 	@Override
 	public void update(float dt) {
-		cameraController.update(dt);
 		inputController.update(dt);
 
+		// Reset variables
+		rotateAngle = 0f;
+		
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.getBody().getLinearVelocity();
 		Vector2 grav = delegate.getGravity();
@@ -263,7 +151,7 @@ public class PlayerController extends AbstractController {
 			float newY;
 
 			if (diff > 0) {
-				cameraController.rotate(-90);
+				rotateAngle = -90;
 				delegate.setGravity(delegate.getGravity().rotate(90));
 
 				if (heading == AngleEnum.NORTH) {
@@ -292,7 +180,7 @@ public class PlayerController extends AbstractController {
 				heading = AngleEnum.flipCounterClockWise(heading);
 
 			} else {
-				cameraController.rotate(90);
+				rotateAngle = 90;;
 				delegate.setGravity(delegate.getGravity().rotate(-90));
 
 				if (heading == AngleEnum.NORTH) {
@@ -322,7 +210,7 @@ public class PlayerController extends AbstractController {
 		else if (inputController.didPressFlip() && canFlip() && !jump) {
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
-				cameraController.rotate(180);
+				rotateAngle = 180;
 				float flipDist = (AngleEnum.isVertical(heading)) ? 
 						under.getSize().y + size.y : under.getSize().x + size.y;
 
@@ -350,12 +238,12 @@ public class PlayerController extends AbstractController {
 		oneFrameOverlapHandler = null;
 	}
 
-	/**
-	 * @return the matrix transformation from world to screen. Used in drawing.
-	 */
-	public Matrix4 world2ScreenMatrix() {
-		return cameraController.world2ScreenMatrix();
-	}
+//	/**
+//	 * @return the matrix transformation from world to screen. Used in drawing.
+//	 */
+//	public Matrix4 world2ScreenMatrix() {
+//		return cameraController.world2ScreenMatrix();
+//	}
 
 	@Override
 	public void draw(GameCanvas canvas) {
@@ -385,6 +273,17 @@ public class PlayerController extends AbstractController {
 	 */
 	public boolean isReset() {
 		return isReset;
+	}
+	
+	/**
+	 * @return the angle to rotate the camera by
+	 */
+	public float getRotateAngle() {
+		return rotateAngle;
+	}
+	
+	public GameObject getPlayer() {
+		return player;
 	}
 
 	/**
@@ -570,12 +469,5 @@ public class PlayerController extends AbstractController {
 			}
 			return true;
 		}
-	}
-
-	/**
-	 * @return the camera used by the player.
-	 */
-	public OrthographicCamera getMainCamera() {
-		return cameraController.getCamera();
 	}
 }

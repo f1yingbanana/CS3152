@@ -70,18 +70,14 @@ public class GameMode extends AbstractMode implements Screen {
 
     // MAP RENDER
 //    OrthographicCamera tempCamera = gameplayController.getMainCamera();
-    tiledMapRenderer.setView(gameplayController.getMainCamera());
     
-    if (gameplayController.playerController.cameraController.okeydokey) {
-        float viewportWidth = gameplayController.getMainCamera().viewportWidth;
-        float viewportHeight = gameplayController.getMainCamera().viewportHeight;
-        gameplayController.getMainCamera().viewportHeight = viewportWidth;
-        gameplayController.getMainCamera().viewportWidth = viewportHeight;
-    }
+    tiledMapRenderer.setView(gameplayController.getViewCamera());
+    
     
     tiledMapRenderer.render();
     
-    // Draw Map
+    gameplayController.getCameraController().swapCameraDimensions();
+    
     canvas.begin(gameplayController.world2ScreenMatrix());
     gameplayController.draw(canvas);
     canvas.end();
