@@ -8,17 +8,18 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ramenstudio.sandglass.game.model.GameModel;
+import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
-import com.ramenstudio.sandglass.game.model.TurnTile;
-import com.ramenstudio.sandglass.game.model.WallTile;
 
 /**
  * This takes care of the game initialization, maintains update and drawing
@@ -52,6 +53,10 @@ public class GameController extends AbstractController implements PhysicsDelegat
   // The player controller for the game
   private PlayerController playerController;
   
+  // The UI controller for the game - special case. Do not draw UI inside game
+  // controller.
+  public UIController uiController = new UIController();
+  
   public LevelLoader loader = new LevelLoader();
   
   private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
@@ -60,21 +65,50 @@ public class GameController extends AbstractController implements PhysicsDelegat
     playerController = new PlayerController();
     
     mapObjects = loader.loadLevel("example.tmx");
+    
     // Set up the world!
     objectSetup(this);
+    
+    // Set up UI callbacks
+    // Pause Button
+    uiController.pauseButton.addListener(new ClickListener() {
+      public void clicked(InputEvent event, float x, float y) {
+        uiController.setGameState(GameState.PAUSED);
+        gameModel.setGameState(GameState.PAUSED);
+      }
+    });
+    
+    // Resume Button
+    uiController.resumeButton.addListener(new ClickListener() {
+      public void clicked(InputEvent event, float x, float y) {
+        uiController.setGameState(GameState.PLAYING);
+        gameModel.setGameState(GameState.PLAYING);
+      }
+    });
+
+    // Restart Button
+    uiController.restartButton.addListener(new ChangeListener() {
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        reset();
+        uiController.setGameState(gameModel.getGameState());
+      }
+    });
+    
+    // Main Menu Button
+    uiController.mainMenuButton.addListener(new ClickListener() {
+      public void clicked(InputEvent event, float x, float y) {
+        // TODO go back to main menu.
+      }
+    });
   }
   
   @Override
   public void objectSetup(PhysicsDelegate handler) {
-    // TESTING AREA. CREATE SOME OBJECTS FOR FUN!
     List<GameObject> mapTiles = mapObjects.get(LevelLoader.LayerKey.GROUND);
     
     for (GameObject o : mapTiles) {
       activatePhysics(handler, o);
-//      if (o instanceof TurnTile) {
-//    	  TurnTile temp = (TurnTile) o;
-//    	  System.out.println(temp.getPosition());
-//      }
     }
     
     playerController.objectSetup(handler);
@@ -83,17 +117,21 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public void update(float dt) {
     playerController.update(dt);
+    uiController.update(dt);
+    
     stepPhysics(dt);
+    
     if (playerController.isReset()) {
-    	reset();
+      reset();
     }
   }
   
   private void reset() {
-	  	world.dispose();
-		world = new World(new Vector2(0, -9.8f), true);
-		playerController = new PlayerController();
-		objectSetup(this);
+    world.dispose();
+    world = new World(new Vector2(0, -9.8f), true);
+    playerController = new PlayerController();
+    gameModel = new GameModel();
+    objectSetup(this);
   }
   
   /**
@@ -104,8 +142,8 @@ public class GameController extends AbstractController implements PhysicsDelegat
     float frameTime = Math.min(dt, WORLD_MAX_STEP);
     accumulator += frameTime;
     while (accumulator >= WORLD_STEP) {
-        world.step(WORLD_STEP, WORLD_VELOC, WORLD_POSIT);
-        accumulator -= WORLD_STEP;
+    world.step(WORLD_STEP, WORLD_VELOC, WORLD_POSIT);
+    accumulator -= WORLD_STEP;
     }
   }
 
@@ -138,7 +176,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
    */
   @Override
   public void setGravity(Vector2 gravity) {
-	  world.setGravity(gravity);
+    world.setGravity(gravity);
   }
 
   @Override

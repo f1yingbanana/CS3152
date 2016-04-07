@@ -18,13 +18,13 @@ public abstract class AbstractController {
    * 
    * @param dt is the delta time since last update is called.
    */
-  public abstract void update(float dt);
+  public void update(float dt) {}
   
   /**
    * Draws the content of this controller on the given canvas.
    * @param canvas provides API for rendering textures and such.
    */
-  public abstract void draw(GameCanvas canvas);
+  public void draw(GameCanvas canvas) {}
   
   /**
    * This is called immediately after the constructor so the controller may
@@ -33,7 +33,7 @@ public abstract class AbstractController {
    * @param handler is a controller implementing necessary methods for object
    * insertion.
    */
-  public abstract void objectSetup(PhysicsDelegate handler);
+  public void objectSetup(PhysicsDelegate handler) {}
   
   /**
    * Uses the physics delegate to insert the game object into the world, and

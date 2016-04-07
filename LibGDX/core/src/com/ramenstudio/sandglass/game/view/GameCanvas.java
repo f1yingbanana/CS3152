@@ -80,8 +80,8 @@ public class GameCanvas {
   }
   
   public void draw(TextureRegion image, Vector2 origin, Vector2 size, 
-			Vector2 worldOrigin, float angle) {
-		spriteBatch.draw(image, origin.x, origin.y, worldOrigin.x, worldOrigin.y, size.x, size.y,
-				1, 1, angle);
-	}
+    Vector2 worldOrigin, float angle) {
+    spriteBatch.draw(image, origin.x, origin.y, worldOrigin.x, worldOrigin.y, 
+      size.x, size.y, 1, 1, angle);
+  }
 }
