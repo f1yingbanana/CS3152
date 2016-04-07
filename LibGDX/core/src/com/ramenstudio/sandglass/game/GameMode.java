@@ -4,13 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.ramenstudio.sandglass.game.controller.GameController;
-import com.ramenstudio.sandglass.game.controller.PlayerController.AngleEnum;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.AbstractMode;
 
@@ -69,11 +69,16 @@ public class GameMode extends AbstractMode implements Screen {
     shapeRenderer.end();
 
     // MAP RENDER
-    AngleEnum heading = gameplayController.getHeading();
-    if (!AngleEnum.isVertical(heading)) {
-        // TODO: use the heading to change view of renderer
-    }
+//    OrthographicCamera tempCamera = gameplayController.getMainCamera();
     tiledMapRenderer.setView(gameplayController.getMainCamera());
+    
+    if (gameplayController.playerController.cameraController.okeydokey) {
+        float viewportWidth = gameplayController.getMainCamera().viewportWidth;
+        float viewportHeight = gameplayController.getMainCamera().viewportHeight;
+        gameplayController.getMainCamera().viewportHeight = viewportWidth;
+        gameplayController.getMainCamera().viewportWidth = viewportHeight;
+    }
+    
     tiledMapRenderer.render();
     
     // Draw Map

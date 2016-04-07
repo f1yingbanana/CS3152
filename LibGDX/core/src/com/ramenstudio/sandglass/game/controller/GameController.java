@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
-import com.ramenstudio.sandglass.game.controller.PlayerController.AngleEnum;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -51,7 +50,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
   private GameModel gameModel = new GameModel();
   
   // The player controller for the game
-  private PlayerController playerController;
+  public PlayerController playerController;
   
   public LevelLoader loader = new LevelLoader();
   
@@ -88,6 +87,8 @@ public class GameController extends AbstractController implements PhysicsDelegat
     if (playerController.isReset()) {
     	reset();
     }
+    
+    // Call updates
   }
   
   private void reset() {
@@ -159,13 +160,6 @@ public class GameController extends AbstractController implements PhysicsDelegat
    */
   public OrthographicCamera getMainCamera() {
     return playerController.getMainCamera();
-  }
-  
-  /**
-   * @return the heading of the camera
-   */
-  public AngleEnum getHeading() {
-      return playerController.getHeading();
   }
 
 }
