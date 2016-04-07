@@ -30,9 +30,13 @@ public class UIController extends AbstractController {
   private Table playingTable;
   private Table pausedTable;
 
+  // Outlets for playing table
   public final TextButton pauseButton = new TextButton("PAUSE", skin);
+  
+  // Outlets for paused table
   public final TextButton restartButton = new TextButton("RESTART", skin);
   public final TextButton resumeButton = new TextButton("RESUME", skin);
+  public final TextButton optionButton = new TextButton("OPTIONS", skin);
   public final TextButton mainMenuButton = new TextButton("MAIN MENU", skin);
   
   public UIController() {
@@ -65,7 +69,7 @@ public class UIController extends AbstractController {
     restartButton.addListener(new ClickListener() {
       @Override
       public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        restartButton.setText("-  RESTART  -");
+        restartButton.setText("-    RESTART    -");
       }
       
       @Override
@@ -80,22 +84,37 @@ public class UIController extends AbstractController {
 
     resumeButton.addListener(new ClickListener() {
       public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        resumeButton.setText("-   RESUME   -");
+        resumeButton.setText("-     RESUME     -");
       }
       public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
         resumeButton.setText("RESUME");
       }
     });
+
+    pausedTable.row();
+    
+    //optionButton.setDisabled(true);
+    //optionButton.setTouchable(Touchable.disabled);
+    pausedTable.add(optionButton).prefSize(160, 50).pad(20);
+    
+    optionButton.addListener(new ClickListener() {
+      public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+        optionButton.setText("-     OPTIONS     -");
+      }
+      public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+        optionButton.setText("OPTIONS");
+      }
+    });
     
     pausedTable.row();
     
-    mainMenuButton.setDisabled(true);
-    mainMenuButton.setTouchable(Touchable.disabled);
+    //mainMenuButton.setDisabled(true);
+    //mainMenuButton.setTouchable(Touchable.disabled);
     pausedTable.add(mainMenuButton).prefSize(160, 50).pad(20);
-
+    
     mainMenuButton.addListener(new ClickListener() {
       public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        mainMenuButton.setText("- MAIN MENU -");
+        mainMenuButton.setText("-   MAIN MENU   -");
       }
       public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
         mainMenuButton.setText("MAIN MENU");
