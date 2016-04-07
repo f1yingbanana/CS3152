@@ -10,7 +10,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.ramenstudio.sandglass.game.controller.GameController;
-import com.ramenstudio.sandglass.game.controller.PlayerController.AngleEnum;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.AbstractMode;
 
@@ -69,14 +68,15 @@ public class GameMode extends AbstractMode implements Screen {
     shapeRenderer.end();
 
     // MAP RENDER
-    AngleEnum heading = gameplayController.getHeading();
-    if (!AngleEnum.isVertical(heading)) {
-        // TODO: use the heading to change view of renderer
-    }
-    tiledMapRenderer.setView(gameplayController.getMainCamera());
+//    OrthographicCamera tempCamera = gameplayController.getMainCamera();
+    
+    tiledMapRenderer.setView(gameplayController.getViewCamera());
+    
+    
     tiledMapRenderer.render();
     
-    // Draw Map
+    gameplayController.getCameraController().swapCameraDimensions();
+    
     canvas.begin(gameplayController.world2ScreenMatrix());
     gameplayController.draw(canvas);
     canvas.end();
