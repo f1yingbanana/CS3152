@@ -71,7 +71,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     
     // Set up UI callbacks
     // Pause Button
-    uiController.pauseButton.addListener(new ClickListener() {
+    uiController.gameView.pauseButton.addListener(new ClickListener() {
       public void clicked(InputEvent event, float x, float y) {
         uiController.setGameState(GameState.PAUSED);
         gameModel.setGameState(GameState.PAUSED);
@@ -79,7 +79,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     });
     
     // Resume Button
-    uiController.resumeButton.addListener(new ClickListener() {
+    uiController.pauseView.resumeButton.addListener(new ClickListener() {
       public void clicked(InputEvent event, float x, float y) {
         uiController.setGameState(GameState.PLAYING);
         gameModel.setGameState(GameState.PLAYING);
@@ -87,7 +87,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     });
 
     // Restart Button
-    uiController.restartButton.addListener(new ChangeListener() {
+    uiController.pauseView.restartButton.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         reset();
@@ -96,7 +96,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     });
     
     // Main Menu Button
-    uiController.mainMenuButton.addListener(new ClickListener() {
+    uiController.pauseView.mainMenuButton.addListener(new ClickListener() {
       public void clicked(InputEvent event, float x, float y) {
         // TODO go back to main menu.
       }
