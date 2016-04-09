@@ -43,7 +43,7 @@ public class Player extends GameObject implements Drawable {
 
 		Texture player = new Texture(Gdx.files.internal("walkspritesheet.png"));
 		playerSprite = new FilmStrip(player,1,8,8);
-		setTexture(player);
+//		setTexture(player);
 		setSize(new Vector2(0.8f, 1.5f));
 		getBodyDef().position.set(initialPos);
 		getBodyDef().type = BodyDef.BodyType.DynamicBody;

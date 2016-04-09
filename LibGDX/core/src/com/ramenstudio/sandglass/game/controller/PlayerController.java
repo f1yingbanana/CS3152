@@ -102,8 +102,7 @@ public class PlayerController extends AbstractController {
 		Vector2 vel = player.getBody().getLinearVelocity();
 		Vector2 grav = delegate.getGravity();
 		Vector2 size = player.getSize();
-		//    FilmStrip playerSprite = player.getFilmStrip();
-
+		
 		// Handle movement
 		boolean jump = false;
 		float x = moveSpeed * inputController.getHorizontal();
@@ -161,17 +160,8 @@ public class PlayerController extends AbstractController {
 					newX = blockPos.x - blockSize - size.x/2;
 					newY = blockPos.y - blockSize + size.y/2 + 0.015f;
 				} else if (heading == AngleEnum.SOUTH) {
-					System.out.println("here");
-					System.out.println(blockPos);
-					System.out.println(blockSize);
-					System.out.println(size);
-
 					newX = blockPos.x - blockSize + size.y/2 + 0.015f;
-					System.out.println(newX);
-
 					newY = blockPos.y + blockSize + size.x/2;
-					System.out.println(newY);
-
 				} else {
 					newX = blockPos.x + blockSize + size.x/2;
 					newY = blockPos.y + blockSize - size.y/2 - 0.015f;
@@ -180,7 +170,7 @@ public class PlayerController extends AbstractController {
 				heading = AngleEnum.flipCounterClockWise(heading);
 
 			} else {
-				rotateAngle = 90;;
+				rotateAngle = 90;
 				delegate.setGravity(delegate.getGravity().rotate(-90));
 
 				if (heading == AngleEnum.NORTH) {
@@ -199,8 +189,8 @@ public class PlayerController extends AbstractController {
 
 				heading = AngleEnum.flipClockWise(heading);
 			}
-			newX = Math.round(newX*1000.0f)/1000.0f;
-			newY = Math.round(newY*1000.0f)/1000.0f;
+//			newX = Math.round(newX*1000.0f)/1000.0f;
+//			newY = Math.round(newY*1000.0f)/1000.0f;
 			player.setPosition(new Vector2(newX, newY));
 			player.getBody().setLinearVelocity(0,0);
 			player.setRotation(AngleEnum.convertToAngle(heading));
@@ -211,17 +201,19 @@ public class PlayerController extends AbstractController {
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
 				rotateAngle = 180;
-				float flipDist = (AngleEnum.isVertical(heading)) ? 
-						under.getSize().y + size.y : under.getSize().x + size.y;
+				float tilePos;
+				float offset = 0.1f + size.y/2;;
+				if (AngleEnum.isVertical(heading)) {
+					tilePos = under.getPosition().y;
+					pos.y = heading == AngleEnum.SOUTH ? 
+							tilePos + offset : tilePos - offset;
+				} else {
+					tilePos = under.getPosition().x;
+					pos.x = heading == AngleEnum.WEST ? 
+							tilePos + offset : tilePos - offset;
+				}
 
-				grav.setLength(1.0f);
-				grav.scl(flipDist + 2*0.015f);
-				pos.x += grav.x;
-				pos.y += grav.y;
-				pos.x = Math.round(pos.x*1000.0f)/1000.0f;
-				pos.y = Math.round(pos.y*1000.0f)/1000.0f;
 				heading = AngleEnum.flipEnum(heading);
-
 				player.setPosition(pos);
 				player.setRotation(AngleEnum.convertToAngle(heading));
 				delegate.setGravity(delegate.getGravity().rotate(180));
