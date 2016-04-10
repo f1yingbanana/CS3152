@@ -172,7 +172,7 @@ public class LevelLoader {
                     String mType = (String) this_tile.getProperties().get("mType");
                     int span = Integer.parseInt((String) this_tile.getProperties().get("span"));
                     float spcf = Float.parseFloat((String) this_tile.getProperties().get("spcf"));
-                    Monster monster = new Monster(new Vector2(i+0.5f, j+0.5f), 
+                    Monster monster = new Monster(new Vector2(i+0.25f, j+0.25f), 
                             MType.valueOf(mType),level, span, spcf);
                     objArr.add(monster);
                 }

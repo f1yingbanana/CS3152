@@ -171,6 +171,8 @@ public abstract class MonsterController extends AbstractController {
 	
 	@Override
 	public void update(float dt){
+	    System.out.println(action);
+	    getAction(dt);
 		monster.update(action);
 	}
 	

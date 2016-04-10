@@ -121,10 +121,6 @@ public class GameController extends AbstractController implements PhysicsDelegat
         m.getAction(dt);
     }
     
-    for (OverMonController m: overMonController){
-        m.getAction(dt);
-    }
-    
     for (MonsterController m: underMonController){
         m.update(dt);
     }
@@ -240,7 +236,7 @@ public void endContact(Contact contact) {
     // TODO Auto-generated method stub
     if (contact.getFixtureB().getUserData().getClass()==Player.class &&
             contact.getFixtureA().getUserData().getClass()==Monster.class){
-        System.out.println("montertouch");
+        System.out.println("monstertouch");
     }
 }
 

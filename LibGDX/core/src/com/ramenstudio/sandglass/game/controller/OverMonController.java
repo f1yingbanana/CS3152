@@ -87,9 +87,6 @@ public class OverMonController extends MonsterController {
                 
             }
         }
-        else{
-        action = 3;
-        }
     }
     /**
      * Returns the action selected by this MonsterController
@@ -103,24 +100,11 @@ public class OverMonController extends MonsterController {
         ticks++;
         // Do not need to rework ourselves every frame. Just every 10 ticks.
             if (setGoal){
-                if (true){
                     String gdd = isGrounded() ? "is Grounded" : "not Grounded";
                     String wdd = isWall()? "is Walled" : "not Walled";
                     System.out.println(gdd);
                     System.out.println(wdd);
-                    move = 3;
-                }
-                else {
-                    move = 3;
-                }
-            }
-            else{
-                if (ticks%100<50) {
-                    move = 0;
-                }
-                else{
-                    move =1 ;
-                }
+                    move = 2;
             }
         action = move;
         
