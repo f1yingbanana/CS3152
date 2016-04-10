@@ -19,9 +19,6 @@ public class OverMonController extends MonsterController {
     // Instance Attributes
     /** is player in the same world*/
     public boolean setGoal;
-    
-    private PlayerController target;
-
     /**
      * Creates an AIController for the monster with the given id.
      *
@@ -34,19 +31,24 @@ public class OverMonController extends MonsterController {
         super(monster);
     }
     
-    public void setTarget(PlayerController player){
-        target = player;
-    }
+
     
     public boolean isGrounded() {
         Vector2 g = delegate.getGravity().nor();
-        Vector2 footPos = monster.getBody().getPosition().sub(0,monster.getSize().y*0.5f);
+        Vector2 footPos = monster.getBody().getPosition().sub(monster.getSize().x*0.5f,monster.getSize().y*0.5f);
         Vector2 endPos = footPos.cpy().add(g.cpy().scl(1.0f));
 
+        Vector2 footPos2 = monster.getBody().getPosition().sub(-monster.getSize().x,monster.getSize().y*0.5f);
+        Vector2 endPos2 = footPos2.cpy().add(g.cpy().scl(1.0f));
+        System.out.println("MONSTER: "+ monster.getBody().getPosition().toString());
+        System.out.println("LEFTCORNER: "+ endPos2.toString());
+        System.out.println("RIGHTCORNER:"+ endPos.toString());
         RayCastHandler handler = new RayCastHandler();
         delegate.rayCast(handler, footPos, endPos);
+        RayCastHandler handler2 = new RayCastHandler();
+        delegate.rayCast(handler2, footPos2, endPos2);
         oneFrameRayHandler = handler;
-        return handler.isGrounded;
+        return handler.isGrounded || handler2.isGrounded;
     }
     
     public boolean isWall(){
@@ -63,6 +65,31 @@ public class OverMonController extends MonsterController {
             delegate.rayCast(handler2, rightPos, rightEnd);
             oneFrameRayHandler = handler;
             return handler.isGrounded || handler2.isGrounded;
+    }
+    
+    public void rotateMonster(){
+        if (!isGrounded()){
+            if (monster.getBody().getLinearVelocity().x >0){
+                monster.setRotation((float) -(Math.PI/2));
+            }
+            else {
+                monster.setRotation((float) (Math.PI/2));
+            }
+            action = 1;
+        }
+        else if (isWall()){
+            if (monster.getBody().getLinearVelocity().x >0){
+                monster.setRotation((float) (Math.PI/2));
+                
+            }
+            else {
+                monster.setRotation((float) -(Math.PI/2));
+                
+            }
+        }
+        else{
+        action = 3;
+        }
     }
     /**
      * Returns the action selected by this MonsterController
@@ -81,34 +108,18 @@ public class OverMonController extends MonsterController {
                     String wdd = isWall()? "is Walled" : "not Walled";
                     System.out.println(gdd);
                     System.out.println(wdd);
-                    if (!isGrounded()){
-                        if (monster.getBody().getLinearVelocity().x >0){
-                            monster.setRotation((float) -(Math.PI/2));
-                        }
-                        else {
-                            monster.setRotation((float) (Math.PI/2));
-                        }
-                        move = 4;
-                    }
-                    else if (isWall()){
-                        if (monster.getBody().getLinearVelocity().x >0){
-                            monster.setRotation((float) (Math.PI/2));
-                        }
-                        else {
-                            monster.setRotation((float) -(Math.PI/2));
-                        }
-                    }
-                    else{
-                    move = 2;
-                    }
+                    move = 3;
                 }
                 else {
                     move = 3;
                 }
             }
             else{
-                if (ticks%100==0) {
-                    move = (int) Math.floor(Math.random()*4);
+                if (ticks%100<50) {
+                    move = 0;
+                }
+                else{
+                    move =1 ;
                 }
             }
         action = move;
@@ -117,6 +128,7 @@ public class OverMonController extends MonsterController {
     
     @Override
     public void update(float dt){
+        rotateMonster();
         super.update(dt);
     }
     

@@ -141,6 +141,8 @@ public abstract class MonsterController extends AbstractController {
 	
 	public int period;
 	
+	public PlayerController target;
+	
 	public PhysicsDelegate delegate;
 	
 	public RayCastHandler oneFrameRayHandler;
@@ -171,6 +173,10 @@ public abstract class MonsterController extends AbstractController {
 	public void update(float dt){
 		monster.update(action);
 	}
+	
+    public void setTarget(PlayerController player){
+        target = player;
+    }
 
 	@Override
 	public void draw(GameCanvas canvas) {

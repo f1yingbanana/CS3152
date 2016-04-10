@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.ramenstudio.sandglass.game.controller.PlayerController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
 import com.badlogic.gdx.Gdx;
@@ -55,7 +56,7 @@ public class Monster extends GameObject implements Drawable{
 	/** The period of changing direction*/
 	public int span;
 	/** Speed coefficient*/
-    private float speed_coeff;
+    private float speed_coeff; 
 
 	/**
 	 * Create monster # id at the given position.
@@ -115,9 +116,8 @@ public class Monster extends GameObject implements Drawable{
                 FixtureDef underFixtureDef = new FixtureDef();
                 PolygonShape underShape = new PolygonShape();
                 underShape.setAsBox(0.4f, 0.4f);
-                underFixtureDef.density = 10.0f;
+                underFixtureDef.density = 100.0f;
                 underFixtureDef.shape = underShape;
-                underFixtureDef.isSensor = true;
                 fixtureDefs[0] = underFixtureDef;
                 underFixtureDef.friction = 10;
             }
@@ -144,6 +144,8 @@ public class Monster extends GameObject implements Drawable{
 		
 		isAlive = true;
 	}
+	
+
 	
 	/** 
 	 * Returns the monster level 

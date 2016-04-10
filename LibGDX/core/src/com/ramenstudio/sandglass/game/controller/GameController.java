@@ -109,6 +109,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     }
     for (UnderMonController m: underMonController){
         m.objectSetup(handler);
+        m.setTarget(playerController);
     }
     world.setContactListener(this);
   }

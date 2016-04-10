@@ -71,4 +71,9 @@ public class UnderMonController extends MonsterController {
             }
         action = move;
     }
+    
+    @Override
+    public void update(float dt){
+        super.update(dt);
+    }
 }
