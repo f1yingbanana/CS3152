@@ -36,10 +36,10 @@ public class Player extends GameObject implements Drawable {
     FixtureDef fixtureDef = new FixtureDef();
     PolygonShape shape = new PolygonShape();
     shape.setAsBox(0.4f, 0.35f);
-    fixtureDef.density = 10.0f;
+    fixtureDef.density = 100.0f;
     fixtureDef.shape = shape;
     fixtureDefs[0] = fixtureDef;
-    fixtureDef.friction = 0;
+    fixtureDef.friction = 0.0f;
     
     CircleShape c = new CircleShape();
     c.setRadius(0.4f);

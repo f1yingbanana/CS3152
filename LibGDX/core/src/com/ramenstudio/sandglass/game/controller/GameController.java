@@ -14,7 +14,6 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
@@ -24,7 +23,6 @@ import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Monster;
-import com.ramenstudio.sandglass.game.model.Monster.MType;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
@@ -61,7 +59,9 @@ public class GameController extends AbstractController implements PhysicsDelegat
   // The player controller for the game
   private PlayerController playerController;
   
-  private Array<MonsterController> monsterController = new Array<MonsterController>();
+  private Array<OverMonController> overMonController = new Array<OverMonController>();
+  
+  private Array<UnderMonController> underMonController = new Array<UnderMonController>();
   
   public LevelLoader loader = new LevelLoader();
   
@@ -69,13 +69,20 @@ public class GameController extends AbstractController implements PhysicsDelegat
   
   public GameController() {
     playerController = new PlayerController();
+    //System.out.println(playerController.getPlayer()==null);
 
     mapObjects = loader.loadLevel("example.tmx");
-    ArrayList<GameObject> monsterArray = (ArrayList<GameObject>) 
-            mapObjects.get(LevelLoader.LayerKey.MONSTER);
-    for (GameObject m: monsterArray){
-        monsterController.add(new MonsterController((Monster) m));
+    ArrayList<GameObject> umArray = (ArrayList<GameObject>) 
+            mapObjects.get(LevelLoader.LayerKey.UNDER_M);
+    ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
+            mapObjects.get(LevelLoader.LayerKey.OVER_M);
+    for (GameObject m: umArray){
+        underMonController.add(new UnderMonController((Monster) m));
+    }
+    for (GameObject m: omArray){
+        overMonController.add(new OverMonController((Monster) m));
     }    
+    
     // Set up the world!
     objectSetup(this);
   }
@@ -94,7 +101,13 @@ public class GameController extends AbstractController implements PhysicsDelegat
     }
     
     playerController.objectSetup(handler);
-    for (MonsterController m: monsterController){
+    
+    for (OverMonController m: overMonController){
+        m.objectSetup(this);
+        m.setTarget(playerController);
+        m.setGoal=true;
+    }
+    for (UnderMonController m: underMonController){
         m.objectSetup(handler);
     }
     world.setContactListener(this);
@@ -103,9 +116,23 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public void update(float dt) {
     playerController.update(dt);
-    for (MonsterController m: monsterController){
+    for (MonsterController m: underMonController){
+        m.getAction(dt);
+    }
+    
+    for (OverMonController m: overMonController){
+        m.getAction(dt);
+    }
+    
+    for (MonsterController m: underMonController){
         m.update(dt);
     }
+    
+    for (OverMonController m: overMonController){
+        m.update(dt);
+        m.setGoal= !playerController.isUnder;
+    }
+    
     stepPhysics(dt);
     if (playerController.isReset()) {
     	reset();
@@ -116,6 +143,18 @@ public class GameController extends AbstractController implements PhysicsDelegat
 	  	world.dispose();
 		world = new World(new Vector2(0, -9.8f), true);
 		playerController = new PlayerController();
+		underMonController.clear();
+		overMonController.clear();
+		ArrayList<GameObject> umArray = (ArrayList<GameObject>) 
+	            mapObjects.get(LevelLoader.LayerKey.UNDER_M);
+	    ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
+	            mapObjects.get(LevelLoader.LayerKey.OVER_M);
+	    for (GameObject m: umArray){
+	        underMonController.add(new UnderMonController((Monster) m));
+	    }
+	    for (GameObject m: omArray){
+	        overMonController.add(new OverMonController((Monster) m));
+	    }
 		objectSetup(this);
   }
   
@@ -135,7 +174,10 @@ public class GameController extends AbstractController implements PhysicsDelegat
   @Override
   public void draw(GameCanvas canvas) {
     playerController.draw(canvas);
-    for (MonsterController m: monsterController){
+    for (UnderMonController m: underMonController){
+        m.draw(canvas);
+    }
+    for (OverMonController m: overMonController){
         m.draw(canvas);
     }
     gameModel.draw(canvas);
@@ -189,7 +231,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
 @Override
 public void beginContact(Contact contact) {
     // TODO Auto-generated method stub
-    System.out.println(contact.getFixtureA().getUserData().getClass().getName());
+    
 }
 
 @Override

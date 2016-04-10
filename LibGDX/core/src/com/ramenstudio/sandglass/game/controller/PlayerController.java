@@ -44,7 +44,7 @@ public class PlayerController extends AbstractController {
 	private float jumpVelocity = 5.0f;
 
 	/** Saving an instance of the delegate */
-	private PhysicsDelegate delegate;
+	public PhysicsDelegate delegate;
 
 	// Variables concerned with turning at corners.
 
@@ -181,6 +181,10 @@ public class PlayerController extends AbstractController {
 	public PlayerController() {
 		player = new Player(new Vector2(10, 25));
 		cameraController = new CameraController(new Vector2(5, 5));
+	}
+	
+	public Player getPlayer(){
+	    return player;
 	}
 
 	@Override

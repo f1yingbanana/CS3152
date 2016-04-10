@@ -10,8 +10,6 @@
  */
 
 package com.ramenstudio.sandglass.game.model;
-
-import java.util.Random;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -20,8 +18,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.*;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
@@ -35,49 +31,31 @@ public class Monster extends GameObject implements Drawable{
 		/*For under world*/
 		UNDER
 	}
-	/** Static random number generator shared across all monsters */
-	private static final Random random = new Random();
 
 	// CONSTANTS FOR monster HANDLING
 	/** How far forward this monster can move in a single turn */
 	private static final float MOVE_SPEED = 3.5f;
-	/** How much this monster can turn in a single turn */
-	private static final float TURN_SPEED = 15.0f;
-	/** For animating turning movement */
-	private static final float RAND_FACTOR = (2.0f / 128.0f);
-	private static final float RAND_OFFSET = (1.0f / 128.0f);
-	private static final float FULL_CIRCLE = 360.0f;
-	private static final float HALF_CIRCLE = 180.0f;
-	/** Time increment used by shader */
-	private static final float SPEED_DAMPNING = 0.75f;
-	private static final float EPSILON_CLAMP = 0.01f;
-	
+	private static float JUMP_VEL = 5.0f;
+		
 	// Instance Attributes
 	/** A unique identifier; used to decouple classes. */
 	private int id;
 	/** Monster type*/
-	private MType mType;
+	public MType mType;
 	/** Monster Level*/
 	private int level;
-	/** Position */
-	private Vector2 position;
 	/** Initial Position*/
 	public Vector2 initial;
-	/** Velocity */
-	private Vector2 velocity;
 	/** Goal */
 	private Vector2 goal;
 	/** The current angle of orientation (in degrees) */
 	private float angle;
 	/** Boolean to track if we are dead yet */
 	private boolean isAlive;
-	
-	/** The sound currently associated with this monster */
-	private Sound sound;
-	/** The associated sound cue (if monster is making a sound). */
-	private long sndcue;
-	
+	/** The period of changing direction*/
 	public int span;
+	/** Speed coefficient*/
+    private float speed_coeff;
 
 	/**
 	 * Create monster # id at the given position.
@@ -86,28 +64,46 @@ public class Monster extends GameObject implements Drawable{
 	 * @param x The initial x-coordinate of the monster
 	 * @param y The initial y-coordinate of the monster
 	 */
-	public Monster(Vector2 initialPos, MType mType, int level, int span) {
+	public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf) {
 		super();
 		this.span = span;
+		speed_coeff = spcf;
 		initial = initialPos;
-		switch (mType){
-        case OVER:
+        if (mType == Monster.MType.OVER){
             setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
-            fixtureDefs = new FixtureDef[1];
+            fixtureDefs = new FixtureDef[3];
             setSize(new Vector2(0.8f, 1.2f));
             getBodyDef().position.set(initialPos);
-            getBodyDef().type = BodyDef.BodyType.DynamicBody;
+            getBodyDef().type = BodyDef.BodyType.KinematicBody;
+            
             
             
             FixtureDef fixtureDef = new FixtureDef();
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox(0.4f, 0.6f);
-            fixtureDef.density = 1.0f;
+            shape.setAsBox(0.4f, 0.35f);
+            fixtureDef.density = 100.0f;
             fixtureDef.shape = shape;
             fixtureDefs[0] = fixtureDef;
-            fixtureDef.friction = 0;
-            break;
-        case UNDER:
+            fixtureDef.friction = 0.0f;
+            
+            
+            CircleShape c = new CircleShape();
+            c.setRadius(0.3f);
+            c.setPosition(new Vector2(0, -0.35f));
+            FixtureDef fixtureDef2 = new FixtureDef();
+            fixtureDef2.shape = c;
+            fixtureDefs[1] = fixtureDef2;
+            
+
+            CircleShape c2 = new CircleShape();
+            c2.setRadius(0.3f);
+            c2.setPosition(new Vector2(0, 0.35f));
+            FixtureDef fixtureDef3 = new FixtureDef();
+            fixtureDef3.shape = c2;
+            fixtureDefs[2] = fixtureDef3;
+            
+        }
+        else{
             if (level ==1) {
                 setTexture(new Texture(Gdx.app.getFiles().internal("undermonster1.png")));
                 fixtureDefs = new FixtureDef[1];
@@ -121,6 +117,7 @@ public class Monster extends GameObject implements Drawable{
                 underShape.setAsBox(0.4f, 0.4f);
                 underFixtureDef.density = 10.0f;
                 underFixtureDef.shape = underShape;
+                underFixtureDef.isSensor = true;
                 fixtureDefs[0] = underFixtureDef;
                 underFixtureDef.friction = 10;
             }
@@ -138,23 +135,14 @@ public class Monster extends GameObject implements Drawable{
                 under2fixtureDef.density = 1.0f;
                 under2fixtureDef.shape = under2shape;
                 fixtureDefs[0] = under2fixtureDef;
-                under2fixtureDef.friction = 0;
-                break;
+                under2fixtureDef.friction = 0;   
             }
-            break;
-        default:
-            break;
         }
 		this.mType = mType;
 		this.level = level;
-		
-		velocity = new Vector2();
 		angle  = 90.0f;
 		
 		isAlive = true;
-		
-		sound = null;
-		sndcue = -1;
 	}
 	
 	/** 
@@ -175,26 +163,8 @@ public class Monster extends GameObject implements Drawable{
 		return id;
 	}
 	
-	/**
-	 * Returns the x-coordinate of the monster position
-	 *
-	 * @return the x-coordinate of the monster position
-	 */
-	public float getX() {
-		return position.x;
-	}
 
-	/**
-	 * Returns the y-coordinate of the monster position
-	 *
-	 * @return the y-coordinate of the monster position
-	 */
-	public float getY() {
-		return position.y;
-	}
-	
-	/**
-	 * Returns the monster ypte
+	/* Returns the monster ypte
 	 *
 	 * @return the monster type
 	 */
@@ -202,60 +172,6 @@ public class Monster extends GameObject implements Drawable{
 		return mType;
 	}
 	
-	/**
-	 * Returns the position of this monster.
-	 *
-	 * This method returns a reference to the underlying monster position vector.
-	 * Changes to this object will change the position of the monster.
-	 *
-	 * @return the position of this monster.
-	 */
-	public Vector2 getPosition() {
-		return position;
-	}
-
-	/**
-	 * Returns the x-coordinate of the monster velocity
-	 *
-	 * @return the x-coordinate of the monster velocity
-	 */
-	public float getVX() {
-		return velocity.x;
-	}
-
-	/**
-	 * Returns the y-coordinate of the monster velocity
-	 *
-	 * @return the y-coordinate of the monster velocity
-	 */
-	public float getVY() {
-		return velocity.y;
-	}
-
-	/**
-	 * Returns the velocity of this monster.
-	 *
-	 * This method returns a reference to the underlying monster velocity vector.
-	 * Changes to this object will change the velocity of the monster.
-	 *
-	 * @return the velocity of this monster.
-	 */	
-	public Vector2 getVelocity() {
-		return velocity;
-	}
-	
-	/**
-	 * Returns the current facing angle of the monster
-	 *
-	 * This value cannot be changed externally.  It can only
-	 * be changed by update()
-	 *
-	 * @return the current facing angle of the monster
-	 */
-	public float getAngle() {
-		return angle;
-	}
-
 	/**
 	 * Returns the goal of this monster
 	 *
@@ -276,41 +192,7 @@ public class Monster extends GameObject implements Drawable{
 		this.goal = goal;
 	}
 	
-	/**
-	 * Sets the x-coordinate of the monster position
-	 *
-	 * @param value the x-coordinate of the monster position
-	 */
-	public void setX(float value) {
-		position.x = value;
-	}
 
-	/**
-	 * Sets the y-coordinate of the monster position
-	 *
-	 * @param value the y-coordinate of the monster position
-	 */
-	public void setY(float value) {
-		position.y = value;
-	}
-
-	/**
-	 * Sets the x-coordinate of the monster velocity
-	 *
-	 * @param value the x-coordinate of the monster velocity
-	 */
-	public void setVX(float value) {
-		velocity.x = value;
-	}
-	
-	/**
-	 * Sets the y-coordinate of the monster velocity
-	 *
-	 * @param value the y-coordinate of the monster velocity
-	 */
-	public void setVY(float value) {
-		velocity.y = value;
-	}
 	
 	/**
 	 * Returns whether or not the monster is alive.
@@ -326,7 +208,7 @@ public class Monster extends GameObject implements Drawable{
 	}
 	
 	public boolean isAtGoal(){
-	    return position.epsilonEquals(goal, 0.0f);
+	    return this.getBody().getPosition().epsilonEquals(goal, 0.0f);
 	}
 	
 	/**
@@ -359,43 +241,41 @@ public class Monster extends GameObject implements Drawable{
 	}
 
 	/**
-	 * Updates this monster position (and weapons fire) according to the control code.
-	 *
-	 * This method updates the velocity and the weapon status, but it does not change
-	 * the position or create photons.  The later interact with other objects (position
-	 * can cause collisions) so they are processed in a controller.  Method in a model
-	 * object should only modify state of that specific object and no others.
-	 * 
-	 * 0 is for up, 1 is for down, 2 is for left, 3 is for right
+	 * Updates this monster position according to the control code.
 	 *
 	 * @param controlCode The movement controlCode (from InputController).
 	 */
 	public void update(int move) {
-		if (!isAlive) {
-			return;
-		}
+	    //System.out.println(body.getPosition().toString());
+		Vector2 velocity = body.getLinearVelocity();
 		switch (move){
 		case 0:
-			velocity.y = MOVE_SPEED;
-			velocity.x = 0;
+			velocity.y = speed_coeff*MOVE_SPEED;
 			break;
 		case 1:
-			velocity.y = -MOVE_SPEED;
-			velocity.x = 0;
+			velocity.y = -speed_coeff*MOVE_SPEED;
 			break;
 		case 2:
-			velocity.x = -MOVE_SPEED;
-			velocity.y = 0;
+			velocity.x = -speed_coeff*MOVE_SPEED;
 			break;
 		case 3:
-			velocity.x = MOVE_SPEED;
-			velocity.y = 0;
+			velocity.x = speed_coeff*MOVE_SPEED;
 			break;
+		case 4:
+		    velocity.y = -speed_coeff*MOVE_SPEED;
+		    velocity.x = 0;
+		    break;
+		case 5:
+		    getBody().applyLinearImpulse(new Vector2(-MOVE_SPEED*0.1f,10), 
+                    getBody().getPosition(), true);
+		    break;
 		default:
 			break;
 		}
-		this.getBody().setLinearVelocity(velocity);
+		velocity.rotate(getRotation());
+		getBody().setLinearVelocity(velocity);
 	}
+	
 
 	@Override
 	public void draw(GameCanvas canvas){
