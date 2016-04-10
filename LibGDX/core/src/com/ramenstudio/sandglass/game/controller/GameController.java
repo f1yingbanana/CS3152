@@ -6,10 +6,6 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.QueryCallback;
-import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -25,7 +21,7 @@ import com.ramenstudio.sandglass.game.model.GameObject;
  * 
  * @author Jiacong Xu
  */
-public class GameController extends AbstractController implements PhysicsDelegate {
+public class GameController extends AbstractController {
 
   // The physics world object
   public World world = new World(new Vector2(0, -9.8f), true);
@@ -69,7 +65,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     mapObjects = loader.loadLevel("example.tmx");
     
     // Set up the world!
-    objectSetup(this);
+    objectSetup(world);
     
     // Set up UI callbacks
     uiController.gameView.pauseButton.addListener(pauseButtonCallback);
@@ -125,16 +121,16 @@ public class GameController extends AbstractController implements PhysicsDelegat
   };
   
   @Override
-  public void objectSetup(PhysicsDelegate handler) {
+  public void objectSetup(World world) {
     List<GameObject> mapTiles = mapObjects.get(LevelLoader.LayerKey.GROUND);
     
     for (GameObject o : mapTiles) {
-      activatePhysics(handler, o);
+      activatePhysics(world, o);
     }
     
-    playerController.objectSetup(handler);
+    playerController.objectSetup(world);
     cameraController.setTarget(playerController.getPlayer());
-    cameraController.objectSetup(handler);
+    cameraController.objectSetup(world);
   }
   
   @Override
@@ -160,7 +156,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     world = new World(new Vector2(0, -9.8f), true);
     playerController = new PlayerController();
     gameModel = new GameModel();
-    objectSetup(this);
+    objectSetup(world);
   }
   
   /**
@@ -188,37 +184,6 @@ public class GameController extends AbstractController implements PhysicsDelegat
    */
   public Matrix4 world2ScreenMatrix() {
     return cameraController.world2ScreenMatrix();
-  }
-  
-  
-  @Override
-  public Body addBody(BodyDef definition) {
-    return world.createBody(definition);
-  }
-
-  @Override
-  public Vector2 getGravity() {
-    return world.getGravity().cpy();
-  }
-  
-  /**
-   * @return a copy of the current gravity.
-   */
-  @Override
-  public void setGravity(Vector2 gravity) {
-    world.setGravity(gravity);
-  }
-
-  @Override
-  public void rayCast(RayCastCallback callback, Vector2 point1, 
-    Vector2 point2) {
-    world.rayCast(callback, point1, point2);
-  }
-
-  @Override
-  public void QueryAABB(QueryCallback callback, float lowerX, float lowerY,
-    float upperX, float upperY) {
-    world.QueryAABB(callback, lowerX, lowerY, upperX, upperY);
   }
 
   /**

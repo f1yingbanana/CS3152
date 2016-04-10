@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameCamera;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -175,9 +176,9 @@ public class CameraController extends AbstractController {
 	public void draw(GameCanvas canvas) {}
 
 	@Override
-	public void objectSetup(PhysicsDelegate handler) {
+	public void objectSetup(World world) {
 		// Creates the viewCamera object.
-		viewCamera.setBody(handler.addBody(viewCamera.getBodyDef()));
+		viewCamera.setBody(world.createBody(viewCamera.getBodyDef()));
 		viewCamera.setPosition(initPos);
 		goal = 0;
 		//    initPos = null;
