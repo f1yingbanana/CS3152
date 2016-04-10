@@ -146,9 +146,22 @@ public class GameController extends AbstractController implements PhysicsDelegat
     }
     
     playerController.update(dt);
+    
     uiController.update(dt);
     
     stepPhysics(dt);
+    
+    //update game model
+    gameModel.setWorldPosition(!playerController.isUnder());
+    gameModel.incrementTime();
+    if(gameModel.allPiecesCollected()){
+    	gameModel.getGate().setOpen();
+    }
+    //TODO: implement collision checking for gate
+    //if(gameModel.getGate().isOpen() && )
+    if (gameModel.outOfTime()){
+    	reset();
+    }
     
     if (playerController.isReset()) {
       reset();

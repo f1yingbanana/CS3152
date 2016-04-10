@@ -265,6 +265,13 @@ public class PlayerController extends AbstractController {
 	}
 
 	/**
+	 * @return whether the player is in the underworld
+	 */
+	public boolean isUnder() {
+		return isUnder;
+	}
+	
+	/**
 	 * Returns whether or not the game should be reset, for various reasons
 	 * including but not limited to hitting a GoalTile or pressing the
 	 * reset button.
