@@ -28,6 +28,7 @@ public class UnderMonController extends MonsterController {
     public UnderMonController(Monster monster) {
         super(monster);
         
+        
     }
     /**
      * Returns the action selected by this MonsterController
