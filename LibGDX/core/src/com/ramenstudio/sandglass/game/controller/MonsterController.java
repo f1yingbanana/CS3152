@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.ramenstudio.sandglass.game.model.AbstractTile;
 import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Monster.Move;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -21,7 +22,7 @@ import com.ramenstudio.sandglass.game.view.GameCanvas;
  * 
  */
 public abstract class MonsterController extends AbstractController {
-	
+
 
 	public enum AngleEnum {
         NORTH,
@@ -137,7 +138,7 @@ public abstract class MonsterController extends AbstractController {
 	/** The number of ticks since we started this controller */
 	public float ticks;
 	/** is player in the same world*/	
-	public int action;
+	public Move action;
 	
 	public int period;
 	
@@ -156,7 +157,7 @@ public abstract class MonsterController extends AbstractController {
 	 */
 	public MonsterController(Monster monster) {
 		this.monster = monster;
-		action = -1;
+		action = Move.NONE;
 		period = monster.span;
 	}
 	
@@ -171,8 +172,6 @@ public abstract class MonsterController extends AbstractController {
 	
 	@Override
 	public void update(float dt){
-	    System.out.println(action);
-	    getAction(dt);
 		monster.update(action);
 	}
 	

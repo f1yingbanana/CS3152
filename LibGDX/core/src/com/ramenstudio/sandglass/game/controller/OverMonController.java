@@ -9,6 +9,7 @@
 package com.ramenstudio.sandglass.game.controller;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Monster.Move;
 
 /** 
  * InputController corresponding to AI control.
@@ -34,6 +35,8 @@ public class OverMonController extends MonsterController {
 
     
     public boolean isGrounded() {
+        
+        
         Vector2 g = delegate.getGravity().nor();
         Vector2 footPos = monster.getBody().getPosition().sub(monster.getSize().x*0.5f,monster.getSize().y*0.5f);
         Vector2 endPos = footPos.cpy().add(g.cpy().scl(1.0f));
@@ -68,24 +71,33 @@ public class OverMonController extends MonsterController {
     }
     
     public void rotateMonster(){
-        if (!isGrounded()){
-            if (monster.getBody().getLinearVelocity().x >0){
-                monster.setRotation((float) -(Math.PI/2));
+        boolean gdd = isGrounded();
+        boolean wdd = isWall();
+        switch (monster.angle){
+        case EAST:
+            if (action==Move.UP && !gdd){
+                monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
+                action = Move.LEFT;
             }
-            else {
-                monster.setRotation((float) (Math.PI/2));
+            else if (action==Move.UP && wdd){
+                monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
+                action = Move.RIGHT;
             }
-            action = 1;
-        }
-        else if (isWall()){
-            if (monster.getBody().getLinearVelocity().x >0){
-                monster.setRotation((float) (Math.PI/2));
-                
+            else if (action==Move.DOWN && !gdd){
+                monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
+                action = Move.LEFT;
             }
-            else {
-                monster.setRotation((float) -(Math.PI/2));
-                
-            }
+            else if (action==Move.DOWN)
+            break;
+        case NORTH:
+            break;
+        case SOUTH:
+            break;
+        case WEST:
+            break;
+        default:
+            break;
+        
         }
     }
     /**
@@ -96,7 +108,7 @@ public class OverMonController extends MonsterController {
      */
     public void getAction(float dt) {
         // Increment the number of ticks.
-        int move = 0;
+        Move move = Move.NONE;
         ticks++;
         // Do not need to rework ourselves every frame. Just every 10 ticks.
             if (setGoal){
@@ -104,10 +116,12 @@ public class OverMonController extends MonsterController {
                     String wdd = isWall()? "is Walled" : "not Walled";
                     System.out.println(gdd);
                     System.out.println(wdd);
-                    move = 2;
+                    move = Move.LEFT;
+                if (!isGrounded()){
+                    move = Move.DOWN;
+                }
             }
-        action = move;
-        
+        action = move;  
     }
     
     @Override

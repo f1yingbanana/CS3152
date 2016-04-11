@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.ramenstudio.sandglass.game.controller.MonsterController.AngleEnum;
 import com.ramenstudio.sandglass.game.controller.PlayerController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
@@ -25,6 +26,14 @@ import com.badlogic.gdx.graphics.Texture;
  * A model class representing a monster.
  */
 public class Monster extends GameObject implements Drawable{
+    
+    public enum Move {
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN,
+        NONE;
+    }
 
 	public static enum MType {
 		/* For over world */
@@ -50,7 +59,7 @@ public class Monster extends GameObject implements Drawable{
 	/** Goal */
 	private Vector2 goal;
 	/** The current angle of orientation (in degrees) */
-	private float angle;
+	public AngleEnum angle;
 	/** Boolean to track if we are dead yet */
 	private boolean isAlive;
 	/** The period of changing direction*/
@@ -140,7 +149,7 @@ public class Monster extends GameObject implements Drawable{
         }
 		this.mType = mType;
 		this.level = level;
-		angle  = 90.0f;
+		angle = AngleEnum.NORTH;
 		
 		isAlive = true;
 	}
@@ -247,34 +256,31 @@ public class Monster extends GameObject implements Drawable{
 	 *
 	 * @param controlCode The movement controlCode (from InputController).
 	 */
-	public void update(int move) {
+	public void update(Move move) {
 	    //System.out.println(body.getPosition().toString());
 		Vector2 velocity = body.getLinearVelocity();
 		switch (move){
-		case 0:
-			velocity.y = speed_coeff*MOVE_SPEED;
-			break;
-		case 1:
-			velocity.y = -speed_coeff*MOVE_SPEED;
-			break;
-		case 2:
-			velocity.x = -speed_coeff*MOVE_SPEED;
-			break;
-		case 3:
-			velocity.x = speed_coeff*MOVE_SPEED;
-			break;
-		case 4:
-		    velocity.y = -speed_coeff*MOVE_SPEED;
-		    velocity.x = 0;
-		    break;
-		case 5:
-		    getBody().applyLinearImpulse(new Vector2(-MOVE_SPEED*0.1f,10), 
-                    getBody().getPosition(), true);
-		    break;
-		default:
-			break;
+        case DOWN:
+            velocity.x = 0;
+            velocity.y = -speed_coeff*MOVE_SPEED;
+            break;
+        case UP:
+            velocity.x = 0;
+            velocity.y = speed_coeff*MOVE_SPEED;
+            break;
+        case LEFT:
+            velocity.x = -speed_coeff*MOVE_SPEED;
+            velocity.y = 0;
+            break;
+        case RIGHT:
+            velocity.x = speed_coeff*MOVE_SPEED;
+            velocity.y = 0;
+            break;
+        case NONE:
+            break;
+        default:
+            break;
 		}
-		velocity.rotate(getRotation());
 		getBody().setLinearVelocity(velocity);
 	}
 	
