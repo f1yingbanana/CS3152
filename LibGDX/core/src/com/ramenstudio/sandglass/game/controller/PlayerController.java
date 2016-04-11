@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
+import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.AbstractTile;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.GoalTile;
@@ -40,7 +41,7 @@ public class PlayerController extends AbstractController {
 	private float jumpVelocity = 5.0f;
 
 	/** Saving an instance of the delegate */
-	private PhysicsDelegate delegate;
+	private World world;
 
 	// Variables concerned with turning at corners.
 
@@ -62,32 +63,59 @@ public class PlayerController extends AbstractController {
 	private AngleEnum heading = AngleEnum.NORTH;
 
 	private boolean isReset = false;
+
+	private float rotateAngle;
+
+	// Variables for animation
 	
 	/** Number of rows in the player image filmstrip */
-	private static final int PLAYER_ROWS = 1;
+	private static final int FILMSTRIP_ROWS = 1;
 	/** Number of columns in the player image filmstrip */
-	private static final int PLAYER_COLS = 8;
+	private static final int FILMSTRIP_COLS = 8;
 	/** Number of elements in the player image filmstrip */
-	private static final int PLAYER_SIZE = 8;
+	private static final int FILMSTRIP_SIZE = 8;
+	
+	/** The frame number for neutral stance. */
+    private static final int NEUTRAL_START = 0;
+    /** The frame number for beginning a jump. */
+    private static final int JUMP_START = 0;
+    /** The frame number for ending a jump. */
+    private static final int JUMP_END = 0;
+    /** The frame number for beginning a walk. */
+    private static final int WALK_START = 0;
+    /** The frame number for ending a walk. */
+    private static final int WALK_END = 0;
+	
+    /** The enum for animation states. */
+    public enum State {
+    	NEUTRAL, JUMP, WALK 
+    }
+    
+    /** The current animation state. */
+    private State state = State.NEUTRAL;
+    /** The next animation state. */
+    private State next;
+    
+    /** The direction the player is facing, relative to the camera. */
+    private AngleEnum direction = AngleEnum.EAST;
+    
 	/** Frame cooldown (frames are too quick) */
 	private static final int COOLDOWN = 3;
 	/** Frame counter */
 	private int counter = 0;
-
-	private float rotateAngle;
-
 
 	/**
 	 * Default constructor for player object.
 	 */
 	public PlayerController() {
 		player = new Player(new Vector2(10, 25));
+		player.setFrame(NEUTRAL_START);
 	}
 
 	@Override
-	public void objectSetup(PhysicsDelegate handler) {
-		delegate = handler;
-		activatePhysics(handler, player);
+	public void objectSetup(World world) {
+		this.world = world;
+		activatePhysics(world, player);
 		player.getBody().setFixedRotation(true);
 	}
 
@@ -97,20 +125,22 @@ public class PlayerController extends AbstractController {
 
 		// Reset variables
 		rotateAngle = 0f;
-		
+
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.getBody().getLinearVelocity();
-		Vector2 grav = delegate.getGravity();
+		Vector2 grav = world.getGravity();
 		Vector2 size = player.getSize();
-		
+
 		// Handle movement
 		boolean jump = false;
 		float x = moveSpeed * inputController.getHorizontal();
-		player.direction = inputController.getHorizontal();
+		direction = (x > 0)? AngleEnum.EAST : AngleEnum.WEST;
+//		player.direction = inputController.getHorizontal();
 		float y = AngleEnum.isVertical(heading) ? vel.y: vel.x;
 		if (inputController.didPressJump() && isGrounded()) {
 			y = jumpVelocity;
 			jump = true;
+			next = State.JUMP;
 		}
 		if (heading == AngleEnum.NORTH) {
 			vel.x = x;
@@ -125,15 +155,18 @@ public class PlayerController extends AbstractController {
 			vel.x = jump? -y : y;
 			vel.y = x;
 		}
-	    if (x != 0) {
-	    	counter++;
-	    	if (counter > COOLDOWN) {
-	    		counter = 0;
-		    	player.setFrame((player.getFrame()+1)%PLAYER_SIZE);
-	    	}
-	    }
+		if (x != 0 && isGrounded()) {
+			counter++;
+			if (counter > COOLDOWN) {
+				counter = 0;
+//				player.setFrame((player.getFrame()+1)%FILMSTRIP_SIZE);
+				next = State.WALK;
+			}
+		} else if (x == 0 && isGrounded()) {
+			next = State.NEUTRAL;
+		}
 		player.getBody().setLinearVelocity(vel);
-		
+
 		// Handle rotating
 		checkCorner();
 		if (activeCorner != null && isGrounded() && !jump && isUnder) {
@@ -151,8 +184,7 @@ public class PlayerController extends AbstractController {
 
 			if (diff > 0) {
 				rotateAngle = -90;
-				delegate.setGravity(delegate.getGravity().rotate(90));
-
+				world.setGravity(world.getGravity().rotate(90));
 				if (heading == AngleEnum.NORTH) {
 					newX = blockPos.x + blockSize - size.y/2 - 0.015f;
 					newY = blockPos.y - blockSize - size.x/2;
@@ -166,12 +198,10 @@ public class PlayerController extends AbstractController {
 					newX = blockPos.x + blockSize + size.x/2;
 					newY = blockPos.y + blockSize - size.y/2 - 0.015f;
 				}
-
 				heading = AngleEnum.flipCounterClockWise(heading);
-
 			} else {
-				rotateAngle = 90;
-				delegate.setGravity(delegate.getGravity().rotate(-90));
+				rotateAngle = 90;;
+				world.setGravity(world.getGravity().rotate(-90));
 
 				if (heading == AngleEnum.NORTH) {
 					newX = blockPos.x - blockSize + size.y/2 + 0.015f;
@@ -186,7 +216,6 @@ public class PlayerController extends AbstractController {
 					newX = blockPos.x + blockSize + size.x/2;
 					newY = blockPos.y - blockSize + size.y/2 + 0.015f;
 				}
-
 				heading = AngleEnum.flipClockWise(heading);
 			}
 //			newX = Math.round(newX*1000.0f)/1000.0f;
@@ -212,11 +241,10 @@ public class PlayerController extends AbstractController {
 					pos.x = heading == AngleEnum.WEST ? 
 							tilePos + offset : tilePos - offset;
 				}
-
 				heading = AngleEnum.flipEnum(heading);
 				player.setPosition(pos);
 				player.setRotation(AngleEnum.convertToAngle(heading));
-				delegate.setGravity(delegate.getGravity().rotate(180));
+				world.setGravity(world.getGravity().rotate(180));
 				isUnder ^= true;
 			}
 		}
@@ -228,14 +256,46 @@ public class PlayerController extends AbstractController {
 		}
 		oneFrameRayHandler = null;
 		oneFrameOverlapHandler = null;
+		
+		// Handle animation
+		handleAnimation();
 	}
 
-//	/**
-//	 * @return the matrix transformation from world to screen. Used in drawing.
-//	 */
-//	public Matrix4 world2ScreenMatrix() {
-//		return cameraController.world2ScreenMatrix();
-//	}
+	private void handleAnimation() {
+		int directionOffset = (direction == AngleEnum.EAST) ? 0 : FILMSTRIP_SIZE/2;
+		int frame = player.getFrame();
+		switch (next) {
+		case NEUTRAL:
+			player.setFrame(NEUTRAL_START + directionOffset);
+			break;
+		case JUMP:
+			if (state == State.JUMP) {
+				int newFrame = frame + 1;
+				if (newFrame > JUMP_END) newFrame = JUMP_END;
+				player.setFrame(newFrame + directionOffset);
+			} else {
+				player.setFrame(JUMP_START + directionOffset);
+			}
+			break;
+		case WALK:
+			if (state == State.WALK) {
+				int newFrame = frame + 1;
+				if (newFrame > WALK_END) newFrame = WALK_START;
+				player.setFrame(newFrame + directionOffset);
+			} else {
+				player.setFrame(WALK_START + directionOffset);
+			}
+			break;
+		}
+		state = next;
+	}
+
+	//    /**
+	//     * @return the matrix transformation from world to screen. Used in drawing.
+	//     */
+	//    public Matrix4 world2ScreenMatrix() {
+	//        return cameraController.world2ScreenMatrix();
+	//    }
 
 	@Override
 	public void draw(GameCanvas canvas) {
@@ -246,12 +306,12 @@ public class PlayerController extends AbstractController {
 	 * @return whether player is touching the ground.
 	 */
 	public boolean isGrounded() {
-		Vector2 g = delegate.getGravity().nor();
+		Vector2 g = world.getGravity().nor();
 		Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
 		Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
 
 		RayCastHandler handler = new RayCastHandler();
-		delegate.rayCast(handler, footPos, endPos);
+		world.rayCast(handler, footPos, endPos);
 		oneFrameRayHandler = handler;
 		return handler.isGrounded;
 	}
@@ -266,14 +326,14 @@ public class PlayerController extends AbstractController {
 	public boolean isReset() {
 		return isReset;
 	}
-	
+
 	/**
 	 * @return the angle to rotate the camera by
 	 */
 	public float getRotateAngle() {
 		return rotateAngle;
 	}
-	
+
 	public GameObject getPlayer() {
 		return player;
 	}
@@ -285,12 +345,12 @@ public class PlayerController extends AbstractController {
 	 */
 	private boolean canFlip() {
 		if (oneFrameRayHandler == null) {
-			Vector2 g = delegate.getGravity().nor();
+			Vector2 g = world.getGravity().nor();
 			Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
 			Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
 
 			RayCastHandler handler = new RayCastHandler();
-			delegate.rayCast(handler, footPos, endPos);
+			world.rayCast(handler, footPos, endPos);
 			oneFrameRayHandler = handler;
 			return handler.isGrounded && handler.isFlip;
 		}
@@ -306,18 +366,18 @@ public class PlayerController extends AbstractController {
 	private void checkCorner() {
 		RayCastHandler handler;
 		if (oneFrameRayHandler == null) {
-//			handler = new OverlapHandler();
-//			Vector2 upper = getUpperRight();
-//			Vector2 lower = getLowerLeft();
-//
-//			delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
-			
-			Vector2 g = delegate.getGravity().nor();
+			//            handler = new OverlapHandler();
+			//            Vector2 upper = getUpperRight();
+			//            Vector2 lower = getLowerLeft();
+			//
+			//            delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
+
+			Vector2 g = world.getGravity().nor();
 			Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
 			Vector2 endPos = footPos.cpy().add(g.cpy().scl(rayDist));
 
 			handler = new RayCastHandler();
-			delegate.rayCast(handler, footPos, endPos);
+			world.rayCast(handler, footPos, endPos);
 			oneFrameRayHandler = handler;
 
 			// We only set active corner if we WALKED into the corner. We can land on
@@ -362,7 +422,7 @@ public class PlayerController extends AbstractController {
 			handler = new OverlapHandler();
 			Vector2 upper = getUpperRight();
 			Vector2 lower = getLowerLeft();
-			delegate.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
+			world.QueryAABB(handler, lower.x, lower.y, upper.x, upper.y);
 		}
 		else {
 			handler = oneFrameOverlapHandler;
@@ -410,6 +470,13 @@ public class PlayerController extends AbstractController {
 			theUpperRight = new Vector2(playerPos.x + playerSize.y, playerPos.y + playerSize.x);
 		}
 		return theUpperRight;
+	}
+
+	/**
+	 * @return whether the player is in the underworld
+	 */
+	public boolean isUnder() {
+		return isUnder;
 	}
 
 	/**

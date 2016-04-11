@@ -8,6 +8,10 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
@@ -15,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
+import com.ramenstudio.sandglass.game.model.Gate;
+import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
@@ -25,7 +31,7 @@ import com.ramenstudio.sandglass.game.model.GameObject;
  * 
  * @author Jiacong Xu
  */
-public class GameController extends AbstractController implements PhysicsDelegate {
+public class GameController extends AbstractController implements ContactListener {
 
   // The physics world object
   public World world = new World(new Vector2(0, -9.8f), true);
@@ -48,6 +54,9 @@ public class GameController extends AbstractController implements PhysicsDelegat
   // The place to store all top-level game related data.
   private GameModel gameModel = new GameModel();
   
+  //Is the player collided with the gate?
+  private boolean touchingGate = false;
+  
   // The player controller for the game
   private PlayerController playerController;
 
@@ -69,7 +78,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     mapObjects = loader.loadLevel("example.tmx");
     
     // Set up the world!
-    objectSetup(this);
+    objectSetup(world);
     
     // Set up UI callbacks
     uiController.gameView.pauseButton.addListener(pauseButtonCallback);
@@ -125,16 +134,16 @@ public class GameController extends AbstractController implements PhysicsDelegat
   };
   
   @Override
-  public void objectSetup(PhysicsDelegate handler) {
+  public void objectSetup(World world) {
     List<GameObject> mapTiles = mapObjects.get(LevelLoader.LayerKey.GROUND);
     
     for (GameObject o : mapTiles) {
-      activatePhysics(handler, o);
+      activatePhysics(world, o);
     }
     
-    playerController.objectSetup(handler);
+    playerController.objectSetup(world);
     cameraController.setTarget(playerController.getPlayer());
-    cameraController.objectSetup(handler);
+    cameraController.objectSetup(world);
   }
   
   @Override
@@ -146,12 +155,24 @@ public class GameController extends AbstractController implements PhysicsDelegat
     }
     
     playerController.update(dt);
+    
+  //update game model
+    gameModel.setWorldPosition(!playerController.isUnder());
+    gameModel.incrementTime();
+    uiController.gameView.setSandAmount(gameModel.getOverworldTime()/gameModel.getMaxTime(), 
+    		gameModel.getUnderworldTime()/gameModel.getMaxTime());
+    //if(gameModel.allPiecesCollected()){
+    //	gameModel.getGate().setOpen();
+    //}
+    
     uiController.update(dt);
     
     stepPhysics(dt);
     
-    if (playerController.isReset()) {
-      reset();
+    if (/**gameModel.getGate().isOpen() && touchingGate ||*/
+    		gameModel.outOfTime() ||
+    		playerController.isReset()){
+    	reset();
     }
   }
   
@@ -159,8 +180,9 @@ public class GameController extends AbstractController implements PhysicsDelegat
     world.dispose();
     world = new World(new Vector2(0, -9.8f), true);
     playerController = new PlayerController();
+    cameraController = new CameraController(new Vector2(5, 5));
     gameModel = new GameModel();
-    objectSetup(this);
+    objectSetup(world);
   }
   
   /**
@@ -189,37 +211,6 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public Matrix4 world2ScreenMatrix() {
     return cameraController.world2ScreenMatrix();
   }
-  
-  
-  @Override
-  public Body addBody(BodyDef definition) {
-    return world.createBody(definition);
-  }
-
-  @Override
-  public Vector2 getGravity() {
-    return world.getGravity().cpy();
-  }
-  
-  /**
-   * @return a copy of the current gravity.
-   */
-  @Override
-  public void setGravity(Vector2 gravity) {
-    world.setGravity(gravity);
-  }
-
-  @Override
-  public void rayCast(RayCastCallback callback, Vector2 point1, 
-    Vector2 point2) {
-    world.rayCast(callback, point1, point2);
-  }
-
-  @Override
-  public void QueryAABB(QueryCallback callback, float lowerX, float lowerY,
-    float upperX, float upperY) {
-    world.QueryAABB(callback, lowerX, lowerY, upperX, upperY);
-  }
 
   /**
    * @return the main camera used by the game
@@ -235,4 +226,30 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public CameraController getCameraController() {
     return cameraController;
   }
+
+@Override
+public void beginContact(Contact contact) {
+    if(contact.getFixtureA().getBody().getUserData() == Player.class  &&
+            contact.getFixtureB().getBody().getUserData() == Gate.class){
+          touchingGate = true;
+    }
+}
+
+@Override
+public void endContact(Contact contact) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void preSolve(Contact contact, Manifold oldManifold) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void postSolve(Contact contact, ContactImpulse impulse) {
+	// TODO Auto-generated method stub
+	
+}
 }

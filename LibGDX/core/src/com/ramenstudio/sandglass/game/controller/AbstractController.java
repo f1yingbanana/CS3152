@@ -2,6 +2,7 @@ package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 
@@ -30,20 +31,20 @@ public abstract class AbstractController {
    * This is called immediately after the constructor so the controller may
    * insert its objects into the world.
    * 
-   * @param handler is a controller implementing necessary methods for object
-   * insertion.
+   * @param world is a reference to the physical world object. Keep a reference
+   * if the controller needs it later.
    */
-  public void objectSetup(PhysicsDelegate handler) {}
+  public void objectSetup(World handler) {}
   
   /**
    * Uses the physics delegate to insert the game object into the world, and
    * create all fixtures.
    * 
-   * @param handler is the physics delegate that maintains the World object.
+   * @param world is the box2D object.
    * @param gameObject is the object to insert into the world.
    */
-  public void activatePhysics(PhysicsDelegate handler, GameObject gameObject) {
-    gameObject.setBody(handler.addBody(gameObject.getBodyDef()));
+  public void activatePhysics(World world, GameObject gameObject) {
+    gameObject.setBody(world.createBody(gameObject.getBodyDef()));
     gameObject.getBody().setUserData(gameObject);
     
     if (gameObject.getFixtureDefs() != null) {
@@ -58,10 +59,10 @@ public abstract class AbstractController {
    * Uses the physics delegate to remove the game object from the world, and
    * remove all fixtures.
    * 
-   * @param handler is the physics delegate that maintains the World object.
+   * @param world is the box2D object.
    * @param gameObject is the object to remove from the world.
    */
-  public void deactivatePhysics(PhysicsDelegate handler, GameObject gameObject) {
+  public void deactivatePhysics(World world, GameObject gameObject) {
     // TODO
   }
 }

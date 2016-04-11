@@ -10,6 +10,7 @@ package com.ramenstudio.sandglass.game.controller;
 
 import java.util.*;
 
+import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.Monster;
 import com.ramenstudio.sandglass.game.model.Player;
@@ -124,7 +125,7 @@ public class MonsterController extends AbstractController {
 	}
 
 	@Override
-	public void objectSetup(PhysicsDelegate handler) {
+	public void objectSetup(World world) {
 		// TODO Auto-generated method stub
 		
 	}

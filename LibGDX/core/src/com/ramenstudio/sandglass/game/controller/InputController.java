@@ -3,7 +3,6 @@ package com.ramenstudio.sandglass.game.controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import com.ramenstudio.sandglass.game.view.GameCanvas;
 
 /**
  * An input controller that handles player input.
@@ -179,13 +178,4 @@ public class InputController extends AbstractController {
 		readKeyboard();
 		readMouse();
 	}
-
-	@Override
-	public void draw(GameCanvas canvas) {
-		// TODO Auto-generated method stub
-	}
-
-  @Override
-  public void objectSetup(PhysicsDelegate handler) {}
-
 }
