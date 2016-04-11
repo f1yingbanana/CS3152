@@ -61,11 +61,7 @@ public class PlayerController extends AbstractController {
 
 	/** The direction the player's head is facing. */
 	private AngleEnum heading = AngleEnum.NORTH;
-
-	private boolean isReset = false;
-
-	private float rotateAngle;
-
+	
 	// Variables for animation
 	
 	/** Number of rows in the player image filmstrip */
@@ -94,15 +90,10 @@ public class PlayerController extends AbstractController {
     /** The current animation state. */
     private State state = State.NEUTRAL;
     /** The next animation state. */
-    private State next;
+    private State next = State.NEUTRAL;
     
     /** The direction the player is facing, relative to the camera. */
     private AngleEnum direction = AngleEnum.EAST;
-    
-	/** Frame cooldown (frames are too quick) */
-	private static final int COOLDOWN = 3;
-	/** Frame counter */
-	private int counter = 0;
 
 	/**
 	 * Default constructor for player object.
@@ -289,6 +280,29 @@ public class PlayerController extends AbstractController {
 		}
 		state = next;
 	}
+
+    private boolean isReset = false;
+    
+    /** Number of rows in the player image filmstrip */
+    private static final int PLAYER_ROWS = 1;
+    /** Number of columns in the player image filmstrip */
+    private static final int PLAYER_COLS = 8;
+    /** Number of elements in the player image filmstrip */
+    private static final int PLAYER_SIZE = 8;
+    /** Frame cooldown (frames are too quick) */
+    private static final int COOLDOWN = 3;
+    /** Frame counter */
+    private int counter = 0;
+
+    private float rotateAngle;
+
+
+    /**
+     * Default constructor for player object.
+     */
+    public PlayerController(Player player) {
+        this.player = player;
+    }
 
 	//    /**
 	//     * @return the matrix transformation from world to screen. Used in drawing.

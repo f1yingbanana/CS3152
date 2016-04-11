@@ -158,8 +158,9 @@ public abstract class MonsterController extends AbstractController {
 	 */
 	public MonsterController(Monster monster) {
 		this.monster = monster;
-		action = Move.NONE;
+		monster.angle = monster.initAngle;
 		period = monster.span;
+		action = Move.NONE;
 	}
 	
 	/**

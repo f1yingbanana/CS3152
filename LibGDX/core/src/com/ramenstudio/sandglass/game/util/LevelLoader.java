@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
 import com.ramenstudio.sandglass.game.model.Monster.MType;
@@ -163,6 +164,7 @@ public class LevelLoader {
                     String angle = (String) this_tile.getProperties().get("angle");
                     Monster monster = new Monster(new Vector2(i+0.5f, j+0.5f), 
                             MType.valueOf(mType),level, span, spcf, angle);
+                    
                     objArr.add(monster);
                 }
                 else if (value.equals("overmonster")){
@@ -172,14 +174,16 @@ public class LevelLoader {
                     int span = Integer.parseInt((String) this_tile.getProperties().get("span"));
                     float spcf = Float.parseFloat((String) this_tile.getProperties().get("spcf"));
                     String angle = (String) this_tile.getProperties().get("angle");
+                    String initMove = (String) this_tile.getProperties().get("initMove");
                     Monster monster = new Monster(new Vector2(i+0.25f, j+0.25f), 
-                            MType.valueOf(mType),level, span, spcf, angle);
+                            MType.valueOf(mType),level, span, spcf, angle, initMove);
                     objArr.add(monster);
                     System.out.print("monster at " + i + ", " + j);
                 }
                 else if (value.equals("player")){
                     Player player = new Player(new Vector2(i+0.5f, j+0.5f));
                     objArr.add(player); 
+                    System.out.println("player created");
                 }
                 else{
                     GameObject object = new GameObject();
@@ -187,7 +191,7 @@ public class LevelLoader {
                     objArr.add(object);
                 }
               }
-            }  
+            }
           }
       }
     }

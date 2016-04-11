@@ -58,13 +58,17 @@ public class Monster extends GameObject implements Drawable{
 	/** Goal */
 	private Vector2 goal;
 	/** The current angle of orientation (in degrees) */
+	public AngleEnum initAngle;
+	
 	public AngleEnum angle;
 	/** Boolean to track if we are dead yet */
 	private boolean isAlive;
 	/** The period of changing direction*/
 	public int span;
 	/** Speed coefficient*/
-    public float speed_coeff; 
+    public float speed_coeff;
+    
+    public String initMove;
 
 	/**
 	 * Create monster # id at the given position.
@@ -73,7 +77,15 @@ public class Monster extends GameObject implements Drawable{
 	 * @param x The initial x-coordinate of the monster
 	 * @param y The initial y-coordinate of the monster
 	 */
-	public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, String angle) {
+    
+    public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, 
+			String angle, String initMove){
+    	this(initialPos, mType, level, span, spcf, angle);
+    	this.initMove = initMove;
+    }
+   
+	public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, 
+			String angle) {
 		super();
 		this.span = span;
 		speed_coeff = spcf;
@@ -111,8 +123,6 @@ public class Monster extends GameObject implements Drawable{
             fixtureDef3.shape = c2;
             fixtureDef3.isSensor = true;
             fixtureDefs[2] = fixtureDef3;
-            
-
         }
         else{
             if (level ==1) {
@@ -150,7 +160,7 @@ public class Monster extends GameObject implements Drawable{
         }
 		this.mType = mType;
 		this.level = level;
-		this.angle = AngleEnum.valueOf(angle);
+		this.initAngle = AngleEnum.valueOf(angle);
 		isAlive = true;
 		System.out.println("monster is created");
 	}
