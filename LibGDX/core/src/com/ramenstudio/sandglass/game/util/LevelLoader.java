@@ -40,6 +40,9 @@ public class LevelLoader {
     ArrayList<GameObject> monsterTile = parseObject(objectLayer, "type", "monster");
     ArrayList<GameObject> resourceTile = parseObject(objectLayer, "type", "resource");
     
+    // Set player layer to null
+    tiledMap.getLayers().remove(objectLayer);
+    
     layerDict.put(LayerKey.GROUND, Tilearr);
     layerDict.put(LayerKey.PLAYER, playerTile);
     layerDict.put(LayerKey.MONSTER, monsterTile);
@@ -154,6 +157,7 @@ public class LevelLoader {
         		object = player;
         	}
             objArr.add(object);
+            
           }
         }
       }
