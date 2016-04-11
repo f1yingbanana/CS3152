@@ -1,6 +1,5 @@
 package com.ramenstudio.sandglass.game.model;
 
-import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
 
@@ -20,12 +19,14 @@ public class GameModel implements Drawable {
   private int overtime;
   //amount of time remaining in underworld
   private int undertime;
+  //max amount of time that can be in the hourglass
+  private int maxtime = 4000;
   //flag for whether or not we are in the overworld
   private boolean in_overworld;
   //flag for whether this level has been completed or not
   private boolean completed;
-  //position of the exit gate in this level
-  private Vector2 gate_pos;
+  //the exit gate in this level
+  private Gate gate;
   //array of objects in this level (land, resources, etc)
   private GameObject[] objects = {};
   
@@ -37,7 +38,7 @@ public class GameModel implements Drawable {
    */
   public GameModel() {
     pieces = 1;
-    overtime = 60;
+    overtime = 3600;
     undertime = 0;
     collected_pieces = 0;
     in_overworld = true;
@@ -68,7 +69,7 @@ public class GameModel implements Drawable {
   }
   
   /**@return true of all pieces have been collected, false otherwise*/
-  public boolean areAllPiecesCollected(){
+  public boolean allPiecesCollected(){
     return pieces == collected_pieces;
   }
   
@@ -113,6 +114,41 @@ public class GameModel implements Drawable {
     }
   }
   
+  /**Decreases the sand in the sandglass by amount specified. Takes from the top
+   * of the sandglass. For when a monster hits the player
+   * @param amount the integer amount of sand to be removed
+   */
+  public void takeTime(int amount){
+	  if (overtime + undertime == 0){
+		  return;
+	  }
+	  if (in_overworld){
+		  overtime = overtime - amount;
+	  } else {
+		  undertime = undertime - amount;
+	  }
+  }
+  
+  /**Increases the sand in the sandglass by amount specified. Adds to the top of
+   * the sandglass. For collecting a sand resource
+   * @param amount the integer amount of sand to be added
+   */
+  public void giveTime(int amount){
+	  if (overtime + undertime + amount >= maxtime){
+		  return;
+	  }
+	  if (in_overworld){
+		  overtime = overtime + amount;
+	  } else {
+		  undertime = undertime + amount;
+	  }
+  }
+  
+  /**Returns true if we've run out of time*/
+  public boolean outOfTime(){
+	  return !in_overworld && undertime <= 0;
+  }
+  
   /**@return true if we are in the overworld, false if we are in the underworld*/
   public boolean isInOverworld(){
     return in_overworld;
@@ -124,26 +160,14 @@ public class GameModel implements Drawable {
     in_overworld = in_over;
   }
   
-  /**@return true if the level is completed*/
-  public boolean isLevelCompleted(){
-    return completed;
+  /**@return the Gate object for this level*/
+  public Gate getGate(){
+	  return gate;
   }
   
-  /**Sets whether the level has been completed
-   * @param t true if the level is completed, false otherwise*/
-  public void setLevelCompleted(boolean t){
-    completed = t;
-  }
-  
-  /**@return the Vector2 position of the exit gate in this level*/
-  public Vector2 getGatePosition(){
-    return gate_pos;
-  }
-  
-  /**Sets the position of the exit gate in this level
-   * @param v the Vector2 position of the gate*/
-  public void setGatePosition(Vector2 v){
-    gate_pos = v;
+  /**@param the Gate object for this level*/
+  public void setGate(Gate g){
+	  gate = g;
   }
   
   /**@return an array of all land, resource, and piece objects in this level*/
@@ -169,6 +193,7 @@ public class GameModel implements Drawable {
         o.draw(canvas);
       }
     }
+    //gate.draw(canvas);
   }
 
   /**

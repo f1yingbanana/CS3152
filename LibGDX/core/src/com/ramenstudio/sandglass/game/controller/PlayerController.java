@@ -421,6 +421,13 @@ public class PlayerController extends AbstractController {
         return theUpperRight;
     }
 
+	/**
+	 * @return whether the player is in the underworld
+	 */
+	public boolean isUnder() {
+		return isUnder;
+	}
+    
     /**
      * Our implementation of the reportRayFixture for
      * detecting if the player can jump.

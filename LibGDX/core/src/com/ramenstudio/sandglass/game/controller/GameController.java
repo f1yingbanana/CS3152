@@ -6,11 +6,21 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.QueryCallback;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
+import com.ramenstudio.sandglass.game.model.Gate;
+import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
@@ -21,7 +31,7 @@ import com.ramenstudio.sandglass.game.model.GameObject;
  * 
  * @author Jiacong Xu
  */
-public class GameController extends AbstractController {
+public class GameController extends AbstractController implements ContactListener {
 
   // The physics world object
   public World world = new World(new Vector2(0, -9.8f), true);
@@ -43,6 +53,9 @@ public class GameController extends AbstractController {
   
   // The place to store all top-level game related data.
   private GameModel gameModel = new GameModel();
+  
+  //Is the player collided with the gate?
+  private boolean touchingGate = false;
   
   // The player controller for the game
   private PlayerController playerController;
@@ -142,12 +155,24 @@ public class GameController extends AbstractController {
     }
     
     playerController.update(dt);
+    
+  //update game model
+    gameModel.setWorldPosition(!playerController.isUnder());
+    gameModel.incrementTime();
+    System.out.println("Overtime:" + gameModel.getOverworldTime());
+    System.out.println("Undertime:" + gameModel.getUnderworldTime());
+    //if(gameModel.allPiecesCollected()){
+    //	gameModel.getGate().setOpen();
+    //}
+    
     uiController.update(dt);
     
     stepPhysics(dt);
     
-    if (playerController.isReset()) {
-      reset();
+    if (/**gameModel.getGate().isOpen() && touchingGate ||*/
+    		gameModel.outOfTime() ||
+    		playerController.isReset()){
+    	reset();
     }
   }
   
@@ -201,4 +226,30 @@ public class GameController extends AbstractController {
   public CameraController getCameraController() {
     return cameraController;
   }
+
+@Override
+public void beginContact(Contact contact) {
+    if(contact.getFixtureA().getBody().getUserData() == Player.class  &&
+            contact.getFixtureB().getBody().getUserData() == Gate.class){
+          touchingGate = true;
+    }
+}
+
+@Override
+public void endContact(Contact contact) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void preSolve(Contact contact, Manifold oldManifold) {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void postSolve(Contact contact, ContactImpulse impulse) {
+	// TODO Auto-generated method stub
+	
+}
 }
