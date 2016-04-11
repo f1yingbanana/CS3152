@@ -58,13 +58,17 @@ public class Monster extends GameObject implements Drawable{
 	/** Goal */
 	private Vector2 goal;
 	/** The current angle of orientation (in degrees) */
+	public AngleEnum initAngle;
+	
 	public AngleEnum angle;
 	/** Boolean to track if we are dead yet */
 	private boolean isAlive;
 	/** The period of changing direction*/
 	public int span;
 	/** Speed coefficient*/
-    public float speed_coeff; 
+    public float speed_coeff;
+    
+    public String initMove;
 
 	/**
 	 * Create monster # id at the given position.
@@ -73,7 +77,15 @@ public class Monster extends GameObject implements Drawable{
 	 * @param x The initial x-coordinate of the monster
 	 * @param y The initial y-coordinate of the monster
 	 */
-	public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, String angle) {
+    
+    public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, 
+			String angle, String initMove){
+    	this(initialPos, mType, level, span, spcf, angle);
+    	this.initMove = initMove;
+    }
+   
+	public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, 
+			String angle) {
 		super();
 		this.span = span;
 		speed_coeff = spcf;
@@ -85,8 +97,6 @@ public class Monster extends GameObject implements Drawable{
             getBodyDef().position.set(initialPos);
             getBodyDef().type = BodyDef.BodyType.KinematicBody;
             
-            
-            
             FixtureDef fixtureDef = new FixtureDef();
             PolygonShape shape = new PolygonShape();
             shape.setAsBox(0.4f, 0.35f);
@@ -94,6 +104,7 @@ public class Monster extends GameObject implements Drawable{
             fixtureDef.shape = shape;
             fixtureDefs[0] = fixtureDef;
             fixtureDef.friction = 0.0f;
+            fixtureDef.isSensor = true;
             
             
             CircleShape c = new CircleShape();
@@ -101,6 +112,7 @@ public class Monster extends GameObject implements Drawable{
             c.setPosition(new Vector2(0, -0.35f));
             FixtureDef fixtureDef2 = new FixtureDef();
             fixtureDef2.shape = c;
+            fixtureDef2.isSensor = true;
             fixtureDefs[1] = fixtureDef2;
             
 
@@ -109,8 +121,8 @@ public class Monster extends GameObject implements Drawable{
             c2.setPosition(new Vector2(0, 0.35f));
             FixtureDef fixtureDef3 = new FixtureDef();
             fixtureDef3.shape = c2;
+            fixtureDef3.isSensor = true;
             fixtureDefs[2] = fixtureDef3;
-            
         }
         else{
             if (level ==1) {
@@ -148,7 +160,7 @@ public class Monster extends GameObject implements Drawable{
         }
 		this.mType = mType;
 		this.level = level;
-		this.angle = AngleEnum.valueOf(angle);
+		this.initAngle = AngleEnum.valueOf(angle);
 		isAlive = true;
 		System.out.println("monster is created");
 	}

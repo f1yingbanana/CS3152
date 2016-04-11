@@ -25,6 +25,7 @@ import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
+import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Monster;
@@ -84,10 +85,12 @@ public class GameController extends AbstractController implements ContactListene
   private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
   
   public GameController() {
-    playerController = new PlayerController();
+	mapObjects = loader.loadLevel("example.tmx");
+	System.out.println(mapObjects.get(LayerKey.PLAYER).size());
+	Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
+    playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
-
-    mapObjects = loader.loadLevel("example.tmx");
+    
     ArrayList<GameObject> umArray = (ArrayList<GameObject>) 
             mapObjects.get(LevelLoader.LayerKey.UNDER_M);
     ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
@@ -228,8 +231,9 @@ public class GameController extends AbstractController implements ContactListene
   private void reset() {
 	  	world.dispose();
 		world = new World(new Vector2(0, -9.8f), true);
-		playerController = new PlayerController();
-		cameraController = new CameraController(new Vector2(5, 5));
+		Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
+	    playerController = new PlayerController(player);
+		cameraController = new CameraController(player.getBodyDef().position);
 		underMonController.clear();
 		overMonController.clear();
 		ArrayList<GameObject> umArray = (ArrayList<GameObject>) 
@@ -241,6 +245,8 @@ public class GameController extends AbstractController implements ContactListene
 	    }
 	    for (GameObject m: omArray){
 	        overMonController.add(new OverMonController((Monster) m));
+	        
+	        System.out.println(((Monster) m).angle.toString());
 	    }
 		objectSetup(world);
   }
