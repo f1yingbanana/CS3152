@@ -160,17 +160,6 @@ public class GameModel implements Drawable {
     in_overworld = in_over;
   }
   
-  /**@return true if the level is completed*/
-  public boolean isLevelCompleted(){
-    return completed;
-  }
-  
-  /**Sets whether the level has been completed
-   * @param t true if the level is completed, false otherwise*/
-  public void setLevelCompleted(boolean t){
-    completed = t;
-  }
-  
   /**@return the Gate object for this level*/
   public Gate getGate(){
 	  return gate;
@@ -204,7 +193,7 @@ public class GameModel implements Drawable {
         o.draw(canvas);
       }
     }
-    gate.draw(canvas);
+    //gate.draw(canvas);
   }
 
   /**
