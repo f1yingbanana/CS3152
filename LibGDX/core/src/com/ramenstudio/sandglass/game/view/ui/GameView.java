@@ -25,4 +25,14 @@ public class GameView extends Table {
     pauseButton = new TextButton("PAUSE", skin);
     add(pauseButton).prefSize(120, 50).expand().top().right().pad(20);
   }
+  
+  /**
+   * Sets the sand in the hourglass element in the UI.
+   * 
+   * @param top is the fill amount of the top part of the hourglass, [0,1].
+   * @param bottom is the fill amount of the bottom part.
+   */
+  public void setSandAmount(float top, float bottom) {
+    
+  }
 }
