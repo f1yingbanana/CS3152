@@ -9,8 +9,11 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.GameMode;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -27,13 +30,18 @@ import com.sun.j3d.utils.scenegraph.io.retained.Controller;
  */
 public class LoadingMode implements Screen, InputProcessor {
 
-	/** Track texture loading from all instances and subclasses */
-	protected AssetState textureState = AssetState.EMPTY;
-	/** Track sound loading from all instances and subclasses */
-	protected AssetState soundState = AssetState.EMPTY;
-
 	// Textures necessary to support the loading screen
-	private static final String PROGRESS_FILE = "shared/progressbar.png";
+	private static String PROGRESS_FILE;
+	
+	private static String BACKGROUND_FILE;
+	
+	private static String PLAYBUTTON;
+	
+	private GameCanvas canvas = new GameCanvas();
+	
+	private SpriteBatch spritebatch = new SpriteBatch();
+	
+	private Array<String> assets = new Array<String>();
 
 	/** Background texture for start-up */
 	private Texture background;
@@ -82,14 +90,11 @@ public class LoadingMode implements Screen, InputProcessor {
 
 	/** AssetManager to be loading in the background */
 	private AssetManager manager;
-	/** Reference to GameCanvas created by the root */
-	private GameCanvas canvas;
 	/** Listener that will update the player mode when we are done */
 	private ScreenListener listener;
 	/** Sound controller*/
 	private SoundController soundcontroller;
 	/** Game State that contains this loading mode.*/
-	private GameModel gamestate;
 
 	/** The width of the progress bar */
 	private int width;
@@ -111,8 +116,6 @@ public class LoadingMode implements Screen, InputProcessor {
 	private int   pressState;
 	/** The amount of time to devote to loading assets */
 	private int   budget;
-	/** Support for the X-Box start button in place of play button */
-	private int   startButton;
 	/** Whether or not this player mode is still active */
 	private boolean active;
 	/** playButton directory*/
@@ -144,9 +147,8 @@ public class LoadingMode implements Screen, InputProcessor {
 		return pressState == 2;
 	}
 
-	public LoadingMode(GameMode gamestate, GameCanvas canvas, AssetManager manager,
-		SoundController soundctrl) {
-		this(gamestate, canvas, manager, soundctrl, DEFAULT_BUDGET);
+	public LoadingMode(GameMode gamestate, AssetManager manager, SoundController soundctrl) {
+		this(manager, soundctrl, DEFAULT_BUDGET);
 	}
 
 
@@ -158,17 +160,13 @@ public class LoadingMode implements Screen, InputProcessor {
 	* That array is kept in the GameModel class, from which we can get
 	* Sound and Texture by getSound or getImage method.
 	*/
-	public LoadingMode(GameModel gamestate, GameCanvas canvas, AssetManager manager, 
-		SoundController soundctrl, int millis) {
+	public LoadingMode(AssetManager manager, SoundController soundctrl, int millis) {
 		playButton = null;
-		this.gamestate = gamestate;
 		this.manager = manager;
-		this.canvas = canvas;
 		soundcontroller = soundctrl;
 		budget = millis;
 
 		// Compute the dimensions from the canvas
-		resize(canvas.getWidth(), canvas.getHeight());
 
 		// Load the next two images immediately.
 		statusBar = new Texture(PROGRESS_FILE);
@@ -190,7 +188,6 @@ public class LoadingMode implements Screen, InputProcessor {
 			PROGRESS_HEIGHT);
 		statusFrgMiddle = new TextureRegion(statusBar, PROGRESS_CAP, offset, PROGRESS_MIDDLE, PROGRESS_HEIGHT);
 
-		startButton = (System.getProperty("os.name").equals("Mac OS X") ? MAC_OS_X_START : WINDOWS_START);
 		Gdx.input.setInputProcessor(this);
 
 		active = true;
@@ -208,18 +205,10 @@ public class LoadingMode implements Screen, InputProcessor {
 		this.background = new Texture(background);
 	}
 
-	public void loadFont(Strign fontfile, int fontsize){
-		FreetypeFontLoader.FreeTypeFontLoaderParameter size2Params = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
-		size2Params.fontFileName = fontfile;
-		size2Params.fontParameters.size = fontsize;
-		manager.load(fontfile, BitmapFont.class, size2Params);
-		assets.add(fontfile);
-	}
 
-	public TextureRegion[] loadTexture() {
-		String[] textures = gamestate.getImages();
-		textureState = AssetState.COMPLETE;
-		TextureRegion[] tex = new TextureRegion[texture.length];
+
+	public TextureRegion[] loadTexture(String[] textures) {
+		TextureRegion[] tex = new TextureRegion[textures.length];
 
 		for (int i = 0; i < textures.length; i++) {
 			manager.load(textures[i], Texture.class);
@@ -231,8 +220,7 @@ public class LoadingMode implements Screen, InputProcessor {
 		// should use gameModel. setAssets(tex)
 	}
 
-	public Sound[] loadSound() {
-		Sound[] sounds = gamestate.getSounds()
+	public Sound[] loadSound(String[] sounds) {
 		Sound[] snd = new Sound[sounds.length];
 		for (int i = 0; i < sounds.length; i++) {
 			manager.load(sounds[i], Sound.class);
@@ -241,6 +229,7 @@ public class LoadingMode implements Screen, InputProcessor {
 			soundcontroller.allocate(manager,sounds[i]);
 			snd[i] = sound;
 		}
+		return snd;
 	}
 
 	protected TextureRegion createTexture(AssetManager manager, String file, boolean repeat) {
@@ -256,23 +245,13 @@ public class LoadingMode implements Screen, InputProcessor {
 	}
 
 
-	private void unloadContent(Array<String> assets){
+	public void unloadContent(Array<String> assets){
 	  
-		String[] textures = gamestate.getImages();
-		String[] sounds = gamestate.getSounds();
-
-		for (int i = 0; i < textures.length; i++) {
-			if (manager.isLoaded(textures[i])){
-				manager.unload(textures[i]);	
-			}
+		for (String s: assets){
+			if (manager.isLoaded(s)){
+				manager.unload(s);
+			}	
 		}
-
-		for (int i = 0; i < sounds.length; i++) {
-			if (manager.isLoaded(sounds[i])){
-				manager.unload(sounds[i]);	
-			}
-		}
-
 	}
 
 	private void update(float delta) {
@@ -290,14 +269,15 @@ public class LoadingMode implements Screen, InputProcessor {
 
 	
 	private void draw() {
-		canvas.begin();
-		canvas.draw(background, 0, 0);
+		canvas.begin(new Matrix4());
+		spritebatch.draw(background, 0,0);
 		if (playButton == null) {
 			drawProgress(canvas);
 		} else {
 			Color tint = (pressState == 1 ? Color.GRAY: Color.WHITE);
-			canvas.draw(playButton, tint, playButton.getWidth()/2, playButton.getHeight()/2, 
-						centerX, centerY, 0, BUTTON_SCALE*scale, BUTTON_SCALE*scale);
+			spritebatch.setColor(tint);
+			spritebatch.draw(playButton, centerX-playButton.getWidth()/2, centerY- (float) playButton.getHeight()/2,
+					 playButton.getWidth()*BUTTON_SCALE*scale, playButton.getHeight()*BUTTON_SCALE*scale);
 		}
 		canvas.end();
 	}
@@ -315,7 +295,7 @@ public class LoadingMode implements Screen, InputProcessor {
 	public void render(float delta) {
 		if (active) {
 			update(delta);
-			//draw();
+			draw();
 
 			// We are are ready, notify our listener
 			if (isReady() && listener != null) {
@@ -340,24 +320,25 @@ public class LoadingMode implements Screen, InputProcessor {
 	private void drawProgress(GameCanvas canvas) {
 
 		// draw status bar
-		canvas.draw(statusBkgLeft, Color.WHITE, centerX - width / 2, centerY, scale * PROGRESS_CAP,
+		spritebatch.setColor(Color.WHITE);
+		spritebatch.draw(statusBkgLeft, centerX - width / 2, centerY, scale * PROGRESS_CAP,
 			scale * PROGRESS_HEIGHT);
-		canvas.draw(statusBkgRight, Color.WHITE, centerX + width / 2 - scale * PROGRESS_CAP, centerY,
+		spritebatch.draw(statusBkgRight, centerX + width / 2 - scale * PROGRESS_CAP, centerY,
 			scale * PROGRESS_CAP, scale * PROGRESS_HEIGHT);
-		canvas.draw(statusBkgMiddle, Color.WHITE, centerX - width / 2 + scale * PROGRESS_CAP, centerY,
+		spritebatch.draw(statusBkgMiddle, centerX - width / 2 + scale * PROGRESS_CAP, centerY,
 			width - 2 * scale * PROGRESS_CAP, scale * PROGRESS_HEIGHT);
 
-		canvas.draw(statusFrgLeft, Color.WHITE, centerX - width / 2, centerY, scale * PROGRESS_CAP,
-			scale * PROGRESS_HEIGHT);
+		spritebatch.draw(statusFrgLeft, centerX - width / 2, centerY, scale * PROGRESS_CAP,
+				scale * PROGRESS_HEIGHT);
 		
 		if (progress > 0) {
 			float span = progress * (width - 2 * scale * PROGRESS_CAP) / 2.0f;
-			canvas.draw(statusFrgRight, Color.WHITE, centerX - width / 2 + scale * PROGRESS_CAP + span, centerY,
+			spritebatch.draw(statusFrgRight, centerX - width / 2 + scale * PROGRESS_CAP + span, centerY,
 				scale * PROGRESS_CAP, scale * PROGRESS_HEIGHT);
-			canvas.draw(statusFrgMiddle, Color.WHITE, centerX - width / 2 + scale * PROGRESS_CAP, centerY, span,
+			spritebatch.draw(statusFrgMiddle, centerX - width / 2 + scale * PROGRESS_CAP, centerY, span,
 				scale * PROGRESS_HEIGHT);
 		} else {
-			canvas.draw(statusFrgRight, Color.WHITE, centerX - width / 2 + scale * PROGRESS_CAP, centerY,
+			spritebatch.draw(statusFrgRight, centerX - width / 2 + scale * PROGRESS_CAP, centerY,
 				scale * PROGRESS_CAP, scale * PROGRESS_HEIGHT);
 		}
 	}

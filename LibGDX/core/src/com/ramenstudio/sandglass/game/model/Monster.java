@@ -10,65 +10,61 @@
  */
 
 package com.ramenstudio.sandglass.game.model;
-
-import java.util.Random;
 import com.badlogic.gdx.math.*;
-import com.ramenstudio.sandglass.util.controller.SoundController;
-import com.badlogic.gdx.audio.*;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.ramenstudio.sandglass.game.controller.MonsterController.AngleEnum;
+import com.ramenstudio.sandglass.game.controller.PlayerController;
+import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.ramenstudio.sandglass.util.Drawable;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 
 /**
  * A model class representing a monster.
  */
-public class Monster {
+public class Monster extends GameObject implements Drawable{
+    
+    public enum Move {
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN,
+        NONE;
+    }
 
-	protected static enum MType {
+	public static enum MType {
 		/* For over world */
 		OVER,
-		/* For under world*/
+		/*For under world*/
 		UNDER
 	}
-	/** Static random number generator shared across all monsters */
-	private static final Random random = new Random();
 
 	// CONSTANTS FOR monster HANDLING
 	/** How far forward this monster can move in a single turn */
 	private static final float MOVE_SPEED = 6.5f;
-	/** How much this monster can turn in a single turn */
-	private static final float TURN_SPEED = 15.0f;
-	/** For animating turning movement */
-	private static final float RAND_FACTOR = (2.0f / 128.0f);
-	private static final float RAND_OFFSET = (1.0f / 128.0f);
-	private static final float FULL_CIRCLE = 360.0f;
-	private static final float HALF_CIRCLE = 180.0f;
-	/** Time increment used by shader */
-	private static final float SPEED_DAMPNING = 0.75f;
-	private static final float EPSILON_CLAMP = 0.01f;
-	
+		
 	// Instance Attributes
 	/** A unique identifier; used to decouple classes. */
 	private int id;
 	/** Monster type*/
-	private MType mType;
+	public MType mType;
 	/** Monster Level*/
 	private int level;
-	/** Position */
-	private Vector2 position;
-	/** Velocity */
-	private Vector2 velocity;
+	/** Initial Position*/
+	public Vector2 initial;
+	/** Goal */
+	private Vector2 goal;
 	/** The current angle of orientation (in degrees) */
-	private float angle; 
-	/** The angle we want to go to (for momentum) */
-	private float dstAng;
-	
+	public AngleEnum angle;
 	/** Boolean to track if we are dead yet */
 	private boolean isAlive;
-	// * The number of frames until we can fire again 
-	// private int firecool;
-	
-	/** The sound currently associated with this monster */
-	private Sound sound;
-	/** The associated sound cue (if monster is making a sound). */
-	private long sndcue;
+	/** The period of changing direction*/
+	public int span;
+	/** Speed coefficient*/
+    public float speed_coeff; 
 
 	/**
 	 * Create monster # id at the given position.
@@ -77,19 +73,95 @@ public class Monster {
 	 * @param x The initial x-coordinate of the monster
 	 * @param y The initial y-coordinate of the monster
 	 */
-	public Monster(int id, float x, float y, MType mType) {
-		this.id = id;
+	public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, String angle) {
+		super();
+		this.span = span;
+		speed_coeff = spcf;
+		initial = initialPos;
+        if (mType == Monster.MType.OVER){
+            setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
+            fixtureDefs = new FixtureDef[3];
+            setSize(new Vector2(0.8f, 1.2f));
+            getBodyDef().position.set(initialPos);
+            getBodyDef().type = BodyDef.BodyType.KinematicBody;
+            
+            
+            
+            FixtureDef fixtureDef = new FixtureDef();
+            PolygonShape shape = new PolygonShape();
+            shape.setAsBox(0.4f, 0.35f);
+            fixtureDef.density = 100.0f;
+            fixtureDef.shape = shape;
+            fixtureDefs[0] = fixtureDef;
+            fixtureDef.friction = 0.0f;
+            
+            
+            CircleShape c = new CircleShape();
+            c.setRadius(0.3f);
+            c.setPosition(new Vector2(0, -0.35f));
+            FixtureDef fixtureDef2 = new FixtureDef();
+            fixtureDef2.shape = c;
+            fixtureDefs[1] = fixtureDef2;
+            
+
+            CircleShape c2 = new CircleShape();
+            c2.setRadius(0.3f);
+            c2.setPosition(new Vector2(0, 0.35f));
+            FixtureDef fixtureDef3 = new FixtureDef();
+            fixtureDef3.shape = c2;
+            fixtureDefs[2] = fixtureDef3;
+            
+        }
+        else{
+            if (level ==1) {
+                setTexture(new Texture(Gdx.app.getFiles().internal("undermonster1.png")));
+                fixtureDefs = new FixtureDef[1];
+                setSize(new Vector2(0.8f, 0.8f));
+                getBodyDef().position.set(initialPos);
+                getBodyDef().type = BodyDef.BodyType.DynamicBody;
+                getBodyDef().gravityScale=0;
+                
+                FixtureDef underFixtureDef = new FixtureDef();
+                PolygonShape underShape = new PolygonShape();
+                underShape.setAsBox(0.4f, 0.4f);
+                underFixtureDef.density = 100.0f;
+                underFixtureDef.shape = underShape;
+                fixtureDefs[0] = underFixtureDef;
+                underFixtureDef.friction = 10;
+            }
+            else {
+                setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
+                fixtureDefs = new FixtureDef[1];
+                setSize(new Vector2(0.8f, 1.2f));
+                getBodyDef().position.set(initialPos);
+                getBodyDef().type = BodyDef.BodyType.DynamicBody;
+                
+                
+                FixtureDef under2fixtureDef = new FixtureDef();
+                PolygonShape under2shape = new PolygonShape();
+                under2shape.setAsBox(0.4f, 0.6f);
+                under2fixtureDef.density = 1.0f;
+                under2fixtureDef.shape = under2shape;
+                fixtureDefs[0] = under2fixtureDef;
+                under2fixtureDef.friction = 0;   
+            }
+        }
 		this.mType = mType;
-		position = new Vector2(x,y);
-		velocity = new Vector2();
-		angle  = 90.0f;
-		dstAng = 0.0f;
-		
+		this.level = level;
+		this.angle = AngleEnum.valueOf(angle);
 		isAlive = true;
-		// firecool = 0;
-		
-		sound = null;
-		sndcue = -1;
+		System.out.println("monster is created");
+	}
+	
+
+	
+	/** 
+	 * Returns the monster level 
+	 * 
+	 * @return the monster level 
+	 */
+	public int getLevel(){
+		return level;
 	}
 	
 	/** 
@@ -101,122 +173,36 @@ public class Monster {
 		return id;
 	}
 	
-	/**
-	 * Returns the x-coordinate of the monster position
-	 *
-	 * @return the x-coordinate of the monster position
-	 */
-	public float getX() {
-		return position.x;
-	}
 
-	/**
-	 * Returns the monster ypte
+	/* Returns the monster ypte
 	 *
 	 * @return the monster type
 	 */
 	public MType getType() {
 		return mType;
 	}
-
+	
 	/**
-	 * Sets the x-coordinate of the monster position
+	 * Returns the goal of this monster
 	 *
-	 * @param value the x-coordinate of the monster position
+	 * @return the goal
 	 */
-	public void setX(float value) {
-		position.x = value;
-	}
-
-	/**
-	 * Returns the y-coordinate of the monster position
-	 *
-	 * @return the y-coordinate of the monster position
-	 */
-	public float getY() {
-		return position.y;
-	}
-
-	/**
-	 * Sets the y-coordinate of the monster position
-	 *
-	 * @param value the y-coordinate of the monster position
-	 */
-	public void setY(float value) {
-		position.y = value;
+	
+	public Vector2 getGoal(){
+		return goal;
 	}
 	
 	/**
-	 * Returns the position of this monster.
-	 *
-	 * This method returns a reference to the underlying monster position vector.
-	 * Changes to this object will change the position of the monster.
-	 *
-	 * @return the position of this monster.
+	 * Sets the goal of this monster
+	 * 
+	 * @param the goal of this monster
 	 */
-	public Vector2 getPosition() {
-		return position;
-	}
-
-	/**
-	 * Returns the x-coordinate of the monster velocity
-	 *
-	 * @return the x-coordinate of the monster velocity
-	 */
-	public float getVX() {
-		return velocity.x;
-	}
-
-	/**
-	 * Sets the x-coordinate of the monster velocity
-	 *
-	 * @param value the x-coordinate of the monster velocity
-	 */
-	public void setVX(float value) {
-		velocity.x = value;
-	}
-
-	/**
-	 * Returns the y-coordinate of the monster velocity
-	 *
-	 * @return the y-coordinate of the monster velocity
-	 */
-	public float getVY() {
-		return velocity.y;
-	}
-
-	/**
-	 * Sets the y-coordinate of the monster velocity
-	 *
-	 * @param value the y-coordinate of the monster velocity
-	 */
-	public void setVY(float value) {
-		velocity.y = value;
-	}
-
-	/**
-	 * Returns the velocity of this monster.
-	 *
-	 * This method returns a reference to the underlying monster velocity vector.
-	 * Changes to this object will change the velocity of the monster.
-	 *
-	 * @return the velocity of this monster.
-	 */	
-	public Vector2 getVelocity() {
-		return velocity;
+	
+	public void setGoal(Vector2 goal){
+		this.goal = goal;
 	}
 	
-	/**
-	 * Returns the current facing angle of the monster
-	 *
-	 * This value cannot be changed externally.  It can only
-	 * be changed by update()
-	 *
-	 * @return the current facing angle of the monster
-	 */
-	public float getAngle() {
-		return angle;
-	}
+
 	
 	/**
 	 * Returns whether or not the monster is alive.
@@ -231,14 +217,8 @@ public class Monster {
 		return isAlive;
 	}
 	
-	/**
-	 * Push the monster so that it starts to fall.
-	 * 
-	 * This method will not destroy the monster immediately.  It will tumble and fall 
-	 * offscreen before dying. To instantly kill a monster, use setAlive().
-	 */
-	public void destroy() {
-		// TODO: Implement
+	public boolean isAtGoal(){
+	    return this.getBody().getPosition().epsilonEquals(goal, 0.0f);
 	}
 	
 	/**
@@ -254,6 +234,16 @@ public class Monster {
 	}
 	
 	/**
+	 * Push the monster so that it starts to fall.
+	 * 
+	 * This method will not destroy the monster immediately.  It will tumble and fall 
+	 * offscreen before dy	ing. To instantly kill a monster, use setAlive().
+	 */
+	public void destroy() {
+		// TODO: Implement
+	}
+	
+	/**
 	 * Plays the appropriate sound for this monster's current 
 	 */
 	public void play() {
@@ -261,111 +251,43 @@ public class Monster {
 	}
 
 	/**
-	 * Updates this monster position (and weapons fire) according to the control code.
-	 *
-	 * This method updates the velocity and the weapon status, but it does not change
-	 * the position or create photons.  The later interact with other objects (position
-	 * can cause collisions) so they are processed in a controller.  Method in a model
-	 * object should only modify state of that specific object and no others.
+	 * Updates this monster position according to the control code.
 	 *
 	 * @param controlCode The movement controlCode (from InputController).
 	 */
-	public void update(int controlCode) {
-		// If we are dead do nothing.
-		if (!isAlive) {
-			return;
-		} else if (fallAmount >= MIN_FALL_AMOUNT) {
-			// Animate the fall, but quit
-			fallAmount += FALL_RATE;
-			isAlive = !(fallAmount > MAX_FALL_AMOUNT);
-			return;
+	public void update(Move move) {
+		setRotation(AngleEnum.convertToAngle(angle));
+	    //System.out.println(body.getPosition().toString());
+		Vector2 velocity = body.getLinearVelocity();
+		switch (move){
+        case DOWN:
+            velocity.x = 0;
+            velocity.y = -speed_coeff*MOVE_SPEED;
+            break;
+        case UP:
+            velocity.x = 0;
+            velocity.y = speed_coeff*MOVE_SPEED;
+            break;
+        case LEFT:
+            velocity.x = -speed_coeff*MOVE_SPEED;
+            velocity.y = 0;
+            break;
+        case RIGHT:
+            velocity.x = speed_coeff*MOVE_SPEED;
+            velocity.y = 0;
+            break;
+        case NONE:
+            break;
+        default:
+            break;
 		}
-
-		// Determine how we are moving.
-		boolean movingLeft  = (controlCode & InputController.CONTROL_MOVE_LEFT) != 0;
-		boolean movingRight = (controlCode & InputController.CONTROL_MOVE_RIGHT) != 0;
-		boolean movingUp    = (controlCode & InputController.CONTROL_MOVE_UP) != 0;
-		boolean movingDown  = (controlCode & InputController.CONTROL_MOVE_DOWN) != 0;
-
-		// Process movement command.
-		if (movingLeft) {
-			dstAng = 0.0f;
-			velocity.x = -MOVE_SPEED;
-			velocity.y = 0;
-		} else if (movingRight) {
-			dstAng = 180.0f;
-			velocity.x = MOVE_SPEED;
-			velocity.y = 0;
-		} else if (movingUp) {
-			dstAng = 90.0f;
-			velocity.y = -MOVE_SPEED;
-			velocity.x = 0;
-		} else if (movingDown) {
-			dstAng = 270.0f;
-			velocity.y = MOVE_SPEED;
-			velocity.x = 0;
-		} else {
-			// NOT MOVING, SO SLOW DOWN
-			velocity.x *= SPEED_DAMPNING;
-			velocity.y *= SPEED_DAMPNING;
-			if (Math.abs(velocity.x) < EPSILON_CLAMP) {
-				velocity.x = 0.0f;
-			}
-			if (Math.abs(velocity.y) < EPSILON_CLAMP) {
-				velocity.y = 0.0f;
-			}
-		}
-
-		updateRotation();
+		getBody().setLinearVelocity(velocity);
 	}
+	
 
-	/**
-	 * Update the monster rotation so that angle gets closer to dstAng
-	 *
-	 * This allows us to have some delay in rotation, even though
-	 * movement is always left-right/up-down.  The result is a much
-	 * smoother animation.
-	 */
-	private void updateRotation() {
-		// Change angle to get closer to dstAng
-		if (angle > dstAng) {
-			float angleDifference = angle - dstAng;
-			if (angleDifference <= TURN_SPEED) {
-				angle = dstAng;
-			} else {
-				if (angleDifference == HALF_CIRCLE) {
-					angleDifference += random.nextFloat()*RAND_FACTOR-RAND_OFFSET;
-				}
-				if (angleDifference > HALF_CIRCLE) {
-					angle += TURN_SPEED;
-				} else {
-					angle -= TURN_SPEED;
-				}
-			}
-			velocity.setZero();
-		} else if (angle < dstAng) {
-			float angleDifference = dstAng - angle;
-			if (angleDifference <= TURN_SPEED) {
-				angle = dstAng;
-			} else {
-				if (angleDifference == HALF_CIRCLE) {
-					angleDifference += random.nextFloat()*RAND_FACTOR-RAND_OFFSET;
-				}
-				if (angleDifference > HALF_CIRCLE) {
-					angle -= TURN_SPEED;
-				} else {
-					angle += TURN_SPEED;
-				}
-			}
-			velocity.setZero();
-		}
-		
-		// Get rid of overspins.
-		while (angle > FULL_CIRCLE) {
-			angle -= FULL_CIRCLE;
-		}
-		while (angle < 0.0f) {
-			angle += FULL_CIRCLE;
-		}
+	@Override
+	public void draw(GameCanvas canvas){
+		canvas.draw(getTextureRegion(), getBody().getPosition().add(getSize().cpy().scl(-0.5f)), 
+		        getSize(), new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 	}
 }

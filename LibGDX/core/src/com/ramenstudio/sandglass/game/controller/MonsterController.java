@@ -7,60 +7,147 @@
  * Based on AIController from Lab 3 by Walker M. WHite
  */
 package com.ramenstudio.sandglass.game.controller;
-
-import java.util.*;
-
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
-import com.ramenstudio.sandglass.game.model.GameModel;
+import com.ramenstudio.sandglass.game.model.AbstractTile;
 import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Monster.Move;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
-import com.ramenstudio.sandglass.game.model.SandglassMonster;
 
 /** 
  * InputController corresponding to AI control.
  * 
  */
-public class MonsterController extends AbstractController {
-	/**
-	 * Enumeration to encode the finite state machine.
-	 */
-	private static enum FSMState {
-		/** The monster just spawned */
-		SPAWN,
-		/** The monster is patrolling around without a target */
-		WANDER,
-		/** The monster has a target, but must get closer */
-		CHASE,
-		/** The monster has a target and is attacking it */
-		ATTACK;
-	}
+public abstract class MonsterController extends AbstractController {
 
-	// Constants for chase algorithms
-	/** How close a target must be for us to chase it */
-	private static final int CHASE_DIST = 99999;
-	/** How close a target must be for us to attack it */
-	private static final int ATTACK_DIST = 4;
+
+	public enum AngleEnum {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST;
+
+        /**
+         * Returns the new compass direction of the
+         * provided direction but rotated 180 degrees/flipped.
+         * 
+         * @param thisEnum is the direction to rotate 180 degrees/flip.
+         * @return the angle rotated 180 degrees/flipped.
+         */
+        public static AngleEnum flipEnum(AngleEnum thisEnum) {
+            if (thisEnum == NORTH) {
+                return SOUTH;
+            }
+            else if (thisEnum == SOUTH) {
+                return NORTH;
+            }
+            else if (thisEnum == WEST) {
+                return EAST;
+            }
+            else {
+                return WEST;
+            }
+        }
+
+        /**
+         * Returns the new compass direction of the
+         * provided direction but rotated 90 degrees counterclockwise.
+         * 
+         * @param thisEnum is the direction to rotate 90 degrees counterclockwise.
+         * @return the angle rotated 90 degrees counterclockwise.
+         */
+        public static AngleEnum flipCounterClockWise(AngleEnum thisEnum) {
+            if (thisEnum == NORTH) {
+                return WEST;
+            }
+            else if (thisEnum == EAST) {
+                return NORTH;
+            }
+            else if (thisEnum == SOUTH) {
+                return EAST;
+            }
+            else {
+                return SOUTH;
+            }
+        }
+
+        /**
+         * Returns the new compass direction of the 
+         * provided direction but rotated 90 degrees clockwise.
+         * 
+         * @param thisEnum is the direction to rotate 90 degrees clockwise.
+         * @return the angle rotated 90 degrees clockwise.
+         */
+        public static AngleEnum flipClockWise(AngleEnum thisEnum) {
+            if (thisEnum == NORTH) {
+                return EAST;
+            }
+            else if (thisEnum == EAST) {
+                return SOUTH;
+            }
+            else if (thisEnum == SOUTH) {
+                return WEST;
+            }
+            else {
+                return NORTH;
+            }
+        }
+
+        /**
+         * Converts the compass direction to an actual angle in radians.
+         * 
+         * @param thisEnum to convert to an angle
+         * @return the angle in radians
+         */
+        public static float convertToAngle(AngleEnum thisEnum) {
+            if (thisEnum == NORTH) {
+                return 0;
+            }
+            else if (thisEnum == WEST) {
+                return (float) (Math.PI/2);
+            }
+            else if (thisEnum == SOUTH) {
+                return (float) (Math.PI);
+            }
+            else {
+                return (float) (3*Math.PI/2);
+            }
+        }
+
+        /**
+         * Whether the given compass direction is vertical.
+         * 
+         * @param   thisEnum to evaluate
+         * @return  true if thisEnum points North or South, false otherwise 
+         */
+        public static boolean isVertical (AngleEnum thisEnum) {
+            if (thisEnum == NORTH || thisEnum == SOUTH) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 
 	// Instance Attributes
 	/** The monster being controlled by this AIController */
-	private SandglassMonster monster;
-//	private Monster monster;
-	/** The game board; used for pathfinding */
-	private GameModel gamemodel;
-	/** The monster's current state in the FSM */
-	private FSMState state;
-	/** The target monster (to chase or attack). */
-	private Player target; 
-	/** The monster's next action  */
-	private int move; // A ControlCode
+	public Monster monster;
 	/** The number of ticks since we started this controller */
-	private long ticks;
-	/** is player in the same world*/
-	private boolean setGoal;
-	/** Unique monster identifier */
-	private int id;
+	public float ticks;
+	/** is player in the same world*/	
+	public Move action;
 	
+	public int period;
+	
+	public PlayerController target;
+	
+	public World delegate;
+	
+	public RayCastHandler oneFrameRayHandler;
 	/**
 	 * Creates an AIController for the monster with the given id.
 	 *
@@ -69,55 +156,29 @@ public class MonsterController extends AbstractController {
 	 * @param gmodel is the board state used for tracking
 	 * @param player is the target of this monster
 	 */
-	public MonsterController(int id, SandglassMonster argMonster, GameModel gmodel, Player player) {
-		this.id = id;
-		monster = argMonster;
-		gamemodel = gmodel;
-		target = player;
+	public MonsterController(Monster monster) {
+		this.monster = monster;
+		action = Move.NONE;
+		period = monster.span;
 	}
-
-//	/**
-//	 * Returns the action selected by this InputController
-//	 *
-//	 * The returned int is a bit-vector of more than one possible input 
-//	 * option. This is why we do not use an enumeration of Control Codes;
-//	 * Java does not (nicely) provide bitwise operation support for enums. 
-//	 *
-//	 * This function tests the environment and uses the FSM to chose the next
-//	 * action of the monster. This function SHOULD NOT need to be modified.  It
-//	 * just contains code that drives the functions that you need to implement.
-//	 *
-//	 * @return the action selected by this InputController
-//	 */
+	
+	/**
+	 * Returns the action selected by this MonsterController
+	 * 
+	 * 
+	 * @return the action selected by this MonsterController
+	 */
+	public abstract void getAction(float dt);
 	
 	
-//	/**
-//	 * Returns the action selected by this MonsterController
-//	 * 
-//	 * 
-//	 * @return the action selected by this MonsterController
-//	 */
-//	public int getAction() {
-//		// Increment the number of ticks.
-//		ticks++;
-//
-//		// Do not need to rework ourselves every frame. Just every 10 ticks.
-//		if ((monster.getId() + ticks) % 10 == 0) {
-//			// Process the FSM
-//			changeStateIfApplicable();
-//			// Pathfinding
-//			markGoalTiles();
-//			move = getMoveAlongPathToGoalTile();
-//		}
-//
-//		int action = move;
-//		return action;
-//	}
-
 	@Override
-	public void update(float dt) {
-		monster.update(dt);
+	public void update(float dt){
+		monster.update(action);
 	}
+	
+    public void setTarget(PlayerController player){
+        target = player;
+    }
 
 	@Override
 	public void draw(GameCanvas canvas) {
@@ -125,8 +186,39 @@ public class MonsterController extends AbstractController {
 	}
 
 	@Override
-	public void objectSetup(World world) {
-		// TODO Auto-generated method stub
-		
+	public void objectSetup(World handler) {
+	    delegate = handler;
+		activatePhysics(handler, monster);
+		monster.getBody().applyForceToCenter(new Vector2(monster.getBody().getMass()*0, 
+				monster.getBody().getMass()*-9.8f), true);
+		monster.getBody().setFixedRotation(true);
 	}
+	
+    public class RayCastHandler implements RayCastCallback {
+        boolean isGrounded = false;
+        boolean isFlip = false;
+        boolean isCorner = false;
+        public AbstractTile tileUnderneath;
+        public TurnTile cornerTile;
+
+        @Override
+        public float reportRayFixture(Fixture fixture, Vector2 point, 
+                Vector2 normal, float fraction) {
+            Object obj = fixture.getBody().getUserData();
+
+            if (obj != null && obj instanceof AbstractTile && !(obj instanceof TurnTile)) {
+                AbstractTile tempGameObject = (AbstractTile)obj;
+                isGrounded = tempGameObject.isGround() || isGrounded;
+                isFlip = tempGameObject.isFlippable() || isFlip;
+                tileUnderneath = tempGameObject;
+            }
+            if (obj != null && obj instanceof TurnTile) {
+                TurnTile tempCorner = (TurnTile) obj;
+                isCorner = true;
+                cornerTile = tempCorner;
+            }
+
+            return -1;
+        }
+    }
 }
