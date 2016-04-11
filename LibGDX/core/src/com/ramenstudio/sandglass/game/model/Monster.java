@@ -85,8 +85,6 @@ public class Monster extends GameObject implements Drawable{
             getBodyDef().position.set(initialPos);
             getBodyDef().type = BodyDef.BodyType.KinematicBody;
             
-            
-            
             FixtureDef fixtureDef = new FixtureDef();
             PolygonShape shape = new PolygonShape();
             shape.setAsBox(0.4f, 0.35f);
@@ -94,6 +92,7 @@ public class Monster extends GameObject implements Drawable{
             fixtureDef.shape = shape;
             fixtureDefs[0] = fixtureDef;
             fixtureDef.friction = 0.0f;
+            fixtureDef.isSensor = true;
             
             
             CircleShape c = new CircleShape();
@@ -101,6 +100,7 @@ public class Monster extends GameObject implements Drawable{
             c.setPosition(new Vector2(0, -0.35f));
             FixtureDef fixtureDef2 = new FixtureDef();
             fixtureDef2.shape = c;
+            fixtureDef2.isSensor = true;
             fixtureDefs[1] = fixtureDef2;
             
 
@@ -109,8 +109,10 @@ public class Monster extends GameObject implements Drawable{
             c2.setPosition(new Vector2(0, 0.35f));
             FixtureDef fixtureDef3 = new FixtureDef();
             fixtureDef3.shape = c2;
+            fixtureDef3.isSensor = true;
             fixtureDefs[2] = fixtureDef3;
             
+
         }
         else{
             if (level ==1) {
