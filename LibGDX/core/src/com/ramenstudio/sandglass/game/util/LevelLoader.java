@@ -177,7 +177,7 @@ public class LevelLoader {
                     objArr.add(monster);
                     System.out.print("monster at " + i + ", " + j);
                 }
-                else if (value=="player"){
+                else if (value.equals("player")){
                     Player player = new Player(new Vector2(i+0.5f, j+0.5f));
                     objArr.add(player); 
                 }
