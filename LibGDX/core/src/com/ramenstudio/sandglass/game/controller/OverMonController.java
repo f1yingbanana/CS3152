@@ -51,9 +51,6 @@ public class OverMonController extends MonsterController {
 
 
 	public boolean isGrounded() {
-
-
-		Vector2 g = delegate.getGravity().nor();
 		Vector2 footPos = null;
 		Vector2 endPos = null;
 		Vector2 monsterSize = monster.getSize();
@@ -84,8 +81,8 @@ public class OverMonController extends MonsterController {
 		Vector2 leftEnd = null;
 		Vector2 rightEnd = null;
 		Vector2 monsterPosition = monster.getBody().getPosition();
-		Vector2 left = delegate.getGravity().nor().rotate90(1).scl(0.1f);
-		Vector2 right = delegate.getGravity().nor().rotate90(-1).scl(0.1f);
+		Vector2 left = new Vector2(-1f,0f).scl(0.1f);
+		Vector2 right = new Vector2(1f,0f).scl(0.1f);
 		if (monster.angle == AngleEnum.NORTH) {
 			leftPos = monsterPosition.cpy().sub(monster.getSize().scl(0.5f).x,0);
 			rightPos = monsterPosition.cpy().add(monster.getSize().scl(0.5f).x,0);
@@ -145,7 +142,7 @@ public class OverMonController extends MonsterController {
 				}
 				else if (action==Move.DOWN && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
-					monster.setPosition(mp.cpy().add(ms.cpy().y*0.5f,ms.cpy().x*0.5f));
+					monster.setPosition(mp.cpy().add(ms.cpy().y*0.5f,ms.cpy().x*0.25f));
 					action = Move.RIGHT;
 					monster.angle = AngleEnum.NORTH;
 				}
