@@ -30,27 +30,53 @@ public class OverMonController extends MonsterController {
      */
     public OverMonController(Monster monster) {
         super(monster);
-        action = Move.RIGHT;
+        action = Move.LEFT;
     }
     
 
     
     public boolean isGrounded() {
-        
-        
-        Vector2 g = delegate.getGravity().nor();
-        Vector2 footPos = monster.getBody().getPosition().sub(monster.getSize().x*0.5f,monster.getSize().y*0.5f);
-        Vector2 endPos = footPos.cpy().add(g.cpy().scl(1.0f));
 
-        Vector2 footPos2 = monster.getBody().getPosition().sub(-monster.getSize().x,monster.getSize().y*0.5f);
-        Vector2 endPos2 = footPos2.cpy().add(g.cpy().scl(1.0f));
-        RayCastHandler handler = new RayCastHandler();
-        delegate.rayCast(handler, footPos, endPos);
-        RayCastHandler handler2 = new RayCastHandler();
-        delegate.rayCast(handler2, footPos2, endPos2);
-        oneFrameRayHandler = handler;
-        return handler.isGrounded || handler2.isGrounded;
-    }
+
+		Vector2 g = delegate.getGravity().nor();
+		Vector2 footPos = null;
+		Vector2 endPos = null;
+		Vector2 footPos2 = null;
+		Vector2 endPos2 = null;
+		Vector2 monsterSize = monster.getSize();
+		Vector2 monsterPosition = monster.getBody().getPosition();
+		// Handle case of Monster facing North
+		if (monster.angle == AngleEnum.NORTH) {
+			footPos = monsterPosition.cpy().sub(monsterSize.x*0.5f,monsterSize.y*0.5f);
+			endPos = footPos.cpy().sub(0,1f);
+			footPos2 = monsterPosition.cpy().sub(-monsterSize.x*0.5f,monsterSize.y*0.5f);
+			endPos2 = footPos2.cpy().sub(0,1f);
+		} else if (monster.angle == AngleEnum.EAST) {
+			footPos = monsterPosition.cpy().sub(monsterSize.y*0.5f,-monsterSize.x*0.5f);
+			endPos = footPos.cpy().sub(1f,0);
+			footPos2 = monsterPosition.cpy().sub(monsterSize.y*0.5f,monsterSize.x*0.5f);
+			endPos2 = footPos2.cpy().sub(1f,0);
+		} else if (monster.angle == AngleEnum.SOUTH) {
+			footPos = monsterPosition.cpy().add(monsterSize.x*0.5f,monsterSize.y*0.5f);
+			endPos = footPos.cpy().add(0,1f);
+			footPos2 = monsterPosition.cpy().add(-monsterSize.x*0.5f,monsterSize.y*0.5f);
+			endPos2 = footPos2.cpy().add(0,1f);
+		} else {
+			footPos = monsterPosition.cpy().add(monsterSize.y*0.5f,-monsterSize.x*0.5f);
+			endPos = footPos.cpy().add(1f,0);
+			footPos2 = monsterPosition.cpy().add(monsterSize.y*0.5f,monsterSize.x*0.5f);
+			endPos2 = footPos2.cpy().add(1f,0);
+		}
+		System.out.println("MONSTER: "+ monster.getBody().getPosition().toString());
+		System.out.println("LEFTCORNER: "+ endPos2.toString());
+		System.out.println("RIGHTCORNER:"+ endPos.toString());
+		RayCastHandler handler = new RayCastHandler();
+		delegate.rayCast(handler, footPos, endPos);
+		RayCastHandler handler2 = new RayCastHandler();
+		delegate.rayCast(handler2, footPos2, endPos2);
+		oneFrameRayHandler = handler;
+		return handler.isGrounded || handler2.isGrounded;
+	}
     
     public boolean isWall(){
             Vector2 left = delegate.getGravity().nor().rotate90(1);

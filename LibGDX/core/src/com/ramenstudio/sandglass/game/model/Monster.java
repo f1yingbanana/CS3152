@@ -152,6 +152,7 @@ public class Monster extends GameObject implements Drawable{
 		angle = AngleEnum.NORTH;
 		
 		isAlive = true;
+		System.out.println("monster is created");
 	}
 	
 
