@@ -1,5 +1,6 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,12 +12,14 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
@@ -24,6 +27,10 @@ import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.TurnTile;
+import com.ramenstudio.sandglass.game.model.WallTile;
 
 /**
  * This takes care of the game initialization, maintains update and drawing
@@ -32,6 +39,7 @@ import com.ramenstudio.sandglass.game.model.GameObject;
  * @author Jiacong Xu
  */
 public class GameController extends AbstractController implements ContactListener {
+
 
   // The physics world object
   public World world = new World(new Vector2(0, -9.8f), true);
@@ -67,6 +75,10 @@ public class GameController extends AbstractController implements ContactListene
   // controller.
   public UIController uiController = new UIController();
   
+  private Array<OverMonController> overMonController = new Array<OverMonController>();
+  
+  private Array<UnderMonController> underMonController = new Array<UnderMonController>();
+  
   public LevelLoader loader = new LevelLoader();
   
   private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
@@ -74,8 +86,18 @@ public class GameController extends AbstractController implements ContactListene
   public GameController() {
     playerController = new PlayerController();
     cameraController = new CameraController(new Vector2(5, 5));
-    
+
     mapObjects = loader.loadLevel("example.tmx");
+    ArrayList<GameObject> umArray = (ArrayList<GameObject>) 
+            mapObjects.get(LevelLoader.LayerKey.UNDER_M);
+    ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
+            mapObjects.get(LevelLoader.LayerKey.OVER_M);
+    for (GameObject m: umArray){
+        underMonController.add(new UnderMonController((Monster) m));
+    }
+    for (GameObject m: omArray){
+        overMonController.add(new OverMonController((Monster) m));
+    }    
     
     // Set up the world!
     objectSetup(world);
@@ -144,6 +166,17 @@ public class GameController extends AbstractController implements ContactListene
     playerController.objectSetup(world);
     cameraController.setTarget(playerController.getPlayer());
     cameraController.objectSetup(world);
+    
+    for (OverMonController m: overMonController){
+        m.objectSetup(world);
+        m.setTarget(playerController);
+        m.setGoal=true;
+    }
+    for (UnderMonController m: underMonController){
+        m.objectSetup(world);
+        m.setTarget(playerController);
+    }
+    world.setContactListener(this);
   }
   
   @Override
@@ -166,6 +199,22 @@ public class GameController extends AbstractController implements ContactListene
     //}
     
     uiController.update(dt);
+    for (MonsterController m: underMonController){
+        m.getAction(dt);
+    }
+    
+    for (MonsterController m: underMonController){
+        m.update(dt);
+    }
+    
+    for (OverMonController m: overMonController){
+        m.rotateMonster();
+    }
+    
+    for (OverMonController m: overMonController){
+        m.update(dt);
+        m.setGoal= !playerController.isUnder();
+    }
     
     stepPhysics(dt);
     
@@ -177,12 +226,23 @@ public class GameController extends AbstractController implements ContactListene
   }
   
   private void reset() {
-    world.dispose();
-    world = new World(new Vector2(0, -9.8f), true);
-    playerController = new PlayerController();
-    cameraController = new CameraController(new Vector2(5, 5));
-    gameModel = new GameModel();
-    objectSetup(world);
+	  	world.dispose();
+		world = new World(new Vector2(0, -9.8f), true);
+		playerController = new PlayerController();
+		cameraController = new CameraController(new Vector2(5, 5));
+		underMonController.clear();
+		overMonController.clear();
+		ArrayList<GameObject> umArray = (ArrayList<GameObject>) 
+	            mapObjects.get(LevelLoader.LayerKey.UNDER_M);
+	    ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
+	            mapObjects.get(LevelLoader.LayerKey.OVER_M);
+	    for (GameObject m: umArray){
+	        underMonController.add(new UnderMonController((Monster) m));
+	    }
+	    for (GameObject m: omArray){
+	        overMonController.add(new OverMonController((Monster) m));
+	    }
+		objectSetup(world);
   }
   
   /**
@@ -202,6 +262,12 @@ public class GameController extends AbstractController implements ContactListene
   public void draw(GameCanvas canvas) {
     playerController.draw(canvas);
     cameraController.draw(canvas);
+    for (UnderMonController m: underMonController){
+        m.draw(canvas);
+    }
+    for (OverMonController m: overMonController){
+        m.draw(canvas);
+    }
     gameModel.draw(canvas);
   }
   
@@ -235,21 +301,26 @@ public void beginContact(Contact contact) {
     }
 }
 
+
+
 @Override
 public void endContact(Contact contact) {
-	// TODO Auto-generated method stub
-	
+    // TODO Auto-generated method stub
+    if (contact.getFixtureB().getUserData().getClass()==Player.class &&
+            contact.getFixtureA().getUserData().getClass()==Monster.class){
+        System.out.println("monstertouch");
+    }
 }
 
 @Override
 public void preSolve(Contact contact, Manifold oldManifold) {
-	// TODO Auto-generated method stub
-	
+    // TODO Auto-generated method stub
+    
 }
 
 @Override
 public void postSolve(Contact contact, ContactImpulse impulse) {
-	// TODO Auto-generated method stub
-	
+	    
 }
+
 }
