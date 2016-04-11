@@ -22,6 +22,7 @@ import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
+import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
 
@@ -72,10 +73,14 @@ public class GameController extends AbstractController implements ContactListene
   private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
   
   public GameController() {
-    playerController = new PlayerController();
+	mapObjects = loader.loadLevel("example.tmx");
+	List<GameObject> playerList = mapObjects.get(LayerKey.PLAYER);
+	System.out.println(playerList.size());
+	Player player = (Player) playerList.get(0);
+    playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
     
-    mapObjects = loader.loadLevel("example.tmx");
+    
     
     // Set up the world!
     objectSetup(world);
@@ -179,7 +184,9 @@ public class GameController extends AbstractController implements ContactListene
   private void reset() {
     world.dispose();
     world = new World(new Vector2(0, -9.8f), true);
-    playerController = new PlayerController();
+    List<GameObject> playerList = mapObjects.get("PLAYER");
+	Player player = (Player) playerList.get(0);
+    playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
     gameModel = new GameModel();
     objectSetup(world);

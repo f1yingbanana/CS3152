@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
 
@@ -35,6 +36,7 @@ public class LevelLoader {
     
     ArrayList<GameObject> Tilearr = parseGround(groundLayer, "Collision");
     ArrayList<GameObject> playerTile = parseObject(objectLayer, "type", "player");
+    System.out.println(playerTile.size());
     ArrayList<GameObject> monsterTile = parseObject(objectLayer, "type", "monster");
     ArrayList<GameObject> resourceTile = parseObject(objectLayer, "type", "resource");
     
@@ -137,11 +139,20 @@ public class LevelLoader {
     
     for (int i = 0; i < width; i++ ){
       for (int j = 0; j < height; j++){
+    	if (layer.getCell(i, j)==null) continue;
+    	
+    	System.out.println("Cell Not null at " + i + ", " + j);
         TiledMapTile this_tile = layer.getCell(i, j).getTile();
         if (this_tile.getProperties().containsKey(key)){
-          if (this_tile.getProperties().get(key) == value){
-            GameObject object = new GameObject();
-            object.getBodyDef().position.set(new Vector2(i+0.5f, j+0.5f));
+        	System.out.println("There is " + key + " !");
+        	System.out.println("The value is " + this_tile.getProperties().get(key));
+          if (this_tile.getProperties().get(key).equals(value)){
+        	  System.out.println("There is " + value);
+        	  GameObject object = new GameObject();
+        	if (value == "player"){
+        		Player player = new Player(new Vector2(i+0.5f, j+0.5f));
+        		object = player;
+        	}
             objArr.add(object);
           }
         }

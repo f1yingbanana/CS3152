@@ -81,8 +81,8 @@ public class PlayerController extends AbstractController {
     /**
      * Default constructor for player object.
      */
-    public PlayerController() {
-        player = new Player(new Vector2(10, 25));
+    public PlayerController(Player player) {
+        this.player = player;
     }
 
     @Override
