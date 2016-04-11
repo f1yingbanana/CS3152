@@ -44,8 +44,7 @@ public class Monster extends GameObject implements Drawable{
 
 	// CONSTANTS FOR monster HANDLING
 	/** How far forward this monster can move in a single turn */
-	private static final float MOVE_SPEED = 3.5f;
-	private static float JUMP_VEL = 5.0f;
+	private static final float MOVE_SPEED = 6.5f;
 		
 	// Instance Attributes
 	/** A unique identifier; used to decouple classes. */
@@ -65,7 +64,7 @@ public class Monster extends GameObject implements Drawable{
 	/** The period of changing direction*/
 	public int span;
 	/** Speed coefficient*/
-    private float speed_coeff; 
+    public float speed_coeff; 
 
 	/**
 	 * Create monster # id at the given position.
@@ -74,7 +73,7 @@ public class Monster extends GameObject implements Drawable{
 	 * @param x The initial x-coordinate of the monster
 	 * @param y The initial y-coordinate of the monster
 	 */
-	public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf) {
+	public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, String angle) {
 		super();
 		this.span = span;
 		speed_coeff = spcf;
@@ -149,8 +148,7 @@ public class Monster extends GameObject implements Drawable{
         }
 		this.mType = mType;
 		this.level = level;
-		angle = AngleEnum.NORTH;
-		
+		this.angle = AngleEnum.valueOf(angle);
 		isAlive = true;
 		System.out.println("monster is created");
 	}
@@ -258,6 +256,7 @@ public class Monster extends GameObject implements Drawable{
 	 * @param controlCode The movement controlCode (from InputController).
 	 */
 	public void update(Move move) {
+		setRotation(AngleEnum.convertToAngle(angle));
 	    //System.out.println(body.getPosition().toString());
 		Vector2 velocity = body.getLinearVelocity();
 		switch (move){

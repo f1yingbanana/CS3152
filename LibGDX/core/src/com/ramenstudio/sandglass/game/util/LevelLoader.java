@@ -160,8 +160,9 @@ public class LevelLoader {
                     String mType = (String) this_tile.getProperties().get("mType");
                     int span = Integer.parseInt((String) this_tile.getProperties().get("span"));
                     float spcf = Float.parseFloat((String) this_tile.getProperties().get("spcf"));
+                    String angle = (String) this_tile.getProperties().get("angle");
                     Monster monster = new Monster(new Vector2(i+0.5f, j+0.5f), 
-                            MType.valueOf(mType),level, span, spcf);
+                            MType.valueOf(mType),level, span, spcf, angle);
                     objArr.add(monster);
                 }
                 else if (value.equals("overmonster")){
@@ -170,9 +171,11 @@ public class LevelLoader {
                     String mType = (String) this_tile.getProperties().get("mType");
                     int span = Integer.parseInt((String) this_tile.getProperties().get("span"));
                     float spcf = Float.parseFloat((String) this_tile.getProperties().get("spcf"));
+                    String angle = (String) this_tile.getProperties().get("angle");
                     Monster monster = new Monster(new Vector2(i+0.25f, j+0.25f), 
-                            MType.valueOf(mType),level, span, spcf);
+                            MType.valueOf(mType),level, span, spcf, angle);
                     objArr.add(monster);
+                    System.out.print("monster at " + i + ", " + j);
                 }
                 else if (value=="player"){
                     Player player = new Player(new Vector2(i+0.5f, j+0.5f));
