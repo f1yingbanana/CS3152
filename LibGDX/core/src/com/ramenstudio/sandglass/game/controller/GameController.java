@@ -159,6 +159,7 @@ public class GameController extends AbstractController implements PhysicsDelegat
     world.dispose();
     world = new World(new Vector2(0, -9.8f), true);
     playerController = new PlayerController();
+    cameraController = new CameraController(new Vector2(5, 5));
     gameModel = new GameModel();
     objectSetup(this);
   }
