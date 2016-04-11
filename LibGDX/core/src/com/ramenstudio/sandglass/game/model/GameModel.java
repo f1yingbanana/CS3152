@@ -78,6 +78,10 @@ public class GameModel implements Drawable {
     collected_pieces ++;
   }
   
+  public int getMaxTime(){
+	  return maxtime;
+  }
+  
   /**@return the amount of time remaining in the overworld*/
   public int getOverworldTime(){
     return overtime;
