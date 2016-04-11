@@ -21,6 +21,7 @@ import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.ShipPiece;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
@@ -231,7 +232,12 @@ public class GameController extends AbstractController implements ContactListene
 public void beginContact(Contact contact) {
     if(contact.getFixtureA().getBody().getUserData() == Player.class  &&
             contact.getFixtureB().getBody().getUserData() == Gate.class){
-          touchingGate = true;
+        touchingGate = true;
+    }
+    if (contact.getFixtureA().getBody().getUserData() == Player.class &&
+    		contact.getFixtureB().getBody().getUserData() == ShipPiece.class){
+    	gameModel.collectPiece();
+  
     }
 }
 
