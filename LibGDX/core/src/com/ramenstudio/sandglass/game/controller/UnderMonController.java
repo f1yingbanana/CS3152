@@ -80,5 +80,6 @@ public class UnderMonController extends MonsterController {
     @Override
     public void update(float dt){
         super.update(dt);
+        monster.setRotation(AngleEnum.convertToAngle(AngleEnum.valueOf(target.heading.toString())));
     }
 }

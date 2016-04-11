@@ -125,8 +125,8 @@ public class GameController extends AbstractController implements PhysicsDelegat
         m.update(dt);
     }
     
-    for (MonsterController m: overMonController){
-        m.getAction(dt);
+    for (OverMonController m: overMonController){
+        m.rotateMonster();
     }
     
     for (OverMonController m: overMonController){

@@ -156,14 +156,12 @@ public class LevelLoader {
 //                System.out.println("the key returns " + (String) this_tile.getProperties().get(key));
               if (((String)this_tile.getProperties().get(key)).equals(value)){
                 if (value.equals("undermonster")){
-                    System.out.println("monster is here at" + i + ", " + j);
                     int level = Integer.parseInt((String) this_tile.getProperties().get("level"));
                     String mType = (String) this_tile.getProperties().get("mType");
                     int span = Integer.parseInt((String) this_tile.getProperties().get("span"));
                     float spcf = Float.parseFloat((String) this_tile.getProperties().get("spcf"));
                     Monster monster = new Monster(new Vector2(i+0.5f, j+0.5f), 
                             MType.valueOf(mType),level, span, spcf);
-                    System.out.println("under monster is added");
                     objArr.add(monster);
                 }
                 else if (value.equals("overmonster")){
@@ -178,7 +176,7 @@ public class LevelLoader {
                 }
                 else if (value=="player"){
                     Player player = new Player(new Vector2(i+0.5f, j+0.5f));
-                    objArr.add(player);
+                    objArr.add(player); 
                 }
                 else{
                     GameObject object = new GameObject();

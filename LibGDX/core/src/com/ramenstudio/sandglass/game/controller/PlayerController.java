@@ -63,11 +63,11 @@ public class PlayerController extends AbstractController {
 	private OverlapHandler oneFrameOverlapHandler;
 
 	/** The direction the player's head is facing. */
-	private AngleEnum heading = AngleEnum.NORTH;
+	public AngleEnum heading = AngleEnum.NORTH;
 
 	private boolean isReset = false;
 
-	private enum AngleEnum {
+	enum AngleEnum {
 		NORTH,
 		EAST,
 		SOUTH,
