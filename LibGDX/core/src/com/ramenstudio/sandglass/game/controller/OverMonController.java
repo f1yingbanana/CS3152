@@ -132,7 +132,7 @@ public class OverMonController extends MonsterController {
 				}
 				else if (action==Move.UP && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
-					monster.setPosition(mp.cpy().add(ms.cpy().x*0.5f,-ms.cpy().y*0.5f));
+					monster.setPosition(mp.cpy().add(ms.cpy().x*1.2f,-ms.cpy().y*0.4f));
 					action = Move.RIGHT;
 					monster.angle = AngleEnum.SOUTH;
 				}
@@ -157,7 +157,7 @@ public class OverMonController extends MonsterController {
 				}
 				else if (action==Move.LEFT && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.EAST));
-					monster.setPosition(mp.cpy().add(ms.cpy().y*0.5f,0.5f));
+					monster.setPosition(mp.cpy().add(ms.cpy().x*0.5f,0.5f));
 					action = Move.UP;
 					monster.angle = AngleEnum.EAST;
 				}
@@ -184,9 +184,8 @@ public class OverMonController extends MonsterController {
 					monster.angle = AngleEnum.EAST;
 				}
 				else if (action==Move.RIGHT && !gdd){
-					System.out.println("JOHNJOHNJOHNJOHNJOHNJOHNJOHNJOHNJOHNJOHN");
 					System.out.println(monster.getBody().getPosition().toString());
-					monster.setPosition(mp.cpy().add(ms.cpy().x,ms.cpy().y*1.2f));
+					monster.setPosition(mp.cpy().add(ms.cpy().y*0.5f,ms.cpy().y));
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.EAST));
 					action = Move.UP;
 					monster.angle = AngleEnum.EAST;
@@ -194,7 +193,7 @@ public class OverMonController extends MonsterController {
 				else if (action==Move.RIGHT && wdd){
 					System.out.println("SOUTH, going RIGHT, hit WALL");
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.WEST));
-					monster.setPosition(mp.cpy().sub(ms.cpy().y*0.5f,ms.cpy().x*0.5f));
+					monster.setPosition(mp.cpy().sub(ms.cpy().x*0.5f,ms.cpy().y*0.5f));
 					action = Move.DOWN;
 					monster.angle = AngleEnum.WEST;
 				}
@@ -220,7 +219,7 @@ public class OverMonController extends MonsterController {
 				else if (action==Move.DOWN && wdd){
 					System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
-					monster.setPosition(mp.cpy().sub(1f,-ms.cpy().y*0.5f));
+					monster.setPosition(mp.cpy().sub(1,-ms.cpy().y*0.3f));
 					action = Move.LEFT;
 					monster.angle = AngleEnum.NORTH;
 				}

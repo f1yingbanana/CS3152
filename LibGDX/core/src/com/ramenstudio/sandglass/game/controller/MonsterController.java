@@ -188,7 +188,8 @@ public abstract class MonsterController extends AbstractController {
 	public void objectSetup(PhysicsDelegate handler) {
 	    delegate = handler;
 		activatePhysics(handler, monster);
-		monster.getBody().applyForceToCenter(new Vector2(monster.getBody().getMass()*0, monster.getBody().getMass()*-9.8f), true);
+		monster.getBody().applyForceToCenter(new Vector2(monster.getBody().getMass()*0, 
+				monster.getBody().getMass()*-9.8f), true);
 		monster.getBody().setFixedRotation(true);
 	}
 	
