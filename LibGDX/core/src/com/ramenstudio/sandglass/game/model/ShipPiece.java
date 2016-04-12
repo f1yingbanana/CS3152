@@ -13,6 +13,8 @@ public class ShipPiece extends GameObject implements Drawable {
 	//the texture of this piece
 	private Texture texture;
 	
+	private boolean isCollected;
+	
 	public ShipPiece(){
 		super();
 		size.x = 0.5f;
@@ -34,8 +36,18 @@ public class ShipPiece extends GameObject implements Drawable {
 		texture = t;
 	}
 	
+	public boolean getIsCollected() {
+		return isCollected;
+	}
+	
+	public void setCollected() {
+		isCollected = true;
+	}
+	
 	@Override
 	public void draw(GameCanvas canvas){
-		canvas.draw(texture, getPosition(), getSize());
+		if (!isCollected) {
+			canvas.draw(texture, getPosition(), getSize());
+		}
 	}
 }

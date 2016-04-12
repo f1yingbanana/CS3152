@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
@@ -24,6 +25,7 @@ import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.ShipPiece;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -305,6 +307,45 @@ public void beginContact(Contact contact) {
             contact.getFixtureB().getBody().getUserData() == Gate.class){
           touchingGate = true;
     }
+    
+    GameObject firstOne = (GameObject) contact.getFixtureA().getBody().getUserData();
+    GameObject secondOne = (GameObject) contact.getFixtureB().getBody().getUserData();
+    
+    if (firstOne instanceof Player &&
+    		secondOne instanceof Monster) {
+    	if (gameModel.isInOverworld()) {
+    		playerController.setResetTrue();
+    	}
+    	else {
+    		gameModel.takeTime(10);
+    	}
+    } else if (firstOne instanceof Monster &&
+    		secondOne instanceof Player) {
+    	if (gameModel.isInOverworld()) {
+    		playerController.setResetTrue();
+    	}
+    	else {
+    		gameModel.takeTime(10);
+    	}
+    }
+    
+    if (firstOne instanceof Player &&
+    		secondOne instanceof ShipPiece) {
+    	ShipPiece secondShipPiece = (ShipPiece) secondOne;
+    	if (!secondShipPiece.getIsCollected()) {
+    		secondShipPiece.setCollected();
+    		// TODO: Put some ship array decrementing stuff here
+    	}
+    } else if (firstOne instanceof ShipPiece &&
+    		secondOne instanceof Player) {
+    	ShipPiece firstShipPiece = (ShipPiece) firstOne;
+    	if (!firstShipPiece.getIsCollected()) {
+    		firstShipPiece.setCollected();
+    		// TODO: Put some ship array decrementing stuff here, probably
+    		// copy pasted from TODO part above.
+    	}
+    }
+    
 }
 
 

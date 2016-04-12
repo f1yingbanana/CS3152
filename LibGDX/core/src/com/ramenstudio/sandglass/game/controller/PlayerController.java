@@ -337,6 +337,14 @@ public class PlayerController extends AbstractController {
 	public boolean isReset() {
 		return isReset;
 	}
+	
+	/**
+	 * Sets the isReset field to be true, used for when the Player collides
+	 * with an OverMonster.
+	 */
+	public void setResetTrue() {
+		isReset = true;
+	}
 
 	/**
 	 * @return the angle to rotate the camera by
