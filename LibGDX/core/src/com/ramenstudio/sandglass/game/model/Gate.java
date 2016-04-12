@@ -29,7 +29,6 @@ public class Gate extends GameObject implements Drawable {
 	public Gate(Vector2 pos){
 		super();
 		open = false;
-		texture = closedTexture;
 		size.x = 0.8f;
 	    size.y = 1.5f;
 	    getBodyDef().type = BodyDef.BodyType.StaticBody;
@@ -45,7 +44,7 @@ public class Gate extends GameObject implements Drawable {
 	/**sets the gate to open*/
 	public void setOpen(){
 		open = true;
-		texture = openTexture;
+		//texture = openTexture;
 	}
 	
 	/**@return true if the gate is open*/

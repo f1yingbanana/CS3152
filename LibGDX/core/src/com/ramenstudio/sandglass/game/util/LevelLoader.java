@@ -14,6 +14,7 @@ import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Monster;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.ShipPiece;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
 import com.ramenstudio.sandglass.game.model.Monster.MType;
@@ -183,9 +184,8 @@ public class LevelLoader {
                 	objArr.add(gate);
                 }
                 else if (value.equals("ship")){
-                    GameObject object = new GameObject();
-                    object.getBodyDef().position.set(new Vector2(i+0.5f, j+0.5f));
-                    objArr.add(object);
+                    ShipPiece ship = new ShipPiece(new Vector2(i+0.5f, j+0.5f));
+                    objArr.add(ship);
                 }
               }
             }
