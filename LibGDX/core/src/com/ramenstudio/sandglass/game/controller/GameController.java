@@ -97,6 +97,14 @@ public class GameController extends AbstractController implements ContactListene
             mapObjects.get(LevelLoader.LayerKey.UNDER_M);
     ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
             mapObjects.get(LevelLoader.LayerKey.OVER_M);
+    Gate gate = (Gate) ((ArrayList<GameObject>) 
+    		mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
+    ArrayList<GameObject> ship = (ArrayList<GameObject>) 
+    		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
+    
+    gameModel.setNumberOfPieces(ship.size());
+    gameModel.setGate(gate);
+    
     for (GameObject m: umArray){
         underMonController.add(new UnderMonController((Monster) m));
     }
@@ -343,6 +351,10 @@ public void beginContact(Contact contact) {
     		firstShipPiece.setCollected();
     		gameModel.collectPiece();
     	}
+    }
+    
+    if (gameModel.allPiecesCollected()) {
+    	gameModel.getGate().setAllPiecesCollected(true);
     }
     
     if (firstOne instanceof Player &&

@@ -22,6 +22,8 @@ public class Gate extends GameObject implements Drawable {
 	//the current texture of the gate
 	private Texture texture;
 	
+	private boolean allPiecesCollected;
+	
 	public Gate(){
 		super();
 		open = false;
@@ -58,9 +60,15 @@ public class Gate extends GameObject implements Drawable {
 		closedTexture = t;
 	}
 	
+	public void setAllPiecesCollected(boolean argCollected) {
+		allPiecesCollected = argCollected;
+	}
+	
 	@Override
 	public void draw(GameCanvas canvas){
-		canvas.draw(texture, getPosition(), getSize());
+		if (allPiecesCollected) {
+			canvas.draw(texture, getPosition(), getSize());
+		}
 	}
 	
 }
