@@ -334,15 +334,26 @@ public void beginContact(Contact contact) {
     	ShipPiece secondShipPiece = (ShipPiece) secondOne;
     	if (!secondShipPiece.getIsCollected()) {
     		secondShipPiece.setCollected();
-    		// TODO: Put some ship array decrementing stuff here
+    		gameModel.collectPiece();
     	}
     } else if (firstOne instanceof ShipPiece &&
     		secondOne instanceof Player) {
     	ShipPiece firstShipPiece = (ShipPiece) firstOne;
     	if (!firstShipPiece.getIsCollected()) {
     		firstShipPiece.setCollected();
-    		// TODO: Put some ship array decrementing stuff here, probably
-    		// copy pasted from TODO part above.
+    		gameModel.collectPiece();
+    	}
+    }
+    
+    if (firstOne instanceof Player &&
+    		secondOne instanceof Gate) {
+    	if (gameModel.allPiecesCollected()) {
+    		playerController.setResetTrue();
+    	}
+    } else if (firstOne instanceof Gate &&
+    		secondOne instanceof Player) {
+    	if (gameModel.allPiecesCollected()) {
+    		playerController.setResetTrue();
     	}
     }
     
