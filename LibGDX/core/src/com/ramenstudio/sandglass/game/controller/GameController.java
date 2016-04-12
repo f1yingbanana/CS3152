@@ -42,7 +42,9 @@ import com.ramenstudio.sandglass.game.model.WallTile;
  * @author Jiacong Xu
  */
 public class GameController extends AbstractController implements ContactListener {
-
+  
+  /** If this flag is true, we need a new game controller. */
+  public boolean needsReset = false;
 
   // The physics world object
   public World world = new World(new Vector2(0, -9.8f), true);
@@ -253,35 +255,7 @@ public class GameController extends AbstractController implements ContactListene
   }
   
   private void reset() {
-	  	world.dispose();
-		world = new World(new Vector2(0, -9.8f), true);
-		Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
-	    playerController = new PlayerController(player);
-		cameraController = new CameraController(player.getBodyDef().position);
-		
-		underMonController.clear();
-		overMonController.clear();
-		ArrayList<GameObject> umArray = (ArrayList<GameObject>) 
-	            mapObjects.get(LevelLoader.LayerKey.UNDER_M);
-	    ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
-	            mapObjects.get(LevelLoader.LayerKey.OVER_M);
-	    for (GameObject m: umArray){
-	        underMonController.add(new UnderMonController((Monster) m));
-	    }
-	    for (GameObject m: omArray){
-	        overMonController.add(new OverMonController((Monster) m));
-	    }
-	    
-
-	    ArrayList<GameObject> ship = (ArrayList<GameObject>) 
-	    		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
-	    
-	    List<ShipPiece> shipList = gameModel.getShipPieces();
-	    for (GameObject s: ship){
-	    	shipList.add((ShipPiece) s);
-	    }
-	    
-		objectSetup(world);
+    needsReset = true;
   }
   
   /**

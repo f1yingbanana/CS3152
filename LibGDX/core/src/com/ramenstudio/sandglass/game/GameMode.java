@@ -66,9 +66,6 @@ public class GameMode extends AbstractMode implements Screen {
     shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), topColor, topColor, botColor, botColor);
     shapeRenderer.end();
 
-    // MAP RENDER
-//    OrthographicCamera tempCamera = gameplayController.getMainCamera();
-    
     tiledMapRenderer.setView(gameplayController.getViewCamera());
     
     
@@ -94,6 +91,11 @@ public class GameMode extends AbstractMode implements Screen {
     
     // UI RENDER - special case. UI has to be rendered outside loop.
     gameplayController.uiController.draw(canvas);
+    
+    // If we want to reset, create a new game controller.
+    if (gameplayController.needsReset) {
+      gameplayController = new GameController();
+    }
   }
 
   @Override

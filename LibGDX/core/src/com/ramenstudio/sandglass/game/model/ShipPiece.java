@@ -49,8 +49,6 @@ public class ShipPiece extends GameObject implements Drawable {
 	
 	@Override
 	public void draw(GameCanvas canvas){
-		System.out.println("DD");
-		
 		if (!isCollected) {
 			canvas.draw(texture, getPosition().sub(0.25f,0.25f), getSize());
 		}
