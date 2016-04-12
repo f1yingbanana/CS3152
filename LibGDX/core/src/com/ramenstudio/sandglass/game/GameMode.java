@@ -37,7 +37,7 @@ public class GameMode extends AbstractMode implements Screen {
   // Debug timer
   private int count = 0;
   
-  TiledMapRenderer tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/450f);
+  TiledMapRenderer tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
   
   /**
    * Initializes an instance of the game with all the controllers, model and

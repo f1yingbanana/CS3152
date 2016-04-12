@@ -40,8 +40,8 @@ public class GameModel implements Drawable {
    */
   public GameModel() {
     pieces = 1;
-    overtime = 3600;
-    undertime = 0;
+    overtime = 0;
+    undertime = 3600;
     collected_pieces = 0;
     in_overworld = true;
     completed = false;

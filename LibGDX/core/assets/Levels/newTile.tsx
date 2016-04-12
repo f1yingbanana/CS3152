@@ -19,6 +19,26 @@
    <property name="Collision" value="top_right"/>
   </properties>
  </tile>
+ <tile id="13" terrain=",,,0">
+  <properties>
+   <property name="Collision" value="top_left"/>
+  </properties>
+ </tile>
+ <tile id="14" terrain=",,0,0">
+  <properties>
+   <property name="Collision" value="top"/>
+  </properties>
+ </tile>
+ <tile id="15" terrain=",,0,0">
+  <properties>
+   <property name="Collision" value="top"/>
+  </properties>
+ </tile>
+ <tile id="16" terrain=",,0,">
+  <properties>
+   <property name="Collision" value="top_right"/>
+  </properties>
+ </tile>
  <tile id="18" terrain=",0,,0">
   <properties>
    <property name="Collision" value="left"/>
@@ -26,6 +46,18 @@
  </tile>
  <tile id="19" terrain="0,0,0,0"/>
  <tile id="20" terrain="0,,0,">
+  <properties>
+   <property name="Collision" value="right"/>
+  </properties>
+ </tile>
+ <tile id="22" terrain=",0,,0">
+  <properties>
+   <property name="Collision" value="left"/>
+  </properties>
+ </tile>
+ <tile id="23" terrain="0,0,0,0"/>
+ <tile id="24" terrain="0,0,0,0"/>
+ <tile id="25" terrain="0,,0,">
   <properties>
    <property name="Collision" value="right"/>
   </properties>
@@ -41,6 +73,38 @@
   </properties>
  </tile>
  <tile id="29" terrain="0,,,">
+  <properties>
+   <property name="Collision" value="bottom_right"/>
+  </properties>
+ </tile>
+ <tile id="31" terrain=",0,,0">
+  <properties>
+   <property name="Collision" value="left"/>
+  </properties>
+ </tile>
+ <tile id="32" terrain="0,0,0,0"/>
+ <tile id="33" terrain="0,0,0,0"/>
+ <tile id="34" terrain="0,,0,">
+  <properties>
+   <property name="Collision" value="right"/>
+  </properties>
+ </tile>
+ <tile id="40" terrain=",0,,">
+  <properties>
+   <property name="Collision" value="bottom_left"/>
+  </properties>
+ </tile>
+ <tile id="41" terrain="0,0,,">
+  <properties>
+   <property name="Collision" value="bottom"/>
+  </properties>
+ </tile>
+ <tile id="42" terrain="0,0,,">
+  <properties>
+   <property name="Collision" value="bottom"/>
+  </properties>
+ </tile>
+ <tile id="43" terrain="0,,,">
   <properties>
    <property name="Collision" value="bottom_right"/>
   </properties>
@@ -83,7 +147,7 @@
  <tile id="68">
   <properties>
    <property name="angle" value="NORTH"/>
-   <property name="initMove" value="right"/>
+   <property name="initMove" value="RIGHT"/>
    <property name="level" value="1"/>
    <property name="mType" value="OVER"/>
    <property name="span" value="100"/>
