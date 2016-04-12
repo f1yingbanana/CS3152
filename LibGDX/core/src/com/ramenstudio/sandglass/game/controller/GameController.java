@@ -42,7 +42,9 @@ import com.ramenstudio.sandglass.game.model.WallTile;
  * @author Jiacong Xu
  */
 public class GameController extends AbstractController implements ContactListener {
-
+  
+  /** If this flag is true, we need a new game controller. */
+  public boolean needsReset = false;
 
   // The physics world object
   public World world = new World(new Vector2(0, -9.8f), true);
@@ -87,8 +89,7 @@ public class GameController extends AbstractController implements ContactListene
   private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
   
   public GameController() {
-	mapObjects = loader.loadLevel("example.tmx");
-	System.out.println(mapObjects.get(LayerKey.PLAYER).size());
+	mapObjects = loader.loadLevel("alpha.tmx");
 	Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
     playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
@@ -97,6 +98,20 @@ public class GameController extends AbstractController implements ContactListene
             mapObjects.get(LevelLoader.LayerKey.UNDER_M);
     ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
             mapObjects.get(LevelLoader.LayerKey.OVER_M);
+    Gate gate = (Gate) ((ArrayList<GameObject>) 
+    		mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
+    ArrayList<GameObject> ship = (ArrayList<GameObject>) 
+    		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
+    
+    System.out.println(ship.size());
+    List<ShipPiece> shipList = gameModel.getShipPieces();
+    for (GameObject s: ship){
+    	shipList.add((ShipPiece) s);
+    }
+    
+    gameModel.setNumberOfPieces(ship.size());
+    gameModel.setGate(gate);
+    
     for (GameObject m: umArray){
         underMonController.add(new UnderMonController((Monster) m));
     }
@@ -181,6 +196,12 @@ public class GameController extends AbstractController implements ContactListene
         m.objectSetup(world);
         m.setTarget(playerController);
     }
+    for (ShipPiece c : gameModel.getShipPieces()) {
+    	activatePhysics(world, c);
+    }
+    
+    activatePhysics(world, gameModel.getGate());
+    
     world.setContactListener(this);
   }
   
@@ -197,8 +218,11 @@ public class GameController extends AbstractController implements ContactListene
   //update game model
     gameModel.setWorldPosition(!playerController.isUnder());
     gameModel.incrementTime();
-    uiController.gameView.setSandAmount(gameModel.getOverworldTime()/gameModel.getMaxTime(), 
-    		gameModel.getUnderworldTime()/gameModel.getMaxTime());
+    uiController.gameView.setSandAmount(gameModel.getOverworldTime()/(float)gameModel.getMaxTime(), 
+    		gameModel.getUnderworldTime()/(float)gameModel.getMaxTime());
+    
+    uiController.gameView.sandglassView.rotateSandglass(playerController.isUnder());
+    
     //if(gameModel.allPiecesCollected()){
     //	gameModel.getGate().setOpen();
     //}
@@ -231,26 +255,7 @@ public class GameController extends AbstractController implements ContactListene
   }
   
   private void reset() {
-	  	world.dispose();
-		world = new World(new Vector2(0, -9.8f), true);
-		Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
-	    playerController = new PlayerController(player);
-		cameraController = new CameraController(player.getBodyDef().position);
-		underMonController.clear();
-		overMonController.clear();
-		ArrayList<GameObject> umArray = (ArrayList<GameObject>) 
-	            mapObjects.get(LevelLoader.LayerKey.UNDER_M);
-	    ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
-	            mapObjects.get(LevelLoader.LayerKey.OVER_M);
-	    for (GameObject m: umArray){
-	        underMonController.add(new UnderMonController((Monster) m));
-	    }
-	    for (GameObject m: omArray){
-	        overMonController.add(new OverMonController((Monster) m));
-	        
-	        System.out.println(((Monster) m).angle.toString());
-	    }
-		objectSetup(world);
+    needsReset = true;
   }
   
   /**
@@ -345,6 +350,10 @@ public void beginContact(Contact contact) {
     	}
     }
     
+    if (gameModel.allPiecesCollected()) {
+    	gameModel.getGate().setAllPiecesCollected(true);
+    }
+    
     if (firstOne instanceof Player &&
     		secondOne instanceof Gate) {
     	if (gameModel.allPiecesCollected()) {
@@ -366,7 +375,6 @@ public void endContact(Contact contact) {
     // TODO Auto-generated method stub
     if (contact.getFixtureB().getUserData().getClass()==Player.class &&
             contact.getFixtureA().getUserData().getClass()==Monster.class){
-        System.out.println("monstertouch");
     }
 }
 

@@ -1,5 +1,7 @@
 package com.ramenstudio.sandglass.game.model;
 
+import java.util.*;
+
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
 
@@ -28,7 +30,7 @@ public class GameModel implements Drawable {
   //the exit gate in this level
   private Gate gate;
   //array of objects in this level (land, resources, etc)
-  private GameObject[] objects = {};
+  private List<ShipPiece> shipPieces = new ArrayList<ShipPiece>();
   
   // Game state
   private GameState gameState = GameState.PLAYING;
@@ -174,17 +176,6 @@ public class GameModel implements Drawable {
 	  gate = g;
   }
   
-  /**@return an array of all land, resource, and piece objects in this level*/
-  public GameObject[] getObjects(){
-    return objects;
-  }
-  
-  /**Sets the list of all land, resource, and piece objects in this level
-   * @param o a GameObject[] containing land, piece, and resource objects*/
-  public void setGameObjects(GameObject[] o){
-    objects = o;
-  }
-  
   
   @Override
   /**Draws all objects in the level to the Game Canvas
@@ -192,11 +183,11 @@ public class GameModel implements Drawable {
    * */
   public void draw(GameCanvas canvas) {
     // Tells all objects to render themselves with the given canvas.
-    if (objects.length > 0) {
-      for (GameObject o : objects) {
-        o.draw(canvas);
+      for (ShipPiece s : getShipPieces()) {
+        s.draw(canvas);
       }
-    }
+    
+    gate.draw(canvas);
     //gate.draw(canvas);
   }
 
@@ -213,7 +204,10 @@ public class GameModel implements Drawable {
   public void setGameState(GameState gameState) {
     this.gameState = gameState;
   }
-  
+
+  public List<ShipPiece> getShipPieces() {
+	return shipPieces;
+  }
   
 }
 
