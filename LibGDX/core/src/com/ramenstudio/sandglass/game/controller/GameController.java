@@ -87,8 +87,7 @@ public class GameController extends AbstractController implements ContactListene
   private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
   
   public GameController() {
-	mapObjects = loader.loadLevel("example.tmx");
-	System.out.println(mapObjects.get(LayerKey.PLAYER).size());
+	mapObjects = loader.loadLevel("alpha.tmx");
 	Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
     playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
@@ -101,6 +100,12 @@ public class GameController extends AbstractController implements ContactListene
     		mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
     ArrayList<GameObject> ship = (ArrayList<GameObject>) 
     		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
+    
+    System.out.println(ship.size());
+    List<ShipPiece> shipList = gameModel.getShipPieces();
+    for (GameObject s: ship){
+    	shipList.add((ShipPiece) s);
+    }
     
     gameModel.setNumberOfPieces(ship.size());
     gameModel.setGate(gate);
@@ -189,6 +194,12 @@ public class GameController extends AbstractController implements ContactListene
         m.objectSetup(world);
         m.setTarget(playerController);
     }
+    for (ShipPiece c : gameModel.getShipPieces()) {
+    	activatePhysics(world, c);
+    }
+    
+    activatePhysics(world, gameModel.getGate());
+    
     world.setContactListener(this);
   }
   
@@ -244,6 +255,7 @@ public class GameController extends AbstractController implements ContactListene
 		Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
 	    playerController = new PlayerController(player);
 		cameraController = new CameraController(player.getBodyDef().position);
+		
 		underMonController.clear();
 		overMonController.clear();
 		ArrayList<GameObject> umArray = (ArrayList<GameObject>) 
@@ -255,9 +267,17 @@ public class GameController extends AbstractController implements ContactListene
 	    }
 	    for (GameObject m: omArray){
 	        overMonController.add(new OverMonController((Monster) m));
-	        
-	        System.out.println(((Monster) m).angle.toString());
 	    }
+	    
+
+	    ArrayList<GameObject> ship = (ArrayList<GameObject>) 
+	    		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
+	    
+	    List<ShipPiece> shipList = gameModel.getShipPieces();
+	    for (GameObject s: ship){
+	    	shipList.add((ShipPiece) s);
+	    }
+	    
 		objectSetup(world);
   }
   
@@ -378,7 +398,6 @@ public void endContact(Contact contact) {
     // TODO Auto-generated method stub
     if (contact.getFixtureB().getUserData().getClass()==Player.class &&
             contact.getFixtureA().getUserData().getClass()==Monster.class){
-        System.out.println("monstertouch");
     }
 }
 
