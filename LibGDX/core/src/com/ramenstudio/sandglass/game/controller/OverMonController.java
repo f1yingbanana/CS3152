@@ -30,22 +30,8 @@ public class OverMonController extends MonsterController {
 	 */
 	public OverMonController(Monster monster) {
 		super(monster);
-		switch (monster.angle){
-			case EAST :
-				action = Move.DOWN;
-				break;
-			case NORTH :
-				action = Move.RIGHT;
-				break;
-			case SOUTH :
-				action = Move.RIGHT;
-				break;
-			case WEST :
-				action = Move.UP;
-				break;
-			default :
-				break;
-		}
+		action = Move.valueOf(monster.initMove);
+		System.out.println(monster.initMove);
 	}
 
 
@@ -81,26 +67,27 @@ public class OverMonController extends MonsterController {
 		Vector2 leftEnd = null;
 		Vector2 rightEnd = null;
 		Vector2 monsterPosition = monster.getBody().getPosition();
-		Vector2 left = new Vector2(-1f,0f).scl(0.1f);
-		Vector2 right = new Vector2(1f,0f).scl(0.1f);
+		float scale = (monster.getSize().cpy().y-monster.getSize().cpy().x)/2;
+		Vector2 left = new Vector2(-1f,0f).scl(scale);
+		Vector2 right = new Vector2(1f,0f).scl(scale);
 		if (monster.angle == AngleEnum.NORTH) {
-			leftPos = monsterPosition.cpy().sub(monster.getSize().scl(0.5f).x,0);
-			rightPos = monsterPosition.cpy().add(monster.getSize().scl(0.5f).x,0);
+			leftPos = monsterPosition.cpy().sub(monster.getSize().cpy().scl(0.5f).x,0);
+			rightPos = monsterPosition.cpy().add(monster.getSize().cpy().scl(0.5f).x,0);
 			leftEnd = leftPos.cpy().add(left.cpy());
 			rightEnd = rightPos.cpy().add(right.cpy());
 		} else if (monster.angle == AngleEnum.EAST) {
-			leftPos = monsterPosition.cpy().add(0,monster.getSize().scl(0.5f).x);
-			rightPos = monsterPosition.cpy().sub(0,monster.getSize().scl(0.5f).x);
+			leftPos = monsterPosition.cpy().add(0,monster.getSize().cpy().scl(0.5f).x);
+			rightPos = monsterPosition.cpy().sub(0,monster.getSize().cpy().scl(0.5f).x);
 			leftEnd = leftPos.cpy().add(left.cpy().rotate90(-1));
 			rightEnd = rightPos.cpy().add(right.cpy().rotate90(-1));
 		} else if (monster.angle == AngleEnum.SOUTH) {
-			leftPos = monsterPosition.cpy().add(monster.getSize().scl(0.5f).x,0);
-			rightPos = monsterPosition.cpy().sub(monster.getSize().scl(0.5f).x,0);
+			leftPos = monsterPosition.cpy().add(monster.getSize().cpy().scl(0.5f).x,0);
+			rightPos = monsterPosition.cpy().sub(monster.getSize().cpy().scl(0.5f).x,0);
 			leftEnd = leftPos.cpy().sub(left.cpy());
 			rightEnd = rightPos.cpy().sub(right.cpy());
 		} else {
-			leftPos = monsterPosition.cpy().sub(0,monster.getSize().scl(0.5f).x);
-			rightPos = monsterPosition.cpy().add(0,monster.getSize().scl(0.5f).x);
+			leftPos = monsterPosition.cpy().sub(0,monster.getSize().cpy().scl(0.5f).x);
+			rightPos = monsterPosition.cpy().add(0,monster.getSize().cpy().scl(0.5f).x);
 			leftEnd = leftPos.cpy().add(left.cpy().rotate90(1));
 			rightEnd = rightPos.cpy().add(right.cpy().rotate90(1));
 		}
@@ -124,25 +111,25 @@ public class OverMonController extends MonsterController {
 			case EAST:
 				if (action==Move.UP && !gdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
-					monster.setPosition(mp.cpy().sub(1f,-ms.cpy().y*0.5f));
+					monster.setPosition(mp.cpy().sub(ms.cpy().y*0.6f,-ms.cpy().y*0.5f));
 					action = Move.LEFT;
 					monster.angle = AngleEnum.NORTH;
 				}
 				else if (action==Move.UP && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
-					monster.setPosition(mp.cpy().add(ms.cpy().y,ms.cpy().y*0.5f));
+					monster.setPosition(mp.cpy().add(0.05f,-0.05f));
 					action = Move.RIGHT;
 					monster.angle = AngleEnum.SOUTH;
 				}
 				else if (action==Move.DOWN && !gdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
-					monster.setPosition(mp.cpy().sub(1f,ms.cpy().y*0.5f));
+					monster.setPosition(mp.cpy().sub(ms.cpy().y*0.6f,ms.cpy().y*0.5f));
 					action = Move.LEFT;
 					monster.angle = AngleEnum.SOUTH;
 				}
 				else if (action==Move.DOWN && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
-					monster.setPosition(mp.cpy().add(ms.cpy().y*0.5f,ms.cpy().x*0.25f));
+					monster.setPosition(mp.cpy().add(0.05f,0.05f));
 					action = Move.RIGHT;
 					monster.angle = AngleEnum.NORTH;
 				}
@@ -150,26 +137,25 @@ public class OverMonController extends MonsterController {
 			case NORTH:
 				if (action==Move.LEFT && !gdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.WEST));
-					System.out.println("rotatin'");
-					monster.setPosition(mp.cpy().sub(ms.cpy().y*0.5f,1f));
+					monster.setPosition(mp.cpy().sub(ms.cpy().y*0.5f,ms.cpy().y*0.6f));
 					action = Move.DOWN;
 					monster.angle = AngleEnum.WEST;
 				}
 				else if (action==Move.LEFT && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.EAST));
-					monster.setPosition(mp.cpy().add(ms.cpy().x*0.5f,0.5f));
+					monster.setPosition(mp.cpy().add(0.05f,0.05f));
 					action = Move.UP;
 					monster.angle = AngleEnum.EAST;
 				}
 				else if (action==Move.RIGHT && !gdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.EAST));
-					monster.setPosition(mp.cpy().sub(-ms.cpy().y*0.5f,ms.cpy().y));
+					monster.setPosition(mp.cpy().add(ms.cpy().y*0.5f,-ms.cpy().y*0.6f));
 					action = Move.DOWN;
 					monster.angle = AngleEnum.EAST;
 				}
 				else if (action==Move.RIGHT && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.WEST));
-					monster.setPosition(mp.cpy().sub(0.5f,-monster.getSize().y*0.5f));
+					monster.setPosition(mp.cpy().add(-0.05f,0.05f));
 					action = Move.UP;
 					monster.angle = AngleEnum.WEST;
 				}
@@ -177,26 +163,26 @@ public class OverMonController extends MonsterController {
 			case SOUTH:
 				if (action==Move.LEFT && !gdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.WEST));
-					monster.setPosition(mp.cpy().sub(ms.cpy().x,-ms.cpy().y));
+					monster.setPosition(mp.cpy().sub(ms.cpy().y*0.5f,-ms.cpy().y*0.6f));
 					action = Move.UP;
 					monster.angle = AngleEnum.WEST;
 				}
 				else if (action==Move.LEFT && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.EAST));
-					monster.setPosition(mp.cpy().add(ms.cpy().x*0.5f,-ms.cpy().x*0.5f));
+					monster.setPosition(mp.cpy().add(0.05f,-0.05f));
 					action = Move.DOWN;
 					monster.angle = AngleEnum.EAST;
 				}
 				else if (action==Move.RIGHT && !gdd){
 					System.out.println(monster.getBody().getPosition().toString());
-					monster.setPosition(mp.cpy().add(ms.cpy().y*0.5f,ms.cpy().y));
+					monster.setPosition(mp.cpy().add(ms.cpy().y*0.5f,ms.cpy().y*0.6f));
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.EAST));
 					action = Move.UP;
 					monster.angle = AngleEnum.EAST;
 				}
 				else if (action==Move.RIGHT && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.WEST));
-					monster.setPosition(mp.cpy().sub(ms.cpy().x*0.5f,ms.cpy().y*0.5f));
+					monster.setPosition(mp.cpy().sub(0.05f,0.05f));
 					action = Move.DOWN;
 					monster.angle = AngleEnum.WEST;
 				}
@@ -204,26 +190,26 @@ public class OverMonController extends MonsterController {
 			case WEST:
 				if (action==Move.UP && !gdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
-					monster.setPosition(mp.cpy().add(1f,monster.getSize().y*0.5f));
+					monster.setPosition(mp.cpy().add(ms.cpy().y*0.6f,ms.cpy().y*0.5f));
 					action = Move.RIGHT;
 					monster.angle = AngleEnum.NORTH;
 				}
 				else if (action==Move.UP && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
-					monster.setPosition(mp.cpy().sub(0.5f,monster.getSize().y*0.5f));
+					monster.setPosition(mp.cpy().sub(0.05f,0.05f));
 					action = Move.LEFT;
 					monster.angle = AngleEnum.SOUTH;
 				}
 				else if (action==Move.DOWN && !gdd){
 					System.out.println("rotatin right'");
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
-					monster.setPosition(mp.cpy().sub(-1f,monster.getSize().y*0.5f));
+					monster.setPosition(mp.cpy().add(ms.cpy().y*0.6f,-ms.cpy().y*0.5f));
 					action = Move.RIGHT;
 					monster.angle = AngleEnum.SOUTH;
 				}
 				else if (action==Move.DOWN && wdd){
 					monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
-					monster.setPosition(mp.cpy().sub(ms.cpy().y*0.5f,-ms.cpy().x*0.5f));
+					monster.setPosition(mp.cpy().sub(0.05f,-0.05f));
 					action = Move.LEFT;
 					monster.angle = AngleEnum.NORTH;
 				}
@@ -256,13 +242,13 @@ public class OverMonController extends MonsterController {
 
 	@Override
 	public void update(float dt){
-		System.out.println("======Start of cycle======");
-		System.out.println("Before Rotation: " + monster.angle.toString());
-		System.out.println("is Grounded?" + isGrounded());
-		System.out.println("is Walled? " + isWall());
+//		System.out.println("======Start of cycle======");
+//		System.out.println("Before Rotation: " + monster.angle.toString());
+//		System.out.println("is Grounded?" + isGrounded());
+//		System.out.println("is Walled? " + isWall());
 		rotateMonster();
-		System.out.println("Direction : " + action.toString());
-		System.out.println("After Rotation: " + monster.angle.toString());
+//		System.out.println("Direction : " + action.toString());
+//		System.out.println("After Rotation: " + monster.angle.toString());
 		super.update(dt);
 	}
 
