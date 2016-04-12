@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 
 
 
@@ -22,13 +23,14 @@ public class Gate extends GameObject implements Drawable {
 	//the current texture of the gate
 	private Texture texture;
 	
-	public Gate(){
+	public Gate(Vector2 pos){
 		super();
 		open = false;
 		texture = closedTexture;
 		size.x = 0.8f;
 	    size.y = 1.5f;
 	    getBodyDef().type = BodyDef.BodyType.StaticBody;
+	    getBodyDef().position.set(pos);
 	    fixtureDefs = new FixtureDef[1];
 	    PolygonShape shape = new PolygonShape();
 	    fixtureDefs[0] = new FixtureDef();

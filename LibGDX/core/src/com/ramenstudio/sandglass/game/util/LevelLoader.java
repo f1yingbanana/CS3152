@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Monster;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.TurnTile;
@@ -40,12 +41,10 @@ public class LevelLoader {
     
     ArrayList<GameObject> Tilearr = parseGround(groundLayer, "Collision");
     ArrayList<GameObject> playerTile = parseObject(objectLayer, "type", "player");
-    //System.out.println("parsing mon");
     ArrayList<GameObject> umTile = parseObject(objectLayer, "type", "undermonster");
-    System.out.println(umTile.size());
     ArrayList<GameObject> omTile = parseObject(objectLayer, "type", "overmonster");
-    //System.out.println("Done parsing mon");
-    ArrayList<GameObject> resourceTile = parseObject(objectLayer, "type", "resource");
+    ArrayList<GameObject> resourceTile = parseObject(objectLayer, "type", "ship");
+    ArrayList<GameObject> gateTile = parseObject(objectLayer, "type", "gate");
     
     tiledMap.getLayers().remove(objectLayer);
     layerDict.put(LayerKey.GROUND, Tilearr);
@@ -53,6 +52,7 @@ public class LevelLoader {
     layerDict.put(LayerKey.UNDER_M, umTile);
     layerDict.put(LayerKey.OVER_M, omTile);
     layerDict.put(LayerKey.RESOURCE, resourceTile);
+    layerDict.put(LayerKey.GATE, gateTile);
     return layerDict;
   }
   
@@ -149,12 +149,8 @@ public class LevelLoader {
     for (int i = 0; i < width; i++ ){
       for (int j = 0; j < height; j++){
         if (layer.getCell(i, j)!=null){
-            //System.out.println("cell " + i + ", " + j + " is not null");
             TiledMapTile this_tile = layer.getCell(i, j).getTile();
-            //System.out.println("looking for a key " + key);
             if (this_tile.getProperties().containsKey(key)){
-//                System.out.println("has that key! what's the value?: " + value);
-//                System.out.println("the key returns " + (String) this_tile.getProperties().get(key));
               if (((String)this_tile.getProperties().get(key)).equals(value)){
                 if (value.equals("undermonster")){
                     int level = Integer.parseInt((String) this_tile.getProperties().get("level"));
@@ -168,7 +164,6 @@ public class LevelLoader {
                     objArr.add(monster);
                 }
                 else if (value.equals("overmonster")){
-                    //System.out.println("monster is here at" + i + ", " + j);
                     int level = Integer.parseInt((String) this_tile.getProperties().get("level"));
                     String mType = (String) this_tile.getProperties().get("mType");
                     int span = Integer.parseInt((String) this_tile.getProperties().get("span"));
@@ -178,14 +173,16 @@ public class LevelLoader {
                     Monster monster = new Monster(new Vector2(i+0.25f, j+0.25f), 
                             MType.valueOf(mType),level, span, spcf, angle, initMove);
                     objArr.add(monster);
-                    System.out.print("monster at " + i + ", " + j);
                 }
                 else if (value.equals("player")){
                     Player player = new Player(new Vector2(i+0.5f, j+0.5f));
                     objArr.add(player); 
-                    System.out.println("player created");
                 }
-                else{
+                else if (value.equals("gate")){
+                	Gate gate = new Gate(new Vector2(i+0.5f, j+0.5f));
+                	objArr.add(gate);
+                }
+                else if (value.equals("ship")){
                     GameObject object = new GameObject();
                     object.getBodyDef().position.set(new Vector2(i+0.5f, j+0.5f));
                     objArr.add(object);
