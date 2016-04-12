@@ -216,8 +216,11 @@ public class GameController extends AbstractController implements ContactListene
   //update game model
     gameModel.setWorldPosition(!playerController.isUnder());
     gameModel.incrementTime();
-    uiController.gameView.setSandAmount(gameModel.getOverworldTime()/gameModel.getMaxTime(), 
-    		gameModel.getUnderworldTime()/gameModel.getMaxTime());
+    uiController.gameView.setSandAmount(gameModel.getOverworldTime()/(float)gameModel.getMaxTime(), 
+    		gameModel.getUnderworldTime()/(float)gameModel.getMaxTime());
+    
+    uiController.gameView.sandglassView.rotateSandglass(playerController.isUnder());
+    
     //if(gameModel.allPiecesCollected()){
     //	gameModel.getGate().setOpen();
     //}
