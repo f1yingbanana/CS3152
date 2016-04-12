@@ -94,7 +94,7 @@ public class PlayerController extends AbstractController {
     /** The current animation state. */
     private State state = State.NEUTRAL;
     /** The next animation state. */
-    private State next;
+    private State next = State.NEUTRAL;
     
     /** The direction the player is facing, relative to the camera. */
     private AngleEnum direction = AngleEnum.EAST;
@@ -325,6 +325,14 @@ public class PlayerController extends AbstractController {
 	 */
 	public boolean isReset() {
 		return isReset;
+	}
+	
+	/**
+	 * Sets the isReset field to be true, used for when the Player collides
+	 * with an OverMonster.
+	 */
+	public void setResetTrue() {
+		isReset = true;
 	}
 
 	/**
