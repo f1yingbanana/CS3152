@@ -25,6 +25,7 @@ import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.ShipPiece;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -96,6 +97,14 @@ public class GameController extends AbstractController implements ContactListene
             mapObjects.get(LevelLoader.LayerKey.UNDER_M);
     ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
             mapObjects.get(LevelLoader.LayerKey.OVER_M);
+    Gate gate = (Gate) ((ArrayList<GameObject>) 
+    		mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
+    ArrayList<GameObject> ship = (ArrayList<GameObject>) 
+    		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
+    
+    gameModel.setNumberOfPieces(ship.size());
+    gameModel.setGate(gate);
+    
     for (GameObject m: umArray){
         underMonController.add(new UnderMonController((Monster) m));
     }
@@ -307,19 +316,19 @@ public void beginContact(Contact contact) {
           touchingGate = true;
     }
     
-    Fixture firstOne = contact.getFixtureA();
-    Fixture secondOne = contact.getFixtureB();
+    GameObject firstOne = (GameObject) contact.getFixtureA().getBody().getUserData();
+    GameObject secondOne = (GameObject) contact.getFixtureB().getBody().getUserData();
     
-    if (firstOne.getBody().getUserData() instanceof Player &&
-    		secondOne.getBody().getUserData() instanceof Monster) {
+    if (firstOne instanceof Player &&
+    		secondOne instanceof Monster) {
     	if (gameModel.isInOverworld()) {
     		playerController.setResetTrue();
     	}
     	else {
     		gameModel.takeTime(10);
     	}
-    } else if (firstOne.getBody().getUserData() instanceof Monster &&
-    		secondOne.getBody().getUserData() instanceof Player) {
+    } else if (firstOne instanceof Monster &&
+    		secondOne instanceof Player) {
     	if (gameModel.isInOverworld()) {
     		playerController.setResetTrue();
     	}
@@ -327,6 +336,39 @@ public void beginContact(Contact contact) {
     		gameModel.takeTime(10);
     	}
     }
+    
+    if (firstOne instanceof Player &&
+    		secondOne instanceof ShipPiece) {
+    	ShipPiece secondShipPiece = (ShipPiece) secondOne;
+    	if (!secondShipPiece.getIsCollected()) {
+    		secondShipPiece.setCollected();
+    		gameModel.collectPiece();
+    	}
+    } else if (firstOne instanceof ShipPiece &&
+    		secondOne instanceof Player) {
+    	ShipPiece firstShipPiece = (ShipPiece) firstOne;
+    	if (!firstShipPiece.getIsCollected()) {
+    		firstShipPiece.setCollected();
+    		gameModel.collectPiece();
+    	}
+    }
+    
+    if (gameModel.allPiecesCollected()) {
+    	gameModel.getGate().setAllPiecesCollected(true);
+    }
+    
+    if (firstOne instanceof Player &&
+    		secondOne instanceof Gate) {
+    	if (gameModel.allPiecesCollected()) {
+    		playerController.setResetTrue();
+    	}
+    } else if (firstOne instanceof Gate &&
+    		secondOne instanceof Player) {
+    	if (gameModel.allPiecesCollected()) {
+    		playerController.setResetTrue();
+    	}
+    }
+    
 }
 
 

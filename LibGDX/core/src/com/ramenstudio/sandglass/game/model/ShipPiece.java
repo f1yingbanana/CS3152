@@ -1,5 +1,6 @@
 package com.ramenstudio.sandglass.game.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -11,7 +12,9 @@ import com.ramenstudio.sandglass.util.Drawable;
  * @author Nathaniel Hunter*/
 public class ShipPiece extends GameObject implements Drawable {
 	//the texture of this piece
-	private Texture texture;
+	private Texture texture = new Texture(Gdx.files.internal("ship.png"));
+	
+	private boolean isCollected;
 	
 	public ShipPiece(){
 		super();
@@ -34,8 +37,18 @@ public class ShipPiece extends GameObject implements Drawable {
 		texture = t;
 	}
 	
+	public boolean getIsCollected() {
+		return isCollected;
+	}
+	
+	public void setCollected() {
+		isCollected = true;
+	}
+	
 	@Override
 	public void draw(GameCanvas canvas){
-		canvas.draw(texture, getPosition(), getSize());
+		if (!isCollected) {
+			canvas.draw(texture, getPosition(), getSize());
+		}
 	}
 }

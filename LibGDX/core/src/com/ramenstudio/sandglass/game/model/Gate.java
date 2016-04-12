@@ -5,6 +5,7 @@ import com.ramenstudio.sandglass.util.Drawable;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
@@ -21,7 +22,9 @@ public class Gate extends GameObject implements Drawable {
 	//the texture of the gate while open
 	private Texture openTexture;
 	//the current texture of the gate
-	private Texture texture;
+	private Texture texture = new Texture(Gdx.files.internal("gate.png"));
+	
+	private boolean allPiecesCollected;
 	
 	public Gate(Vector2 pos){
 		super();
@@ -60,9 +63,15 @@ public class Gate extends GameObject implements Drawable {
 		closedTexture = t;
 	}
 	
+	public void setAllPiecesCollected(boolean argCollected) {
+		allPiecesCollected = argCollected;
+	}
+	
 	@Override
 	public void draw(GameCanvas canvas){
-		canvas.draw(texture, getPosition(), getSize());
+		if (allPiecesCollected) {
+			canvas.draw(texture, getPosition(), getSize());
+		}
 	}
 	
 }
