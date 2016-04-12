@@ -1,5 +1,7 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
@@ -67,20 +69,20 @@ public class PlayerController extends AbstractController {
 	/** Number of rows in the player image filmstrip */
 	private static final int FILMSTRIP_ROWS = 1;
 	/** Number of columns in the player image filmstrip */
-	private static final int FILMSTRIP_COLS = 8;
+	private static final int FILMSTRIP_COLS = 34;
 	/** Number of elements in the player image filmstrip */
-	private static final int FILMSTRIP_SIZE = 8;
+	private static final int FILMSTRIP_SIZE = 34;
 	
 	/** The frame number for neutral stance. */
     private static final int NEUTRAL_START = 0;
     /** The frame number for beginning a jump. */
-    private static final int JUMP_START = 0;
+    private static final int JUMP_START = 1;
     /** The frame number for ending a jump. */
-    private static final int JUMP_END = 0;
+    private static final int JUMP_END = 8;
     /** The frame number for beginning a walk. */
-    private static final int WALK_START = 0;
+    private static final int WALK_START = 9;
     /** The frame number for ending a walk. */
-    private static final int WALK_END = 0;
+    private static final int WALK_END = 16;
 	
     /** The enum for animation states. */
     public enum State {
@@ -93,13 +95,24 @@ public class PlayerController extends AbstractController {
     private State next = State.NEUTRAL;
     
     /** The direction the player is facing, relative to the camera. */
-    private AngleEnum direction = AngleEnum.EAST;
+    private AngleEnum direction = AngleEnum.WEST;
 
+    private boolean isReset = false;
+    
+    /** Frame cooldown (frames are too quick) */
+    private static final int COOLDOWN = 3;
+    /** Frame counter */
+    private int counter = 0;
+
+    private float rotateAngle;
+    
 	/**
 	 * Default constructor for player object.
 	 */
-	public PlayerController() {
-		player = new Player(new Vector2(10, 25));
+	public PlayerController(Player player) {
+		this.player = player;
+		Texture playerTexture = new Texture(Gdx.files.internal("spritesheet_complete.png"));
+		player.setPlayerSprite(new FilmStrip(playerTexture,FILMSTRIP_ROWS,FILMSTRIP_COLS,FILMSTRIP_SIZE));
 		player.setFrame(NEUTRAL_START);
 	}
 
@@ -125,13 +138,14 @@ public class PlayerController extends AbstractController {
 		// Handle movement
 		boolean jump = false;
 		float x = moveSpeed * inputController.getHorizontal();
-		direction = (x > 0)? AngleEnum.EAST : AngleEnum.WEST;
+		if (x != 0) {
+			direction = (x > 0)? AngleEnum.EAST : AngleEnum.WEST;
+		}
 //		player.direction = inputController.getHorizontal();
 		float y = AngleEnum.isVertical(heading) ? vel.y: vel.x;
 		if (inputController.didPressJump() && isGrounded()) {
 			y = jumpVelocity;
 			jump = true;
-			next = State.JUMP;
 		}
 		if (heading == AngleEnum.NORTH) {
 			vel.x = x;
@@ -147,14 +161,11 @@ public class PlayerController extends AbstractController {
 			vel.y = x;
 		}
 		if (x != 0 && isGrounded()) {
-			counter++;
-			if (counter > COOLDOWN) {
-				counter = 0;
-//				player.setFrame((player.getFrame()+1)%FILMSTRIP_SIZE);
-				next = State.WALK;
-			}
+			next = State.WALK;
 		} else if (x == 0 && isGrounded()) {
 			next = State.NEUTRAL;
+		} else {
+			next = State.JUMP;
 		}
 		player.getBody().setLinearVelocity(vel);
 
@@ -253,7 +264,7 @@ public class PlayerController extends AbstractController {
 	}
 
 	private void handleAnimation() {
-		int directionOffset = (direction == AngleEnum.EAST) ? 0 : FILMSTRIP_SIZE/2;
+		int directionOffset = (direction == AngleEnum.WEST) ? 0 : FILMSTRIP_SIZE/2;
 		int frame = player.getFrame();
 		switch (next) {
 		case NEUTRAL:
@@ -261,18 +272,26 @@ public class PlayerController extends AbstractController {
 			break;
 		case JUMP:
 			if (state == State.JUMP) {
-				int newFrame = frame + 1;
+				int newFrame = frame - directionOffset + 1;
 				if (newFrame > JUMP_END) newFrame = JUMP_END;
-				player.setFrame(newFrame + directionOffset);
+				counter++;
+				if (counter > COOLDOWN) {
+					counter = 0;
+					player.setFrame(newFrame + directionOffset);
+				}
 			} else {
 				player.setFrame(JUMP_START + directionOffset);
 			}
 			break;
 		case WALK:
 			if (state == State.WALK) {
-				int newFrame = frame + 1;
+				int newFrame = frame - directionOffset + 1;
 				if (newFrame > WALK_END) newFrame = WALK_START;
-				player.setFrame(newFrame + directionOffset);
+				counter++;
+				if (counter > COOLDOWN) {
+					counter = 0;
+					player.setFrame(newFrame + directionOffset);
+				}
 			} else {
 				player.setFrame(WALK_START + directionOffset);
 			}
@@ -281,28 +300,6 @@ public class PlayerController extends AbstractController {
 		state = next;
 	}
 
-    private boolean isReset = false;
-    
-    /** Number of rows in the player image filmstrip */
-    private static final int PLAYER_ROWS = 1;
-    /** Number of columns in the player image filmstrip */
-    private static final int PLAYER_COLS = 8;
-    /** Number of elements in the player image filmstrip */
-    private static final int PLAYER_SIZE = 8;
-    /** Frame cooldown (frames are too quick) */
-    private static final int COOLDOWN = 3;
-    /** Frame counter */
-    private int counter = 0;
-
-    private float rotateAngle;
-
-
-    /**
-     * Default constructor for player object.
-     */
-    public PlayerController(Player player) {
-        this.player = player;
-    }
 
 	//    /**
 	//     * @return the matrix transformation from world to screen. Used in drawing.
