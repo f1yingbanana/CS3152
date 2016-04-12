@@ -37,8 +37,6 @@ public class Player extends GameObject implements Drawable {
 
 		fixtureDefs = new FixtureDef[3];
 
-		Texture player = new Texture(Gdx.files.internal("walkspritesheet.png"));
-		playerSprite = new FilmStrip(player,1,8,8);
 //		setTexture(player);
 		setSize(new Vector2(0.8f, 1.5f));
 		getBodyDef().position.set(initialPos);
@@ -95,6 +93,14 @@ public class Player extends GameObject implements Drawable {
 	 */
 	public void setFrame(int frame) {
 		playerSprite.setFrame(frame);
+	}
+
+	public FilmStrip getPlayerSprite() {
+		return playerSprite;
+	}
+
+	public void setPlayerSprite(FilmStrip playerSprite) {
+		this.playerSprite = playerSprite;
 	}
 
 	@Override
