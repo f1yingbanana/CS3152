@@ -29,15 +29,15 @@ public class Gate extends GameObject implements Drawable {
 	public Gate(Vector2 pos){
 		super();
 		open = false;
-		size.x = 0.8f;
-	    size.y = 1.5f;
+		size.x = 1.0f;
+	    size.y = 1.0f;
 	    getBodyDef().type = BodyDef.BodyType.StaticBody;
 	    getBodyDef().position.set(pos);
 	    fixtureDefs = new FixtureDef[1];
 	    PolygonShape shape = new PolygonShape();
 	    fixtureDefs[0] = new FixtureDef();
 	    fixtureDefs[0].isSensor = true;
-	    shape.setAsBox(size.x, size.y);
+	    shape.setAsBox(size.x*0.5f, size.y*0.5f);
 	    fixtureDefs[0].shape = shape;
 	}
 	
@@ -69,7 +69,7 @@ public class Gate extends GameObject implements Drawable {
 	@Override
 	public void draw(GameCanvas canvas){
 		if (allPiecesCollected) {
-			canvas.draw(texture, getPosition(), getSize());
+			canvas.draw(texture, getPosition().sub(0.5f,0.5f), getSize());
 		}
 	}
 	
