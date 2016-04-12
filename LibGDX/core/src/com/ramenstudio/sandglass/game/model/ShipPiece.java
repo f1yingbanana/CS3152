@@ -19,8 +19,8 @@ public class ShipPiece extends GameObject implements Drawable {
 	
 	public ShipPiece(Vector2 pos){
 		super();
-		size.x = 0.5f;
-	    size.y = 0.5f;
+		size.x = 1f;
+	    size.y = 1f;
 	    getBodyDef().type = BodyDef.BodyType.StaticBody;
 	    getBodyDef().position.set(pos);
 	    fixtureDefs = new FixtureDef[1];
@@ -50,7 +50,7 @@ public class ShipPiece extends GameObject implements Drawable {
 	@Override
 	public void draw(GameCanvas canvas){
 		if (!isCollected) {
-			canvas.draw(texture, getPosition().sub(0.25f,0.25f), getSize());
+			canvas.draw(texture, getPosition().sub(0.5f,0.5f), getSize());
 		}
 	}
 }
