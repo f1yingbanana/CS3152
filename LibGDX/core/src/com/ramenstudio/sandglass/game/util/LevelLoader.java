@@ -190,16 +190,18 @@ public class LevelLoader {
 		  MapObject monster = monLayer.getObjects().get(p.getName());
 		  Vector2 initPos = new Vector2(Float.parseFloat((String)monster.getProperties().get("X"))/128+0.5f,
 				  32-Float.parseFloat((String)monster.getProperties().get("Y"))/128+0.5f);
-		  System.out.println(initPos.toString());
 		  int id = Integer.parseInt(p.getName());
 		  MType mType = Monster.MType.valueOf(monLayer.getName());
 		  int level = Integer.parseInt((String) monster.getProperties().get("level"));
 		  float spcf = Float.parseFloat((String) monster.getProperties().get("spcf"));
 		  Array<Vector2> vertices = new Array<Vector2>();
 		  float[] vert = p.getPolyline().getVertices();
-		  	for (int i = 0 ; i < vert.length ; i = i + 2){
+		  	for (int i = 0 ; i < vert.length-1 ; i = i + 2){
+		  		System.out.println(p.getName() +": "+ i);
+		  		System.out.println(vert[i]/128 + "," + vert[i+1]/128);
 		  		Vector2 v = new Vector2((float) Math.floor(vert[i]/128)+initPos.x, 
 		  				(float) Math.floor(vert[i+1]/128)+initPos.y);
+		  		System.out.println(v.toString());
 		  		vertices.add(v);
 		  	}
 		  Monster mon = new Monster(initPos, mType, id, level, spcf, vertices);

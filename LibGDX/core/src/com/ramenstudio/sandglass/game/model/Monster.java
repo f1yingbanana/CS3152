@@ -134,6 +134,12 @@ public class Monster extends GameObject implements Drawable{
 		this.mType = mType;
 		isAlive = true;
 		System.out.println("monster is created");
+		
+		System.out.println("Monster id: " + id );
+		for (int i = 0 ; i < vertices.size ; i ++ ) {
+			System.out.println(vertices.get(i).toString());
+		}
+
 	}
 	
 	/** 
