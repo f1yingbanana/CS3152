@@ -86,7 +86,7 @@ public class GameController extends AbstractController implements ContactListene
   
   public LevelLoader loader = new LevelLoader();
   
-  private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
+  private Map<LevelLoader.LayerKey, Array<GameObject>> mapObjects;
   
   public GameController() {
 	mapObjects = loader.loadLevel("newLevel.tmx");
@@ -94,22 +94,21 @@ public class GameController extends AbstractController implements ContactListene
     playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
     
-    ArrayList<GameObject> umArray = (ArrayList<GameObject>) 
+    Array<GameObject> umArray = (Array<GameObject>) 
             mapObjects.get(LevelLoader.LayerKey.UNDER_M);
-    ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
+    Array<GameObject> omArray = (Array<GameObject>) 
             mapObjects.get(LevelLoader.LayerKey.OVER_M);
-    Gate gate = (Gate) ((ArrayList<GameObject>) 
+    Gate gate = (Gate) ((Array<GameObject>) 
     		mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
-    ArrayList<GameObject> ship = (ArrayList<GameObject>) 
+    Array<GameObject> ship = (Array<GameObject>) 
     		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
     
-    System.out.println(ship.size());
     List<ShipPiece> shipList = gameModel.getShipPieces();
     for (GameObject s: ship){
     	shipList.add((ShipPiece) s);
     }
     
-    gameModel.setNumberOfPieces(ship.size());
+    gameModel.setNumberOfPieces(ship.size);
     gameModel.setGate(gate);
     
     for (GameObject m: umArray){
@@ -177,7 +176,7 @@ public class GameController extends AbstractController implements ContactListene
   
   @Override
   public void objectSetup(World world) {
-    List<GameObject> mapTiles = mapObjects.get(LevelLoader.LayerKey.GROUND);
+    Array<GameObject> mapTiles = mapObjects.get(LevelLoader.LayerKey.GROUND);
     
     for (GameObject o : mapTiles) {
       activatePhysics(world, o);
@@ -189,12 +188,9 @@ public class GameController extends AbstractController implements ContactListene
     
     for (OverMonController m: overMonController){
         m.objectSetup(world);
-        m.setTarget(playerController);
-        m.setGoal=true;
     }
     for (UnderMonController m: underMonController){
         m.objectSetup(world);
-        m.setTarget(playerController);
     }
     for (ShipPiece c : gameModel.getShipPieces()) {
     	activatePhysics(world, c);
@@ -214,6 +210,7 @@ public class GameController extends AbstractController implements ContactListene
     }
     
     playerController.update(dt);
+    System.out.println(playerController.getPlayer().getPosition().toString());
     
   //update game model
     gameModel.setWorldPosition(!playerController.isUnder());
@@ -242,7 +239,6 @@ public class GameController extends AbstractController implements ContactListene
     
     for (OverMonController m: overMonController){
         m.update(dt);
-        m.setGoal= !playerController.isUnder();
     }
     
     stepPhysics(dt);

@@ -15,8 +15,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.controller.MonsterController.AngleEnum;
-import com.ramenstudio.sandglass.game.controller.PlayerController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
 import com.badlogic.gdx.Gdx;
@@ -37,9 +37,9 @@ public class Monster extends GameObject implements Drawable{
 
 	public static enum MType {
 		/* For over world */
-		OVER,
+		OverMonster,
 		/*For under world*/
-		UNDER
+		UnderMonster
 	}
 
 	// CONSTANTS FOR monster HANDLING
@@ -51,24 +51,18 @@ public class Monster extends GameObject implements Drawable{
 	private int id;
 	/** Monster type*/
 	public MType mType;
-	/** Monster Level*/
-	private int level;
 	/** Initial Position*/
 	public Vector2 initial;
 	/** Goal */
 	private Vector2 goal;
-	/** The current angle of orientation (in degrees) */
-	public AngleEnum initAngle;
-	
-	public AngleEnum angle;
 	/** Boolean to track if we are dead yet */
 	private boolean isAlive;
-	/** The period of changing direction*/
-	public int span;
 	/** Speed coefficient*/
     public float speed_coeff;
     
-    public String initMove;
+    public AngleEnum angle;
+    
+    public Array<Vector2> vertices;
 
 	/**
 	 * Create monster # id at the given position.
@@ -78,24 +72,21 @@ public class Monster extends GameObject implements Drawable{
 	 * @param y The initial y-coordinate of the monster
 	 */
     
-    public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, 
-			String angle, String initMove){
-    	this(initialPos, mType, level, span, spcf, angle);
-    	this.initMove = initMove;
-    }
    
-	public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, 
-			String angle) {
+	public Monster(Vector2 initialPos, MType mType, int id, int level,
+			float spcf, Array<Vector2> vertices) {
 		super();
-		this.span = span;
+		this.vertices = vertices;
+		angle = AngleEnum.NORTH;
 		speed_coeff = spcf;
 		initial = initialPos;
-        if (mType == Monster.MType.OVER){
+        if (mType == Monster.MType.OverMonster){
+        	System.out.println("this is over monster");
             setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
             fixtureDefs = new FixtureDef[3];
             setSize(new Vector2(0.8f, 1.2f));
             getBodyDef().position.set(initialPos);
-            getBodyDef().type = BodyDef.BodyType.KinematicBody;
+            getBodyDef().type = BodyDef.BodyType.StaticBody;
             
             FixtureDef fixtureDef = new FixtureDef();
             PolygonShape shape = new PolygonShape();
@@ -125,7 +116,6 @@ public class Monster extends GameObject implements Drawable{
             fixtureDefs[2] = fixtureDef3;
         }
         else{
-            if (level ==1) {
                 setTexture(new Texture(Gdx.app.getFiles().internal("undermonster1.png")));
                 fixtureDefs = new FixtureDef[1];
                 setSize(new Vector2(0.8f, 0.8f));
@@ -140,40 +130,10 @@ public class Monster extends GameObject implements Drawable{
                 underFixtureDef.shape = underShape;
                 fixtureDefs[0] = underFixtureDef;
                 underFixtureDef.friction = 10;
-            }
-            else {
-                setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
-                fixtureDefs = new FixtureDef[1];
-                setSize(new Vector2(0.8f, 1.2f));
-                getBodyDef().position.set(initialPos);
-                getBodyDef().type = BodyDef.BodyType.DynamicBody;
-                
-                
-                FixtureDef under2fixtureDef = new FixtureDef();
-                PolygonShape under2shape = new PolygonShape();
-                under2shape.setAsBox(0.4f, 0.6f);
-                under2fixtureDef.density = 1.0f;
-                under2fixtureDef.shape = under2shape;
-                fixtureDefs[0] = under2fixtureDef;
-                under2fixtureDef.friction = 0;   
-            }
         }
 		this.mType = mType;
-		this.level = level;
-		this.initAngle = AngleEnum.valueOf(angle);
 		isAlive = true;
 		System.out.println("monster is created");
-	}
-	
-
-	
-	/** 
-	 * Returns the monster level 
-	 * 
-	 * @return the monster level 
-	 */
-	public int getLevel(){
-		return level;
 	}
 	
 	/** 

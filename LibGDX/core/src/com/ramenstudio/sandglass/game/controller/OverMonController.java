@@ -17,20 +17,12 @@ import com.ramenstudio.sandglass.game.model.Monster.Move;
  */
 public class OverMonController extends MonsterController {
 
-	// Instance Attributes
-	/** is player in the same world*/
-	public boolean setGoal;
 	/**
 	 * Creates an AIController for the monster with the given id.
 	 *
-	 * @param id The unique monster identifier
-	 * @param argMonster is the monster this controller represents
-	 * @param gmodel is the board state used for tracking
-	 * @param player is the target of this monster
 	 */
 	public OverMonController(Monster monster) {
 		super(monster);
-		action = Move.valueOf(monster.initMove);
 	}
 
 
@@ -223,17 +215,6 @@ public class OverMonController extends MonsterController {
 	 */
 	public void getAction(float dt) {
 		// Increment the number of ticks.
-		Move move = Move.NONE;
-		ticks++;
-		// Do not need to rework ourselves every frame. Just every 10 ticks.
-		if (setGoal){
-			String gdd = isGrounded() ? "is Grounded" : "not Grounded";
-			String wdd = isWall()? "is Walled" : "not Walled";
-			System.out.println(gdd);
-			System.out.println(wdd);
-			move = Move.LEFT;
-		}
-		action = move;
 	}
 
 	@Override

@@ -42,39 +42,6 @@ public class UnderMonController extends MonsterController {
         Move move = Move.NONE;
         ticks++;
         // Do not need to rework ourselves every frame. Just every 10 ticks.
-            if (monster.getLevel() ==1){
-               
-                if (ticks%period< period/2){
-                    move = Move.LEFT;
-                    //monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
-                }
-                else {
-                    move = Move.RIGHT;
-                    //monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
-                }
-            }
-//            else{
-//                if (ticks%period < period/4){
-//                    move = Move.RIGHT
-//                    monster.setRotation(AngleEnum.convertToAngle(AngleEnum.EAST));
-//                    monster.angle = AngleEnum.EAST;
-//                }
-//                else if (ticks%period <period/2){
-//                    move = 1;
-//                    monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
-//                    monster.angle = AngleEnum.SOUTH;
-//                }
-//                else if (ticks%period < 3*period/4){
-//                    move = 0;
-//                    monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
-//                    monster.angle = AngleEnum.NORTH;
-//                }
-//                else{
-//                    move = 2;
-//                    monster.setRotation(AngleEnum.convertToAngle(AngleEnum.WEST));
-//                    monster.angle = AngleEnum.WEST;
-//                }
-//            }
         action = move;
     }
     
