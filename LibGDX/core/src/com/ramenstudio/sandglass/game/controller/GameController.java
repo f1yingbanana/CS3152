@@ -210,7 +210,7 @@ public class GameController extends AbstractController implements ContactListene
     }
     
     playerController.update(dt);
-    System.out.println(playerController.getPlayer().getPosition().toString());
+//    System.out.println(playerController.getPlayer().getPosition().toString);
     
   //update game model
     gameModel.setWorldPosition(!playerController.isUnder());
