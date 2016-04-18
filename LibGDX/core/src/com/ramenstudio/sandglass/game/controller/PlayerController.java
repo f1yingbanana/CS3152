@@ -95,7 +95,7 @@ public class PlayerController extends AbstractController {
     private State next = State.NEUTRAL;
     
     /** The direction the player is facing, relative to the camera. */
-    private AngleEnum direction = AngleEnum.WEST;
+    private AngleEnum direction = AngleEnum.EAST;
 
     private boolean isReset = false;
     
