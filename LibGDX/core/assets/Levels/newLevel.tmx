@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="109">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="114">
  <tileset firstgid="1" source="newTile.tsx"/>
  <layer name="Ground" width="32" height="32">
   <data encoding="csv">
@@ -107,11 +107,11 @@
   </object>
  </objectgroup>
  <objectgroup name="UnderPath">
-  <object id="100" name="1" type="UnderMonster" x="2112" y="1856">
-   <polyline points="0,0 -640,0 -640,-256 -384,-256 -384,-640 0,-640 0,0"/>
-  </object>
   <object id="101" name="2" type="UnderMonster" x="2752" y="1600">
    <polyline points="0,0 -256,0 -256,-128 0,-128 0,0"/>
+  </object>
+  <object id="111" name="1" x="2109.17" y="1854.17">
+   <polyline points="0,0 -512,0 -512,-512"/>
   </object>
  </objectgroup>
 </map>

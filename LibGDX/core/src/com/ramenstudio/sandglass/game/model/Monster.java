@@ -59,9 +59,11 @@ public class Monster extends GameObject implements Drawable{
 	private boolean isAlive;
 	/** Speed coefficient*/
     public float speed_coeff;
-    
+    /** is the path loop?*/
+    public boolean isLoop;
+    /** heading*/
     public AngleEnum angle;
-    
+    /** the patrol path of the monster*/
     public Array<Vector2> vertices;
 
 	/**
@@ -139,7 +141,9 @@ public class Monster extends GameObject implements Drawable{
 		for (int i = 0 ; i < vertices.size ; i ++ ) {
 			System.out.println(vertices.get(i).toString());
 		}
-
+		isLoop = (vertices.get(0).epsilonEquals(vertices.get(vertices.size-1),0.01f));
+		
+		System.out.println(isLoop);
 	}
 	
 	/** 

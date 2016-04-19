@@ -197,11 +197,11 @@ public class LevelLoader {
 		  Array<Vector2> vertices = new Array<Vector2>();
 		  float[] vert = p.getPolyline().getVertices();
 		  	for (int i = 0 ; i < vert.length-1 ; i = i + 2){
-		  		System.out.println(p.getName() +": "+ i);
-		  		System.out.println(vert[i]/128 + "," + vert[i+1]/128);
+//		  		System.out.println(p.getName() +": "+ i);
+//		  		System.out.println(vert[i]/128 + "," + vert[i+1]/128);
 		  		Vector2 v = new Vector2((float) Math.floor(vert[i]/128)+initPos.x, 
 		  				(float) Math.floor(vert[i+1]/128)+initPos.y);
-		  		System.out.println(v.toString());
+//		  		System.out.println(v.toString());
 		  		vertices.add(v);
 		  	}
 		  Monster mon = new Monster(initPos, mType, id, level, spcf, vertices);
