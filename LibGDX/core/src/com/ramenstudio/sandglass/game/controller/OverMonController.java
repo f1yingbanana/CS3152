@@ -226,12 +226,11 @@ public class OverMonController extends MonsterController {
 		Move move = Move.NONE;
 		ticks++;
 		// Do not need to rework ourselves every frame. Just every 10 ticks.
-		if (setGoal){
-			String gdd = isGrounded() ? "is Grounded" : "not Grounded";
-			String wdd = isWall()? "is Walled" : "not Walled";
-			System.out.println(gdd);
-			System.out.println(wdd);
+		if (ticks%100<50){
 			move = Move.LEFT;
+		}
+		else {
+			move = Move.RIGHT;
 		}
 		action = move;
 	}
@@ -242,7 +241,9 @@ public class OverMonController extends MonsterController {
 //		System.out.println("Before Rotation: " + monster.angle.toString());
 //		System.out.println("is Grounded?" + isGrounded());
 //		System.out.println("is Walled? " + isWall());
-		rotateMonster();
+		//rotateMonster();
+		getAction(dt);
+		System.out.println(monster.angle.toString());
 //		System.out.println("Direction : " + action.toString());
 //		System.out.println("After Rotation: " + monster.angle.toString());
 		super.update(dt);

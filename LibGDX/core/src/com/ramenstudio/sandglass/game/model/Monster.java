@@ -93,13 +93,13 @@ public class Monster extends GameObject implements Drawable{
         if (mType == Monster.MType.OVER){
             setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
             fixtureDefs = new FixtureDef[3];
-            setSize(new Vector2(0.8f, 1.2f));
+            setSize(new Vector2(0.4f, 0.6f));
             getBodyDef().position.set(initialPos);
             getBodyDef().type = BodyDef.BodyType.KinematicBody;
             
             FixtureDef fixtureDef = new FixtureDef();
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox(0.4f, 0.35f);
+            shape.setAsBox(0.2f, 0.15f);
             fixtureDef.density = 100.0f;
             fixtureDef.shape = shape;
             fixtureDefs[0] = fixtureDef;
@@ -108,8 +108,8 @@ public class Monster extends GameObject implements Drawable{
             
             
             CircleShape c = new CircleShape();
-            c.setRadius(0.3f);
-            c.setPosition(new Vector2(0, -0.35f));
+            c.setRadius(0.2f);
+            c.setPosition(new Vector2(0, -0.15f));
             FixtureDef fixtureDef2 = new FixtureDef();
             fixtureDef2.shape = c;
             fixtureDef2.isSensor = true;
@@ -117,8 +117,8 @@ public class Monster extends GameObject implements Drawable{
             
 
             CircleShape c2 = new CircleShape();
-            c2.setRadius(0.3f);
-            c2.setPosition(new Vector2(0, 0.35f));
+            c2.setRadius(0.2f);
+            c2.setPosition(new Vector2(0, 0.15f));
             FixtureDef fixtureDef3 = new FixtureDef();
             fixtureDef3.shape = c2;
             fixtureDef3.isSensor = true;
