@@ -31,6 +31,8 @@ public class CameraController extends AbstractController {
 	// initialize box2d body with initial position, but set it afterwards.
 	private Vector2 initPos;
 
+	// Rotation stuff
+	
 	/** The current rotation angle goal. */
 	private float goal;
 
@@ -49,15 +51,35 @@ public class CameraController extends AbstractController {
 
 	// For debugging purposes
 	private int count = 0;
-
+	
+	/** Used to detect if the view is sideways or not */
 	private boolean okeydokey = false;
+	
+	// Zoom stuff
+	
+	/** The original size of the Camera */
+	private Vector2 originalSize;
+	
+	/** The current zoom scale factor of the camera */
+	private float zoomScale = 1f;
+	
+	/** Used to provide drag to the camera as it is zooming in/out */
+	private final float slowFactor = .05f;
+	
+	/** The maximum zoom of the camera */
+	private final float maxZoom = 1.5f;
+	
+	/** Used to store whether the camera should be currently zooming in or zooming out */
+	private boolean zoomingOut = false;
+	
 
 	/**
 	 * Creates a viewCamera controller and initializes the game viewCamera.
 	 */
 	public CameraController() {
 		float ratio = (float)Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-		viewCamera = new GameCamera(new Vector2(9 * ratio, 9));
+		originalSize = new Vector2(9 * ratio, 9);
+		viewCamera = new GameCamera(originalSize);
 	}
 
 	/**
@@ -86,16 +108,6 @@ public class CameraController extends AbstractController {
 		target = targetObject;
 	}
 
-	//  /**
-	//   * Sets the smoothing factor for the viewCamera.
-	//   * 
-	//   * @param factor	the smoothing factor
-	//   * 				Must be between 0 and 1 inclusive
-	//   */
-	//  public void setSmoothing(float f) {
-	//    factor = f;
-	//  }
-
 	/**
 	 * Rotates the viewCamera view given the amount, with an option to animate.
 	 * 
@@ -123,12 +135,14 @@ public class CameraController extends AbstractController {
 			realCamera.viewportWidth = viewportHeight;
 			okeydokey = !okeydokey;
 		}
-		//      else {
-			//          goal = goal + angle;
-		//          instant = false;
-		//      }
 	}
 
+	/**
+	 * Helper method that's also used in GameController to
+	 * swap the width and height of the camera. This has to be done 
+	 * every frame because, when the camera is rotated, the render
+	 * and actual view of the screen differ.
+	 */
 	public void swapCameraDimensions() {
 		if (okeydokey) {
 			OrthographicCamera realCamera = viewCamera.getCamera();
@@ -137,6 +151,17 @@ public class CameraController extends AbstractController {
 			realCamera.viewportHeight = viewportWidth;
 			realCamera.viewportWidth = viewportHeight;
 		}
+	}
+	
+	public void doZoomInOrOut() {
+		if (zoomingOut) {
+			zoomScale += slowFactor*(maxZoom - zoomScale)/maxZoom;
+		}
+		else {
+			zoomScale -= slowFactor*(zoomScale - 1f)/1f;
+		}
+		// Apply the zoomScale
+		viewCamera.getCamera().zoom = zoomScale;
 	}
 
 	@Override
@@ -170,6 +195,12 @@ public class CameraController extends AbstractController {
 			count = 0;
 			rotate(90,false);
 		}
+		
+		if (InputController.getInstance().didJustPressedZoom()) {
+			zoomingOut = !zoomingOut;
+		}
+		
+		doZoomInOrOut();
 	}
 
 	@Override
@@ -181,7 +212,6 @@ public class CameraController extends AbstractController {
 		viewCamera.setBody(world.createBody(viewCamera.getBodyDef()));
 		viewCamera.setPosition(initPos);
 		goal = 0;
-		//    initPos = null;
 	}
 
 	/**
