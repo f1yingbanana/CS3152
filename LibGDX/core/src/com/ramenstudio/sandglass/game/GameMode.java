@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.ramenstudio.sandglass.game.controller.GameController;
+import com.ramenstudio.sandglass.game.controller.InputController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.AbstractMode;
 
@@ -34,8 +35,6 @@ public class GameMode extends AbstractMode implements Screen {
   
   // Toggle debug
   private boolean debug = false;
-  // Debug timer
-  private int count = 0;
   
   TiledMapRenderer tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
   
@@ -79,15 +78,12 @@ public class GameMode extends AbstractMode implements Screen {
 
     // DEBUG RENDERS. We can have more render passes later implemented here.
     
-    if (Gdx.input.isKeyPressed(Input.Keys.D))
-      count++;
-      if (count > 5) {
-    	  debug ^= true;
-    	  count = 0;
-      }
-      if (debug) {
-          debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
-      }
+    if (InputController.getInstance().didJustPressedDebug()) {
+    	debug ^= true;
+    }
+    if (debug) {
+        debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
+    }
     
     // UI RENDER - special case. UI has to be rendered outside loop.
     gameplayController.uiController.draw(canvas);

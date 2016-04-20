@@ -21,6 +21,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.ramenstudio.sandglass.game.controller.UIController.UIState;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
@@ -89,8 +90,8 @@ public class GameController extends AbstractController implements ContactListene
   private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
   
   public GameController() {
-	mapObjects = loader.loadLevel("newLevel.tmx");
-	Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
+  mapObjects = loader.loadLevel("newLevel.tmx");
+  Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
     playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
     
@@ -99,13 +100,13 @@ public class GameController extends AbstractController implements ContactListene
     ArrayList<GameObject> omArray = (ArrayList<GameObject>) 
             mapObjects.get(LevelLoader.LayerKey.OVER_M);
     Gate gate = (Gate) ((ArrayList<GameObject>) 
-    		mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
+        mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
     ArrayList<GameObject> ship = (ArrayList<GameObject>) 
-    		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
+        mapObjects.get(LevelLoader.LayerKey.RESOURCE);
     
     List<ShipPiece> shipList = gameModel.getShipPieces();
     for (GameObject s: ship){
-    	shipList.add((ShipPiece) s);
+      shipList.add((ShipPiece) s);
     }
     
     gameModel.setNumberOfPieces(ship.size());
@@ -126,6 +127,10 @@ public class GameController extends AbstractController implements ContactListene
     uiController.pauseView.resumeButton.addListener(resumeButtonCallback);
     uiController.pauseView.restartButton.addListener(restartButtonCallback);
     uiController.pauseView.mainMenuButton.addListener(mainMenuButtonCallback);
+    uiController.levelCompleteView.restartButton.addListener(restartButtonCallback);
+    uiController.levelCompleteView.mainMenuButton.addListener(mainMenuButtonCallback);
+    uiController.levelFailedView.restartButton.addListener(restartButtonCallback);
+    uiController.levelFailedView.mainMenuButton.addListener(mainMenuButtonCallback);
   }
   
   /**
@@ -196,7 +201,7 @@ public class GameController extends AbstractController implements ContactListene
         m.setTarget(playerController);
     }
     for (ShipPiece c : gameModel.getShipPieces()) {
-    	activatePhysics(world, c);
+      activatePhysics(world, c);
     }
     
     activatePhysics(world, gameModel.getGate());
@@ -206,6 +211,21 @@ public class GameController extends AbstractController implements ContactListene
   
   @Override
   public void update(float dt) {
+    uiController.update(dt);
+    
+    switch (gameModel.getGameState()) {
+    case LOST:
+      uiController.setGameState(UIState.LOST);
+      return;
+    case PAUSED:
+      return;
+    case PLAYING:
+      break;
+    case WON:
+      uiController.setGameState(UIState.WON);
+      return;
+    }
+    
     cameraController.update(dt);
     // Order matters. Must call update BEFORE rotate on cameraController.
     if (playerController.getRotateAngle() != 0f) {
@@ -218,10 +238,9 @@ public class GameController extends AbstractController implements ContactListene
     gameModel.setWorldPosition(!playerController.isUnder());
     
     //if(gameModel.allPiecesCollected()){
-    //	gameModel.getGate().setOpen();
+    //  gameModel.getGate().setOpen();
     //}
     
-    uiController.update(dt);
     for (MonsterController m: underMonController){
         m.getAction(dt);
     }
@@ -242,7 +261,7 @@ public class GameController extends AbstractController implements ContactListene
     stepPhysics(dt);
     
     if (playerController.isReset()){
-    	reset();
+      reset();
     }
   }
   
@@ -308,44 +327,37 @@ public void beginContact(Contact contact) {
     GameObject firstOne = (GameObject) contact.getFixtureA().getBody().getUserData();
     GameObject secondOne = (GameObject) contact.getFixtureB().getBody().getUserData();
     
-    if (firstOne instanceof Player &&
-    		secondOne instanceof Monster) {
-    		playerController.setResetTrue();
-    } else if (firstOne instanceof Monster &&
-    		secondOne instanceof Player) {
-    		playerController.setResetTrue();
+    if ((firstOne instanceof Player && secondOne instanceof Monster) ||
+        (secondOne instanceof Player && firstOne instanceof Monster)) {
+      gameModel.setGameState(GameState.LOST);
     }
     
     if (firstOne instanceof Player &&
-    		secondOne instanceof ShipPiece) {
-    	ShipPiece secondShipPiece = (ShipPiece) secondOne;
-    	if (!secondShipPiece.getIsCollected()) {
-    		secondShipPiece.setCollected();
-    		gameModel.collectPiece();
-    	}
+        secondOne instanceof ShipPiece) {
+      ShipPiece secondShipPiece = (ShipPiece) secondOne;
+      if (!secondShipPiece.getIsCollected()) {
+        secondShipPiece.setCollected();
+        gameModel.collectPiece();
+      }
     } else if (firstOne instanceof ShipPiece &&
-    		secondOne instanceof Player) {
-    	ShipPiece firstShipPiece = (ShipPiece) firstOne;
-    	if (!firstShipPiece.getIsCollected()) {
-    		firstShipPiece.setCollected();
-    		gameModel.collectPiece();
-    	}
+        secondOne instanceof Player) {
+      ShipPiece firstShipPiece = (ShipPiece) firstOne;
+      if (!firstShipPiece.getIsCollected()) {
+        firstShipPiece.setCollected();
+        gameModel.collectPiece();
+      }
     }
     
     if (gameModel.allPiecesCollected()) {
-    	gameModel.getGate().setAllPiecesCollected(true);
+      gameModel.getGate().setAllPiecesCollected(true);
     }
     
-    if (firstOne instanceof Player &&
-    		secondOne instanceof Gate) {
-    	if (gameModel.allPiecesCollected()) {
-    		playerController.setResetTrue();
-    	}
-    } else if (firstOne instanceof Gate &&
-    		secondOne instanceof Player) {
-    	if (gameModel.allPiecesCollected()) {
-    		playerController.setResetTrue();
-    	}
+    if ((firstOne instanceof Player && secondOne instanceof Gate) ||
+        (firstOne instanceof Gate && secondOne instanceof Player)) {
+      if (gameModel.allPiecesCollected()) {
+        // We won!
+        gameModel.setGameState(GameState.WON);
+      }
     }
     
 }
@@ -368,7 +380,7 @@ public void preSolve(Contact contact, Manifold oldManifold) {
 
 @Override
 public void postSolve(Contact contact, ContactImpulse impulse) {
-	    
+      
 }
 
 }

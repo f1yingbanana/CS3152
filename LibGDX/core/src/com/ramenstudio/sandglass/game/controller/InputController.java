@@ -30,6 +30,8 @@ public class InputController extends AbstractController {
 	private boolean pressedReset;
 	/** Did we JUST press the zoom button? */
 	private boolean justPressedZoom;
+	/** Did we JUST press the debug button? */
+	private boolean justPressedDebug;
 	/** The mouse position on screen. */
 	private Vector2 mousePos;
 	
@@ -112,6 +114,15 @@ public class InputController extends AbstractController {
 	}
 	
 	/**
+	 * Returns whether the debug button was just pressed.
+	 * 
+	 * @return whether the debug button was just pressed.
+	 */
+	public boolean didJustPressedDebug() {
+		return justPressedDebug;
+	}
+	
+	/**
 	 * Returns the last known mouse position on the screen.
 	 * Doesn't handle the inconsistency in coordinates and returns the mouse position
 	 * with the origin in the upper left corner.
@@ -128,7 +139,7 @@ public class InputController extends AbstractController {
 	 * Sets the private fields that can be accessed using getters.
 	 */
 	public void readKeyboard() {
-	    int up, left, right, down, jump, flip, reset, zoom;
+	    int up, left, right, down, jump, flip, reset, debug, zoom;
 	    up    = Input.Keys.UP; 
 	    down  = Input.Keys.DOWN;
 	    left  = Input.Keys.LEFT; 
@@ -136,6 +147,7 @@ public class InputController extends AbstractController {
 	    jump  = Input.Keys.SPACE;
 	    flip  = Input.Keys.F;
 	    reset = Input.Keys.L;
+	    debug = Input.Keys.D;
 	    zoom = Input.Keys.Z;
 			
 	    // Convert keyboard state into game commands
@@ -168,6 +180,9 @@ public class InputController extends AbstractController {
 		
 		// Zooming
 		justPressedZoom = Gdx.input.isKeyJustPressed(zoom);
+		
+		// Debug
+		justPressedDebug = Gdx.input.isKeyJustPressed(debug);
 	}
 
 	/**

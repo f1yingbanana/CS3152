@@ -135,7 +135,6 @@ public class PlayerController extends AbstractController {
 
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.getBody().getLinearVelocity();
-		Vector2 grav = world.getGravity();
 		Vector2 size = player.getSize();
 
 		// Handle movement

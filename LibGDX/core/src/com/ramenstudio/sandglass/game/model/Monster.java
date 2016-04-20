@@ -162,7 +162,7 @@ public class Monster extends GameObject implements Drawable{
 		this.level = level;
 		this.initAngle = AngleEnum.valueOf(angle);
 		isAlive = true;
-		System.out.println("monster is created");
+//		System.out.println("monster is created");
 	}
 	
 

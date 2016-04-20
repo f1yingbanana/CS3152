@@ -13,7 +13,6 @@ public class GameView extends Table {
   /** The pause button for the game. */
   public final TextButton pauseButton;
 
-  
   /**
    * Default constructor. Uses the given skin to set up the pause screen UI.
    * @param skin is the style-sheet for the widgets.
