@@ -65,6 +65,8 @@ public class Monster extends GameObject implements Drawable{
     public AngleEnum angle;
     /** the patrol path of the monster*/
     public Array<Vector2> vertices;
+    /** the array of orientations the monster should take on the path */
+    public Array<Vector2> orientationsOnPath;
 
 	/**
 	 * Create monster # id at the given position.
@@ -144,6 +146,36 @@ public class Monster extends GameObject implements Drawable{
 		isLoop = (vertices.get(0).epsilonEquals(vertices.get(vertices.size-1),0.01f));
 		
 		System.out.println(isLoop);
+	}
+	
+	/** 
+	 * Private helper method to help parametrize vertices and orientations
+	 * during the path of the monster.
+	 */
+	private void parametrizeVertices() {
+		orientationsOnPath = new Array<Vector2>();
+		
+		if (isLoop) {
+			for (int i = 0; i < vertices.size; i++) {
+				Vector2 currentVertex = vertices.get(i%(vertices.size - 1));
+				Vector2 nextVertex = vertices.get((i + 1)%(vertices.size - 1));
+				
+			}
+		} else {
+			
+		}
+	}
+	
+	/**
+	 * Returns the orientation that the monster should assume when moving 
+	 * from the currentVertex to nextVertex
+	 * 
+	 * @param currentVertex
+	 * @param nextVertex
+	 * @return the AngleEnum of the monster in this interval
+	 */
+	private AngleEnum orientationBetweenVertices(Vector2 currentVertex, Vector2 nextVertex) {
+		
 	}
 	
 	/** 
