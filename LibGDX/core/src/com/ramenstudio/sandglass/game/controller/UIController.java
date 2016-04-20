@@ -109,7 +109,6 @@ public class UIController extends AbstractController {
   
   @Override
   public void update(float dt) {
-    gameView.sandglassView.updateRotation(dt);
     stage.act(dt);
   }
   

@@ -217,11 +217,6 @@ public class GameController extends AbstractController implements ContactListene
     
   //update game model
     gameModel.setWorldPosition(!playerController.isUnder());
-    gameModel.incrementTime();
-    uiController.gameView.setSandAmount(gameModel.getOverworldTime()/(float)gameModel.getMaxTime(), 
-    		gameModel.getUnderworldTime()/(float)gameModel.getMaxTime());
-    
-    uiController.gameView.sandglassView.rotateSandglass(playerController.isUnder());
     
     //if(gameModel.allPiecesCollected()){
     //	gameModel.getGate().setOpen();
@@ -247,9 +242,7 @@ public class GameController extends AbstractController implements ContactListene
     
     stepPhysics(dt);
     
-    if (/**gameModel.getGate().isOpen() && touchingGate ||*/
-    		gameModel.outOfTime() ||
-    		playerController.isReset()){
+    if (playerController.isReset()){
     	reset();
     }
   }
@@ -318,20 +311,10 @@ public void beginContact(Contact contact) {
     
     if (firstOne instanceof Player &&
     		secondOne instanceof Monster) {
-    	if (gameModel.isInOverworld()) {
     		playerController.setResetTrue();
-    	}
-    	else {
-    		gameModel.takeTime(10);
-    	}
     } else if (firstOne instanceof Monster &&
     		secondOne instanceof Player) {
-    	if (gameModel.isInOverworld()) {
     		playerController.setResetTrue();
-    	}
-    	else {
-    		gameModel.takeTime(10);
-    	}
     }
     
     if (firstOne instanceof Player &&
