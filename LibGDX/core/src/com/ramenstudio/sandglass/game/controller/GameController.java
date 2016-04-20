@@ -21,6 +21,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.ramenstudio.sandglass.game.controller.UIController.UIState;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
@@ -127,6 +128,10 @@ public class GameController extends AbstractController implements ContactListene
     uiController.pauseView.resumeButton.addListener(resumeButtonCallback);
     uiController.pauseView.restartButton.addListener(restartButtonCallback);
     uiController.pauseView.mainMenuButton.addListener(mainMenuButtonCallback);
+    uiController.levelCompleteView.restartButton.addListener(restartButtonCallback);
+    uiController.levelCompleteView.mainMenuButton.addListener(mainMenuButtonCallback);
+    uiController.levelFailedView.restartButton.addListener(restartButtonCallback);
+    uiController.levelFailedView.mainMenuButton.addListener(mainMenuButtonCallback);
   }
   
   /**
@@ -207,6 +212,21 @@ public class GameController extends AbstractController implements ContactListene
   
   @Override
   public void update(float dt) {
+    uiController.update(dt);
+    
+    switch (gameModel.getGameState()) {
+    case LOST:
+      uiController.setGameState(UIState.LOST);
+      return;
+    case PAUSED:
+      return;
+    case PLAYING:
+      break;
+    case WON:
+      uiController.setGameState(UIState.WON);
+      return;
+    }
+    
     cameraController.update(dt);
     // Order matters. Must call update BEFORE rotate on cameraController.
     if (playerController.getRotateAngle() != 0f) {
@@ -218,16 +238,11 @@ public class GameController extends AbstractController implements ContactListene
   //update game model
     gameModel.setWorldPosition(!playerController.isUnder());
     gameModel.incrementTime();
-    uiController.gameView.setSandAmount(gameModel.getOverworldTime()/(float)gameModel.getMaxTime(), 
-    		gameModel.getUnderworldTime()/(float)gameModel.getMaxTime());
-    
-    uiController.gameView.sandglassView.rotateSandglass(playerController.isUnder());
     
     //if(gameModel.allPiecesCollected()){
     //	gameModel.getGate().setOpen();
     //}
     
-    uiController.update(dt);
     for (MonsterController m: underMonController){
         m.getAction(dt);
     }
@@ -316,22 +331,9 @@ public void beginContact(Contact contact) {
     GameObject firstOne = (GameObject) contact.getFixtureA().getBody().getUserData();
     GameObject secondOne = (GameObject) contact.getFixtureB().getBody().getUserData();
     
-    if (firstOne instanceof Player &&
-    		secondOne instanceof Monster) {
-    	if (gameModel.isInOverworld()) {
-    		playerController.setResetTrue();
-    	}
-    	else {
-    		gameModel.takeTime(10);
-    	}
-    } else if (firstOne instanceof Monster &&
-    		secondOne instanceof Player) {
-    	if (gameModel.isInOverworld()) {
-    		playerController.setResetTrue();
-    	}
-    	else {
-    		gameModel.takeTime(10);
-    	}
+    if ((firstOne instanceof Player && secondOne instanceof Monster) ||
+        (secondOne instanceof Player && firstOne instanceof Monster)) {
+      gameModel.setGameState(GameState.LOST);
     }
     
     if (firstOne instanceof Player &&
@@ -354,15 +356,11 @@ public void beginContact(Contact contact) {
     	gameModel.getGate().setAllPiecesCollected(true);
     }
     
-    if (firstOne instanceof Player &&
-    		secondOne instanceof Gate) {
-    	if (gameModel.allPiecesCollected()) {
-    		playerController.setResetTrue();
-    	}
-    } else if (firstOne instanceof Gate &&
-    		secondOne instanceof Player) {
-    	if (gameModel.allPiecesCollected()) {
-    		playerController.setResetTrue();
+    if ((firstOne instanceof Player && secondOne instanceof Gate) ||
+        (firstOne instanceof Gate && secondOne instanceof Player)) {
+      if (gameModel.allPiecesCollected()) {
+        // We won!
+        gameModel.setGameState(GameState.WON);
     	}
     }
     
