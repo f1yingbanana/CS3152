@@ -33,8 +33,6 @@ public class OverMonController extends MonsterController {
 		action = Move.valueOf(monster.initMove);
 	}
 
-
-
 	public boolean isGrounded() {
 		Vector2 footPos = null;
 		Vector2 endPos = null;
@@ -228,7 +226,7 @@ public class OverMonController extends MonsterController {
 		// Do not need to rework ourselves every frame. Just every 10 ticks.
 		
 		if (monster.angle == AngleEnum.NORTH || monster.angle == AngleEnum.SOUTH){
-			if (ticks%100<50){
+			if (ticks%200<100){
 				move = Move.LEFT;
 			}
 			else {

@@ -46,7 +46,7 @@ public class UnderMonController extends MonsterController {
         // Do not need to rework ourselves every frame. Just every 10 ticks.
             if (random){
                
-                if (ticks%period< period/2){
+                if (ticks%150< 75){
                     move = Move.LEFT;
                     //monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
                 }
@@ -58,13 +58,21 @@ public class UnderMonController extends MonsterController {
             
             else{
 
-            	if (ticks%period< period/2){
+            	if (ticks%300< 75){
                 	move = Move.UP;
                 //monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
             	}
-            	else {
-                	move = Move.DOWN;
+            	else if (ticks%300 < 150) {
+                	move = Move.RIGHT;
                 //monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
+            	}
+            	
+            	else if (ticks %300 < 225){
+            		move = Move.DOWN;
+            	}
+            	
+            	else {
+            		move = Move.LEFT;
             	}
             }
 //            else{
