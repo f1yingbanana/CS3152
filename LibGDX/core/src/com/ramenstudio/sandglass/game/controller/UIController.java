@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.view.ui.GameView;
+import com.ramenstudio.sandglass.game.view.ui.LevelCompleteView;
 import com.ramenstudio.sandglass.game.view.ui.OptionsView;
 import com.ramenstudio.sandglass.game.view.ui.PauseView;
 
@@ -43,6 +44,16 @@ public class UIController extends AbstractController {
    */
   public OptionsView optionsView = new OptionsView(skin);
   
+  /**
+   * The game completed UI view.
+   */
+  public LevelCompleteView levelCompleteView = new LevelCompleteView(skin, true);
+  
+  /**
+   * The game failed UI view.
+   */
+  public LevelCompleteView levelFailedView = new LevelCompleteView(skin, false);
+  
   public UIController() {
     stage = new Stage(new ScreenViewport());
     Gdx.input.setInputProcessor(stage);
@@ -70,6 +81,10 @@ public class UIController extends AbstractController {
       }
     });
     
+    // Add level complete UI
+    stage.addActor(levelCompleteView);
+    stage.addActor(levelFailedView);
+    
     // Finally, let the game play.
     setGameState(UIState.PLAYING);
   }
@@ -89,6 +104,8 @@ public class UIController extends AbstractController {
     gameView.setVisible(false);
     pauseView.setVisible(false);
     optionsView.setVisible(false);
+    levelCompleteView.setVisible(false);
+    levelFailedView.setVisible(false);
     
     switch (state) {
     case PLAYING:
@@ -101,15 +118,16 @@ public class UIController extends AbstractController {
       optionsView.setVisible(true);
       break;
     case WON:
+      levelCompleteView.setVisible(true);
       break;
     case LOST:
+      levelFailedView.setVisible(true);
       break;
     }
   }
   
   @Override
   public void update(float dt) {
-    gameView.sandglassView.updateRotation(dt);
     stage.act(dt);
   }
   
