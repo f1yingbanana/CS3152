@@ -38,13 +38,13 @@ public class Player extends GameObject implements Drawable {
 		fixtureDefs = new FixtureDef[3];
 
 //		setTexture(player);
-		setSize(new Vector2(0.6f, 0.925f));
+		setSize(new Vector2(0.6f, 1.0f));
 		getBodyDef().position.set(initialPos);
 		getBodyDef().type = BodyDef.BodyType.DynamicBody;
 
 		FixtureDef fixtureDef = new FixtureDef();
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.2f, 0.2625f);
+		shape.setAsBox(0.2f, 0.3f);
 		fixtureDef.density = 10.0f;
 		fixtureDef.shape = shape;
 		fixtureDefs[0] = fixtureDef;
@@ -52,14 +52,14 @@ public class Player extends GameObject implements Drawable {
 
 		CircleShape c = new CircleShape();
 		c.setRadius(0.2f);
-		c.setPosition(new Vector2(0, -0.2625f));
+		c.setPosition(new Vector2(0, -0.3f));
 		FixtureDef fixtureDef2 = new FixtureDef();
 		fixtureDef2.shape = c;
 		fixtureDefs[1] = fixtureDef2;
 
 		CircleShape c2 = new CircleShape();
 		c2.setRadius(0.2f);
-		c2.setPosition(new Vector2(0, 0.2625f));
+		c2.setPosition(new Vector2(0, 0.3f));
 		FixtureDef fixtureDef3 = new FixtureDef();
 		fixtureDef3.shape = c2;
 		fixtureDefs[2] = fixtureDef3;

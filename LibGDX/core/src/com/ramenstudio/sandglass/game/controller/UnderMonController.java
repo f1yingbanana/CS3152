@@ -16,6 +16,8 @@ import com.ramenstudio.sandglass.game.model.Monster.Move;
  */
 public class UnderMonController extends MonsterController {
  
+	
+	boolean random = Math.random()>0.5;
     // Instance Attributes
     /**
      * Creates an AIController for the monster with the given id.
@@ -42,7 +44,7 @@ public class UnderMonController extends MonsterController {
         Move move = Move.NONE;
         ticks++;
         // Do not need to rework ourselves every frame. Just every 10 ticks.
-            if (monster.getLevel() ==1){
+            if (random){
                
                 if (ticks%period< period/2){
                     move = Move.LEFT;
@@ -52,6 +54,18 @@ public class UnderMonController extends MonsterController {
                     move = Move.RIGHT;
                     //monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
                 }
+            }
+            
+            else{
+
+            	if (ticks%period< period/2){
+                	move = Move.UP;
+                //monster.setRotation(AngleEnum.convertToAngle(AngleEnum.SOUTH));
+            	}
+            	else {
+                	move = Move.DOWN;
+                //monster.setRotation(AngleEnum.convertToAngle(AngleEnum.NORTH));
+            	}
             }
 //            else{
 //                if (ticks%period < period/4){

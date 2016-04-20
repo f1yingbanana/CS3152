@@ -239,10 +239,10 @@ public class OverMonController extends MonsterController {
 		
 		else {
 			if (ticks%100<50){
-				move = Move.LEFT;
+				move = Move.UP;
 			}
 			else {
-				move = Move.RIGHT;
+				move = Move.DOWN;
 			}			
 		}
 		action = move;
@@ -256,7 +256,7 @@ public class OverMonController extends MonsterController {
 //		System.out.println("is Walled? " + isWall());
 		//rotateMonster();
 		getAction(dt);
-		System.out.println(monster.angle.toString());
+//		System.out.println(monster.angle.toString());
 //		System.out.println("Direction : " + action.toString());
 //		System.out.println("After Rotation: " + monster.angle.toString());
 		super.update(dt);

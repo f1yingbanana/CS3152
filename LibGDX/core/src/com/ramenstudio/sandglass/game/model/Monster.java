@@ -128,14 +128,14 @@ public class Monster extends GameObject implements Drawable{
             if (level ==1) {
                 setTexture(new Texture(Gdx.app.getFiles().internal("undermonster1.png")));
                 fixtureDefs = new FixtureDef[1];
-                setSize(new Vector2(0.6f, 0.6f));
+                setSize(new Vector2(0.4f, 0.4f));
                 getBodyDef().position.set(initialPos);
                 getBodyDef().type = BodyDef.BodyType.DynamicBody;
                 getBodyDef().gravityScale=0;
                 
                 FixtureDef underFixtureDef = new FixtureDef();
                 PolygonShape underShape = new PolygonShape();
-                underShape.setAsBox(0.3f, 0.3f);
+                underShape.setAsBox(0.2f, 0.2f);
                 underFixtureDef.density = 100.0f;
                 underFixtureDef.shape = underShape;
                 fixtureDefs[0] = underFixtureDef;
