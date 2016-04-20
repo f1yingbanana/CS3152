@@ -226,11 +226,24 @@ public class OverMonController extends MonsterController {
 		Move move = Move.NONE;
 		ticks++;
 		// Do not need to rework ourselves every frame. Just every 10 ticks.
-		if (ticks%100<50){
-			move = Move.LEFT;
+		
+		if (monster.angle == AngleEnum.NORTH || monster.angle == AngleEnum.SOUTH){
+			if (ticks%100<50){
+				move = Move.LEFT;
+			}
+			else {
+				move = Move.RIGHT;
+			}
+
 		}
+		
 		else {
-			move = Move.RIGHT;
+			if (ticks%100<50){
+				move = Move.LEFT;
+			}
+			else {
+				move = Move.RIGHT;
+			}			
 		}
 		action = move;
 	}

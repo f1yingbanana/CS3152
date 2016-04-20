@@ -34,7 +34,7 @@ public class PlayerController extends AbstractController {
 	private float footOffset;
 
 	/** This is the distance from where we are raycasting */
-	private float rayDist = 0.1f;
+	private float rayDist = 0.2f;
 
 	/** Maximum move speed in horizontal movement */
 	private float moveSpeed = 3.0f;

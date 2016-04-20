@@ -184,7 +184,7 @@ public class LevelLoader {
                 	objArr.add(gate);
                 }
                 else if (value.equals("ship")){
-                    ShipPiece ship = new ShipPiece(new Vector2(i+0.5f, j+0.5f));
+                    ShipPiece ship = new ShipPiece(new Vector2(i, j));
                     objArr.add(ship);
                 }
               }
