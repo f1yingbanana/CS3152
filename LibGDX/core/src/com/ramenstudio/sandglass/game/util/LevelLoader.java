@@ -171,7 +171,7 @@ public class LevelLoader {
                     float spcf = Float.parseFloat((String) this_tile.getProperties().get("spcf"));
                     String angle = (String) this_tile.getProperties().get("angle");
                     String initMove = (String) this_tile.getProperties().get("initMove");
-                    Monster monster = new Monster(new Vector2(i+0.25f, j+0.25f), 
+                    Monster monster = new Monster(new Vector2(i, j), 
                             MType.valueOf(mType),level, span, spcf, angle, initMove);
                     objArr.add(monster);
                 }
@@ -184,7 +184,7 @@ public class LevelLoader {
                 	objArr.add(gate);
                 }
                 else if (value.equals("ship")){
-                    ShipPiece ship = new ShipPiece(new Vector2(i+0.5f, j+0.5f));
+                    ShipPiece ship = new ShipPiece(new Vector2(i, j));
                     objArr.add(ship);
                 }
               }

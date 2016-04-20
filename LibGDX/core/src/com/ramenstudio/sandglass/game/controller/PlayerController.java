@@ -31,7 +31,7 @@ public class PlayerController extends AbstractController {
 	private Player player;
 
 	/** This is the offset from the center of the body to the foot. */
-	private float footOffset = -0.7f;
+	private float footOffset;
 
 	/** This is the distance from where we are raycasting */
 	private float rayDist = 0.1f;
@@ -114,6 +114,9 @@ public class PlayerController extends AbstractController {
 		Texture playerTexture = new Texture(Gdx.files.internal("spritesheet_complete.png"));
 		player.setPlayerSprite(new FilmStrip(playerTexture,FILMSTRIP_ROWS,FILMSTRIP_COLS,FILMSTRIP_SIZE));
 		player.setFrame(NEUTRAL_START);
+		footOffset = - player.getSize().y*0.5f + rayDist*0.5f;
+		System.out.println(player.getSize().toString());
+		System.out.println(footOffset);
 	}
 
 	@Override
