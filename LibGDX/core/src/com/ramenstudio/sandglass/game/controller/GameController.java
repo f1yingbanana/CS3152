@@ -104,7 +104,7 @@ public class GameController extends AbstractController implements ContactListene
     ArrayList<GameObject> ship = (ArrayList<GameObject>) 
     		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
     
-    System.out.println(ship.size());
+//    System.out.println(ship.size());
     List<ShipPiece> shipList = gameModel.getShipPieces();
     for (GameObject s: ship){
     	shipList.add((ShipPiece) s);
