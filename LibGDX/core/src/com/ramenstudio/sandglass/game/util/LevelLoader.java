@@ -204,7 +204,8 @@ public class LevelLoader {
 //		  		System.out.println(v.toString());
 		  		vertices.add(v);
 		  	}
-		  Monster mon = new Monster(initPos, mType, id, level, spcf, vertices);
+		  	String angle = (String) monster.getProperties().get("angle");
+		  Monster mon = new Monster(initPos, mType, id, level, spcf, vertices,angle);
 		  objArr.add(mon);
 	  }
 	  return objArr;
