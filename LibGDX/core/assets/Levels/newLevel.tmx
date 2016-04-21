@@ -42,6 +42,7 @@
    <properties>
     <property name="X" type="float" value="2176"/>
     <property name="Y" type="float" value="1024"/>
+    <property name="angle" value="NORTH"/>
     <property name="level" value="1"/>
     <property name="spcf" value="1.00"/>
    </properties>
@@ -52,6 +53,7 @@
    <properties>
     <property name="X" type="float" value="2688"/>
     <property name="Y" type="float" value="1664"/>
+    <property name="angle" value="NORTH"/>
     <property name="level" value="20"/>
     <property name="spcf" value="1.00"/>
    </properties>
@@ -60,6 +62,7 @@
    <properties>
     <property name="X" type="float" value="2048"/>
     <property name="Y" type="float" value="1920"/>
+    <property name="angle" value="NORTH"/>
     <property name="level" value="30"/>
     <property name="spcf" value="1.00"/>
    </properties>
