@@ -81,9 +81,7 @@ public class GameController extends AbstractController implements ContactListene
   // controller.
   public UIController uiController = new UIController();
   
-  private Array<OverMonController> overMonController = new Array<OverMonController>();
-  
-  private Array<UnderMonController> underMonController = new Array<UnderMonController>();
+  private Array<MonsterController> monsterController = new Array<MonsterController>();
   
   public LevelLoader loader = new LevelLoader();
   
@@ -95,10 +93,8 @@ public class GameController extends AbstractController implements ContactListene
     playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
     
-    Array<GameObject> umArray = (Array<GameObject>) 
-            mapObjects.get(LevelLoader.LayerKey.UNDER_M);
-    Array<GameObject> omArray = (Array<GameObject>) 
-            mapObjects.get(LevelLoader.LayerKey.OVER_M);
+    Array<GameObject> mArray = (Array<GameObject>) 
+            mapObjects.get(LevelLoader.LayerKey.MONSTER);
     Gate gate = (Gate) ((Array<GameObject>) 
     		mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
     Array<GameObject> ship = (Array<GameObject>) 
@@ -110,13 +106,10 @@ public class GameController extends AbstractController implements ContactListene
     
     gameModel.setNumberOfPieces(ship.size);
     gameModel.setGate(gate);
-    
-    for (GameObject m: umArray){
-        underMonController.add(new UnderMonController((Monster) m));
+      
+    for (GameObject m: mArray){
+        monsterController.add(new MonsterController((Monster) m));
     }
-    for (GameObject m: omArray){
-        overMonController.add(new OverMonController((Monster) m));
-    }    
     
     // Set up the world!
     objectSetup(world);
@@ -190,12 +183,10 @@ public class GameController extends AbstractController implements ContactListene
     cameraController.setTarget(playerController.getPlayer());
     cameraController.objectSetup(world);
     
-    for (OverMonController m: overMonController){
-        m.objectSetup(world);
+    for (MonsterController m: monsterController){
+    	m.objectSetup(world);
     }
-    for (UnderMonController m: underMonController){
-        m.objectSetup(world);
-    }
+
     for (ShipPiece c : gameModel.getShipPieces()) {
     	activatePhysics(world, c);
     }
@@ -239,21 +230,10 @@ public class GameController extends AbstractController implements ContactListene
     //	gameModel.getGate().setOpen();
     //}
     
-    for (MonsterController m: underMonController){
-        m.getAction(dt);
-    }
-    
-    for (MonsterController m: underMonController){
+    for (MonsterController m: monsterController){
         m.update(dt);
     }
     
-    for (OverMonController m: overMonController){
-        m.rotateMonster();
-    }
-    
-    for (OverMonController m: overMonController){
-        m.update(dt);
-    }
     
     stepPhysics(dt);
     
@@ -285,12 +265,11 @@ public class GameController extends AbstractController implements ContactListene
   public void draw(GameCanvas canvas) {
     playerController.draw(canvas);
     cameraController.draw(canvas);
-    for (UnderMonController m: underMonController){
+    
+    for (MonsterController m: monsterController){
         m.draw(canvas);
     }
-    for (OverMonController m: overMonController){
-        m.draw(canvas);
-    }
+    
     gameModel.draw(canvas);
   }
   
