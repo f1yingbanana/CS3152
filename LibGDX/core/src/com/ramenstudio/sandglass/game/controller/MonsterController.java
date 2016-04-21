@@ -143,8 +143,6 @@ public abstract class MonsterController extends AbstractController {
 	
 	public int period;
 	
-	public PlayerController target;
-	
 	public World delegate;
 	
 	public RayCastHandler oneFrameRayHandler;
@@ -158,8 +156,6 @@ public abstract class MonsterController extends AbstractController {
 	 */
 	public MonsterController(Monster monster) {
 		this.monster = monster;
-		monster.angle = monster.initAngle;
-		period = monster.span;
 		action = Move.NONE;
 	}
 	
@@ -174,12 +170,8 @@ public abstract class MonsterController extends AbstractController {
 	
 	@Override
 	public void update(float dt){
-		monster.update(action);
+		monster.update(dt);
 	}
-	
-    public void setTarget(PlayerController player){
-        target = player;
-    }
 
 	@Override
 	public void draw(GameCanvas canvas) {
@@ -190,9 +182,6 @@ public abstract class MonsterController extends AbstractController {
 	public void objectSetup(World handler) {
 	    delegate = handler;
 		activatePhysics(handler, monster);
-		monster.getBody().applyForceToCenter(new Vector2(monster.getBody().getMass()*0, 
-				monster.getBody().getMass()*-9.8f), true);
-		monster.getBody().setFixedRotation(true);
 	}
 	
     public class RayCastHandler implements RayCastCallback {

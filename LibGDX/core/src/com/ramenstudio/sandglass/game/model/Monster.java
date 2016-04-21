@@ -15,8 +15,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.controller.MonsterController.AngleEnum;
-import com.ramenstudio.sandglass.game.controller.PlayerController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
 import com.badlogic.gdx.Gdx;
@@ -37,38 +37,44 @@ public class Monster extends GameObject implements Drawable{
 
 	public static enum MType {
 		/* For over world */
-		OVER,
+		OverMonster,
 		/*For under world*/
-		UNDER
+		UnderMonster
 	}
 
 	// CONSTANTS FOR monster HANDLING
 	/** How far forward this monster can move in a single turn */
-	private static final float MOVE_SPEED = 6.5f;
+	private static final float MOVE_SPEED = 1f;
 		
 	// Instance Attributes
 	/** A unique identifier; used to decouple classes. */
 	private int id;
 	/** Monster type*/
 	public MType mType;
-	/** Monster Level*/
-	private int level;
 	/** Initial Position*/
 	public Vector2 initial;
 	/** Goal */
 	private Vector2 goal;
-	/** The current angle of orientation (in degrees) */
-	public AngleEnum initAngle;
-	
-	public AngleEnum angle;
 	/** Boolean to track if we are dead yet */
 	private boolean isAlive;
-	/** The period of changing direction*/
-	public int span;
 	/** Speed coefficient*/
     public float speed_coeff;
-    
-    public String initMove;
+    /** is the path loop?*/
+    public boolean isLoop;
+    /** Starting angle orientation */
+    public AngleEnum initAngle;
+    /** heading*/
+    public AngleEnum angle;
+    /** the patrol path of the monster*/
+    public Array<Vector2> vertices;
+    /** the array of orientations the monster should take on the path */
+    public Array<AngleEnum> orientationsOnPath;
+    /** the time it takes to get from vertex i to i+1 */
+    public Array<Float> timeBetweenVertices;
+    /** the total dt time that has passed for this monster. */
+    public float totalTime = 0;
+    /** the total time of one path */
+    public float cycleTime = 0;
 
 	/**
 	 * Create monster # id at the given position.
@@ -78,24 +84,22 @@ public class Monster extends GameObject implements Drawable{
 	 * @param y The initial y-coordinate of the monster
 	 */
     
-    public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, 
-			String angle, String initMove){
-    	this(initialPos, mType, level, span, spcf, angle);
-    	this.initMove = initMove;
-    }
    
-	public Monster(Vector2 initialPos, MType mType, int level, int span, float spcf, 
-			String angle) {
+	public Monster(Vector2 initialPos, MType mType, int id, int level,
+			float spcf, Array<Vector2> vertices, String startAngle) {
 		super();
-		this.span = span;
+		this.vertices = vertices;
+		initAngle = AngleEnum.valueOf(startAngle);
+		angle = initAngle;
 		speed_coeff = spcf;
 		initial = initialPos;
-        if (mType == Monster.MType.OVER){
+        if (mType == Monster.MType.OverMonster){
+        	System.out.println("this is over monster");
             setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
             fixtureDefs = new FixtureDef[3];
             setSize(new Vector2(0.8f, 1.2f));
             getBodyDef().position.set(initialPos);
-            getBodyDef().type = BodyDef.BodyType.KinematicBody;
+            getBodyDef().type = BodyDef.BodyType.StaticBody;
             
             FixtureDef fixtureDef = new FixtureDef();
             PolygonShape shape = new PolygonShape();
@@ -125,7 +129,6 @@ public class Monster extends GameObject implements Drawable{
             fixtureDefs[2] = fixtureDef3;
         }
         else{
-            if (level ==1) {
                 setTexture(new Texture(Gdx.app.getFiles().internal("undermonster1.png")));
                 fixtureDefs = new FixtureDef[1];
                 setSize(new Vector2(0.8f, 0.8f));
@@ -140,39 +143,166 @@ public class Monster extends GameObject implements Drawable{
                 underFixtureDef.shape = underShape;
                 fixtureDefs[0] = underFixtureDef;
                 underFixtureDef.friction = 10;
-            }
-            else {
-                setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
-                fixtureDefs = new FixtureDef[1];
-                setSize(new Vector2(0.8f, 1.2f));
-                getBodyDef().position.set(initialPos);
-                getBodyDef().type = BodyDef.BodyType.DynamicBody;
-                
-                
-                FixtureDef under2fixtureDef = new FixtureDef();
-                PolygonShape under2shape = new PolygonShape();
-                under2shape.setAsBox(0.4f, 0.6f);
-                under2fixtureDef.density = 1.0f;
-                under2fixtureDef.shape = under2shape;
-                fixtureDefs[0] = under2fixtureDef;
-                under2fixtureDef.friction = 0;   
-            }
         }
 		this.mType = mType;
-		this.level = level;
-		this.initAngle = AngleEnum.valueOf(angle);
 		isAlive = true;
+		System.out.println("monster is created");
+		
+		System.out.println("Monster id: " + id );
+		for (int i = 0 ; i < vertices.size ; i ++ ) {
+			System.out.println(vertices.get(i).toString());
+		}
+		isLoop = (vertices.get(0).epsilonEquals(vertices.get(vertices.size-1),0.01f));
+		
+		
+		parametrizeVertices();
+		
+		System.out.println(orientationsOnPath);
+		
+		System.out.println(isLoop);
 	}
 	
-
-	
 	/** 
-	 * Returns the monster level 
-	 * 
-	 * @return the monster level 
+	 * Private helper method to help parametrize vertices and orientations
+	 * during the path of the monster.
 	 */
-	public int getLevel(){
-		return level;
+	private void parametrizeVertices() {
+		orientationsOnPath = new Array<AngleEnum>();
+		timeBetweenVertices = new Array<Float>();
+		
+		AngleEnum currentOrientation = initAngle;
+		orientationsOnPath.add(initAngle);
+		
+		Move previousMove = null;
+		
+		if (vertices.size >= 2) {
+			Vector2 currentVertex = vertices.get(0);
+			Vector2 nextVertex = vertices.get(1);
+			previousMove = moveBetweenTwoVertices(currentVertex, nextVertex);
+		}
+		for (int i = 1; i < vertices.size - 1; i++) {
+			Vector2 currentVertex = vertices.get(i%(vertices.size - 1));
+			Vector2 nextVertex = vertices.get((i + 1)%(vertices.size - 1));
+			Move currentMove = moveBetweenTwoVertices(currentVertex, nextVertex);
+			currentOrientation = orientationAfterMove(currentOrientation, 
+					previousMove, currentMove);
+			orientationsOnPath.add(currentOrientation);
+			previousMove = currentMove;
+		}
+		for (int i = 0; i < vertices.size - 1; i++) {
+			Vector2 currentVertex = vertices.get(i);
+			Vector2 nextVertex = vertices.get(i+1);
+			Vector2 displacement = nextVertex.cpy().sub(currentVertex);
+			float lengthOfPath = displacement.len();
+			timeBetweenVertices.add(lengthOfPath/(speed_coeff * MOVE_SPEED));
+			cycleTime += lengthOfPath/(speed_coeff * MOVE_SPEED);
+		}
+		if (!isLoop) {
+			cycleTime = cycleTime * 2;
+		}
+	}
+	
+	/**
+	 * Calculates the move that the monster must take between the
+	 * two vertices.
+	 * 
+	 * @return the Move between the two vertices
+	 */
+	private Move moveBetweenTwoVertices(Vector2 currentVertex, Vector2 nextVertex) {
+		if (Math.abs(nextVertex.x - currentVertex.x) < .5f) {
+			if (nextVertex.y - currentVertex.y > .5f) {
+				return Move.UP;
+			}
+			else {
+				return Move.DOWN;
+			}
+		}
+		else {
+			if (nextVertex.x - currentVertex.x > .5f) {
+				return Move.RIGHT;
+			}
+			else {
+				return Move.LEFT;
+			}
+		}
+	}
+	
+	private AngleEnum orientationAfterMove(AngleEnum currentAngle, Move currentMove, Move nextMove) {
+		if (currentAngle == AngleEnum.NORTH) {
+			if (currentMove == Move.LEFT) {
+				if (nextMove == Move.UP) {
+					return AngleEnum.EAST;
+				}
+				if (nextMove == Move.DOWN) {
+					return AngleEnum.WEST;
+				}
+			}
+			if (currentMove == Move.RIGHT) {
+				if (nextMove == Move.UP) {
+					return AngleEnum.WEST;
+				}
+				if (nextMove == Move.DOWN) {
+					return AngleEnum.EAST;
+				}
+			}
+		}
+		else if (currentAngle == AngleEnum.EAST) {
+			if (currentMove == Move.UP) {
+				if (nextMove == Move.LEFT) {
+					return AngleEnum.NORTH;
+				}
+				if (nextMove == Move.RIGHT) {
+					return AngleEnum.SOUTH;
+				}
+			}
+			if (currentMove == Move.DOWN) {
+				if (nextMove == Move.LEFT) {
+					return AngleEnum.SOUTH;
+				}
+				if (nextMove == Move.RIGHT) {
+					return AngleEnum.NORTH;
+				}
+			}
+		}
+		else if (currentAngle == AngleEnum.SOUTH) {
+			if (currentMove == Move.LEFT) {
+				if (nextMove == Move.UP) {
+					return AngleEnum.WEST;
+				}
+				if (nextMove == Move.DOWN) {
+					return AngleEnum.EAST;
+				}
+			}
+			if (currentMove == Move.RIGHT) {
+				if (nextMove == Move.UP) {
+					return AngleEnum.EAST;
+				}
+				if (nextMove == Move.DOWN) {
+					return AngleEnum.WEST;
+				}
+			}
+		}
+		else {
+			if (currentMove == Move.UP) {
+				if (nextMove == Move.LEFT) {
+					return AngleEnum.NORTH;
+				}
+				if (nextMove == Move.RIGHT) {
+					return AngleEnum.SOUTH;
+				}
+			}
+			if (currentMove == Move.DOWN) {
+				if (nextMove == Move.RIGHT) {
+					return AngleEnum.SOUTH;
+				}
+				if (nextMove == Move.LEFT) {
+					return AngleEnum.NORTH;
+				}
+			}
+		}
+		
+		assert(false);
+		return null;
 	}
 	
 	/** 
@@ -266,33 +396,57 @@ public class Monster extends GameObject implements Drawable{
 	 *
 	 * @param controlCode The movement controlCode (from InputController).
 	 */
-	public void update(Move move) {
-		setRotation(AngleEnum.convertToAngle(angle));
-	    //System.out.println(body.getPosition().toString());
-		Vector2 velocity = body.getLinearVelocity();
-		switch (move){
-        case DOWN:
-            velocity.x = 0;
-            velocity.y = -speed_coeff*MOVE_SPEED;
-            break;
-        case UP:
-            velocity.x = 0;
-            velocity.y = speed_coeff*MOVE_SPEED;
-            break;
-        case LEFT:
-            velocity.x = -speed_coeff*MOVE_SPEED;
-            velocity.y = 0;
-            break;
-        case RIGHT:
-            velocity.x = speed_coeff*MOVE_SPEED;
-            velocity.y = 0;
-            break;
-        case NONE:
-            break;
-        default:
-            break;
+	public void update(float dt) {
+		totalTime += dt;
+		if (isLoop) {
+			float periodicTime = totalTime % cycleTime;
+			for (int i = 0; i < timeBetweenVertices.size; i++) {
+				periodicTime -= timeBetweenVertices.get(i);
+				if (periodicTime < 0.05f) {
+					periodicTime += timeBetweenVertices.get(i);
+					Vector2 distanceVectorToNext = vertices.get(i+1).cpy().sub(vertices.get(i));
+					periodicTime = periodicTime/timeBetweenVertices.get(i);
+					distanceVectorToNext.scl(periodicTime);
+					Vector2 finalPos = distanceVectorToNext.add(vertices.get(i));
+					setPosition(finalPos);
+					angle = orientationsOnPath.get(i);
+					setRotation(AngleEnum.convertToAngle(angle));
+					return;
+				}
+			}
 		}
-		getBody().setLinearVelocity(velocity);
+		// If it's not a loop, then the monster should go back along its path.
+		else {
+			float periodicTime = totalTime % cycleTime;
+			for (int i = 0; i < timeBetweenVertices.size; i++) {
+				periodicTime -= timeBetweenVertices.get(i);
+				if (periodicTime < 0.05f) {
+					periodicTime += timeBetweenVertices.get(i);
+					Vector2 distanceVectorToNext = vertices.get(i+1).cpy().sub(vertices.get(i));
+					periodicTime = periodicTime/timeBetweenVertices.get(i);
+					distanceVectorToNext.scl(periodicTime);
+					Vector2 finalPos = distanceVectorToNext.add(vertices.get(i));
+					setPosition(finalPos);
+					angle = orientationsOnPath.get(i);
+					setRotation(AngleEnum.convertToAngle(angle));
+					return;
+				}
+			}
+			for (int i = timeBetweenVertices.size - 1; i >= 0; i--) {
+				periodicTime -= timeBetweenVertices.get(i);
+				if (periodicTime < 0.05f) {
+					periodicTime += timeBetweenVertices.get(i);
+					Vector2 distanceVectorToPrevious = vertices.get(i).cpy().sub(vertices.get(i+1));
+					periodicTime = periodicTime/timeBetweenVertices.get(i);
+					distanceVectorToPrevious.scl(periodicTime);
+					Vector2 finalPos = distanceVectorToPrevious.add(vertices.get(i+1));
+					setPosition(finalPos);
+					angle = orientationsOnPath.get(i);
+					setRotation(AngleEnum.convertToAngle(angle));
+					return;
+				}
+			}
+		}
 	}
 	
 
