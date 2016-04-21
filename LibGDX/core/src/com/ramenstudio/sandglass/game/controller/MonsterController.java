@@ -170,7 +170,7 @@ public abstract class MonsterController extends AbstractController {
 	
 	@Override
 	public void update(float dt){
-		monster.update(action);
+		monster.update(dt);
 	}
 
 	@Override

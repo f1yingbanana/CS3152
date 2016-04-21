@@ -199,8 +199,8 @@ public class LevelLoader {
 		  	for (int i = 0 ; i < vert.length-1 ; i = i + 2){
 //		  		System.out.println(p.getName() +": "+ i);
 //		  		System.out.println(vert[i]/128 + "," + vert[i+1]/128);
-		  		Vector2 v = new Vector2((float) Math.floor(vert[i]/128)+initPos.x, 
-		  				(float) Math.floor(vert[i+1]/128)+initPos.y);
+		  		Vector2 v = new Vector2((float) Math.round(vert[i]/128)+initPos.x, 
+		  				(float) Math.round(vert[i+1]/128)+initPos.y);
 //		  		System.out.println(v.toString());
 		  		vertices.add(v);
 		  	}
