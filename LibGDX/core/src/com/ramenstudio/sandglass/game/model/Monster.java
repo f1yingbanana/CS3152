@@ -44,7 +44,7 @@ public class Monster extends GameObject implements Drawable{
 
 	// CONSTANTS FOR monster HANDLING
 	/** How far forward this monster can move in a single turn */
-	private static final float MOVE_SPEED = 1f;
+	private static final float MOVE_SPEED = 3f;
 		
 	// Instance Attributes
 	/** A unique identifier; used to decouple classes. */
