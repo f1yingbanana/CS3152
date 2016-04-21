@@ -1,4 +1,4 @@
-package com.ramenstudio.sandglass.game.view.ui;
+package com.ramenstudio.sandglass.util.view.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;

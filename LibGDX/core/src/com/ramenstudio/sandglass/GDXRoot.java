@@ -68,7 +68,7 @@ public class GDXRoot extends Game implements ScreenListener {
     // We create all the modes we need. A title mode, a game mode, and a loading
     // mode. We don't need to load anything yet, though.
     titleMode = new TitleMode();
-    gameMode = new GameMode();
+    // gameMode = new GameMode();
     // loadingMode = new LoadingMode();
     
     // For now, we simply load the game play mode.
