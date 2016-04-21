@@ -4,10 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.ramenstudio.sandglass.game.controller.GameController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -27,7 +31,10 @@ public class GameMode extends AbstractMode implements Screen {
   private GameCanvas canvas = new GameCanvas();
 
   // BG renderer
-  private ShapeRenderer shapeRenderer = new ShapeRenderer();
+  private PolygonSpriteBatch bgBatch = new PolygonSpriteBatch();
+  
+
+  private Texture backgroundImage = new Texture(Gdx.files.internal("Textures/bg1.png"));
   
   // A debug renderer
   Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
@@ -58,14 +65,11 @@ public class GameMode extends AbstractMode implements Screen {
     // Now we render all objects that we can render
     canvas.clear();
     
-    // Render background.
-    shapeRenderer.begin(ShapeType.Filled);
-    Color botColor = new Color(242/255f, 250/255f, 172/255f, 1);
-    Color topColor = new Color(242/255f, 144/255f, 132/255f, 1);
+    // Draw bg
+    bgBatch.begin();
+    bgBatch.draw(backgroundImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    bgBatch.end();
     
-    shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), topColor, topColor, botColor, botColor);
-    shapeRenderer.end();
-
     tiledMapRenderer.setView(gameplayController.getViewCamera());
     
     

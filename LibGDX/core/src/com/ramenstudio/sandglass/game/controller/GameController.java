@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -88,6 +90,7 @@ public class GameController extends AbstractController implements ContactListene
   public LevelLoader loader = new LevelLoader();
   
   private Map<LevelLoader.LayerKey, Array<GameObject>> mapObjects;
+  
   
   public GameController() {
 	mapObjects = loader.loadLevel("newLevel.tmx");
@@ -283,6 +286,7 @@ public class GameController extends AbstractController implements ContactListene
 
   @Override
   public void draw(GameCanvas canvas) {
+    // Draw a background image
     playerController.draw(canvas);
     cameraController.draw(canvas);
     for (UnderMonController m: underMonController){
