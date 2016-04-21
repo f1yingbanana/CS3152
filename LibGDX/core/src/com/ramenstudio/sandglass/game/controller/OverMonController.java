@@ -223,7 +223,7 @@ public class OverMonController extends MonsterController {
 //		System.out.println("Before Rotation: " + monster.angle.toString());
 //		System.out.println("is Grounded?" + isGrounded());
 //		System.out.println("is Walled? " + isWall());
-		rotateMonster();
+//		rotateMonster();
 //		System.out.println("Direction : " + action.toString());
 //		System.out.println("After Rotation: " + monster.angle.toString());
 		super.update(dt);

@@ -157,6 +157,8 @@ public class Monster extends GameObject implements Drawable{
 		
 		parametrizeVertices();
 		
+		System.out.println(orientationsOnPath);
+		
 		System.out.println(isLoop);
 	}
 	
@@ -283,18 +285,18 @@ public class Monster extends GameObject implements Drawable{
 		else {
 			if (currentMove == Move.UP) {
 				if (nextMove == Move.LEFT) {
-					return AngleEnum.SOUTH;
+					return AngleEnum.NORTH;
 				}
 				if (nextMove == Move.RIGHT) {
-					return AngleEnum.NORTH;
+					return AngleEnum.SOUTH;
 				}
 			}
 			if (currentMove == Move.DOWN) {
 				if (nextMove == Move.RIGHT) {
-					return AngleEnum.NORTH;
+					return AngleEnum.SOUTH;
 				}
 				if (nextMove == Move.LEFT) {
-					return AngleEnum.SOUTH;
+					return AngleEnum.NORTH;
 				}
 			}
 		}
@@ -407,6 +409,8 @@ public class Monster extends GameObject implements Drawable{
 					distanceVectorToNext.scl(periodicTime);
 					Vector2 finalPos = distanceVectorToNext.add(vertices.get(i));
 					setPosition(finalPos);
+					angle = orientationsOnPath.get(i);
+					setRotation(AngleEnum.convertToAngle(angle));
 					return;
 				}
 			}
@@ -423,6 +427,8 @@ public class Monster extends GameObject implements Drawable{
 					distanceVectorToNext.scl(periodicTime);
 					Vector2 finalPos = distanceVectorToNext.add(vertices.get(i));
 					setPosition(finalPos);
+					angle = orientationsOnPath.get(i);
+					setRotation(AngleEnum.convertToAngle(angle));
 					return;
 				}
 			}
@@ -435,6 +441,8 @@ public class Monster extends GameObject implements Drawable{
 					distanceVectorToPrevious.scl(periodicTime);
 					Vector2 finalPos = distanceVectorToPrevious.add(vertices.get(i+1));
 					setPosition(finalPos);
+					angle = orientationsOnPath.get(i);
+					setRotation(AngleEnum.convertToAngle(angle));
 					return;
 				}
 			}
