@@ -33,6 +33,10 @@ public class LevelLoader {
   
   public TiledMap tiledMap;
   
+  public Map<LayerKey, Array<GameObject>> loadLevel(int level) {
+	  return loadLevel("level"+level);
+  }
+  
   public Map<LayerKey, Array<GameObject>> loadLevel(String filename) {
     tiledMap = new TmxMapLoader().load("Levels/" + filename);
     Map<LayerKey, Array<GameObject>> layerDict = new HashMap<LayerKey, Array<GameObject>>();
@@ -188,8 +192,8 @@ public class LevelLoader {
 	  
 	  for (PolylineMapObject p : polys){
 		  MapObject monster = monLayer.getObjects().get(p.getName());
-		  Vector2 initPos = new Vector2(Float.parseFloat((String)monster.getProperties().get("X"))/128+0.5f,
-				  32-Float.parseFloat((String)monster.getProperties().get("Y"))/128+0.5f);
+		  Vector2 initPos = new Vector2(Float.parseFloat((String)monster.getProperties().get("X"))/128,
+				  32-Float.parseFloat((String)monster.getProperties().get("Y"))/128+0.15f);
 		  int id = Integer.parseInt(p.getName());
 		  MType mType = Monster.MType.valueOf(monLayer.getName());
 		  int level = Integer.parseInt((String) monster.getProperties().get("level"));
