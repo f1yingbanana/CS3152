@@ -28,6 +28,8 @@ public class CameraController extends AbstractController {
 	
 	/** The underlying math-doing viewCamera. */
 	private GameCamera viewCamera;
+	
+	public Vector2 centerOfMap;
 
 
 	/** The position used to store the position to move the viewCamera to. Due to
@@ -94,6 +96,7 @@ public class CameraController extends AbstractController {
 	public CameraController(Vector2 initialPosition) {
 		this();
 		initPos = initialPosition.cpy();
+		centerOfMap = initialPosition.cpy();
 	}
 
 	/**
