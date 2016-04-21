@@ -33,6 +33,10 @@ public class LevelLoader {
   
   public TiledMap tiledMap;
   
+  public Map<LayerKey, Array<GameObject>> loadLevel(int level) {
+	  return loadLevel("level"+level);
+  }
+  
   public Map<LayerKey, Array<GameObject>> loadLevel(String filename) {
     tiledMap = new TmxMapLoader().load("Levels/" + filename);
     Map<LayerKey, Array<GameObject>> layerDict = new HashMap<LayerKey, Array<GameObject>>();
