@@ -155,7 +155,7 @@ public class Monster extends GameObject implements Drawable{
 		
 		parametrizeVertices();
 		
-//		System.out.println(orientationsOnPath);
+		System.out.println(orientationsOnPath);
 //		
 //		System.out.println(isLoop);
 	}
@@ -182,7 +182,7 @@ public class Monster extends GameObject implements Drawable{
 			Vector2 currentVertex = vertices.get(i%(vertices.size - 1));
 			Vector2 nextVertex = vertices.get((i + 1)%(vertices.size - 1));
 			Move currentMove = moveBetweenTwoVertices(currentVertex, nextVertex);
-			System.out.println(this.id + currentMove.toString());
+			System.out.println(previousMove.toString()+ ", " + currentMove.toString());
 			currentOrientation = orientationAfterMove(currentOrientation, 
 					previousMove, currentMove);
 			orientationsOnPath.add(currentOrientation);
