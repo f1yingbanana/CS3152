@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="122">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="129">
  <tileset firstgid="1" source="newTile.tsx"/>
  <layer name="Ground" width="32" height="32">
   <data encoding="csv">
@@ -109,8 +109,8 @@
   <object id="117" name="1" x="2106.87" y="1851.15">
    <polyline points="0,0 -512,0 -512,-512"/>
   </object>
-  <object id="121" name="3" x="2304" y="1024">
-   <polyline points="0,0 -1024,0 -1024,512 -1536,512 -1536,1024 -1024,1024 -1024,1664 -512,1664 -512,1024 128,1024 128,768 640,768 640,256 128,256 128,0 0,0"/>
+  <object id="128" name="3" x="2304" y="1024">
+   <polyline points="0,0 -896,0 -896,512 -1408,512"/>
   </object>
  </objectgroup>
 </map>

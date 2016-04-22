@@ -36,6 +36,7 @@ public class Player extends GameObject implements Drawable {
 		super();
 
 		fixtureDefs = new FixtureDef[3];
+		setTexture(new Texture(Gdx.app.getFiles().internal("Character3.png")));
 
 //		setTexture(player);
 		setSize(new Vector2(0.8f, 1.5f));
@@ -109,7 +110,7 @@ public class Player extends GameObject implements Drawable {
 //		if (direction == 1) {
 //			size.x *= -1;
 //		}
-		canvas.draw(playerSprite, getPosition().add(getSize().cpy().scl(-0.5f)), size,
+		canvas.draw(getTextureRegion(), getPosition().add(getSize().cpy().scl(-0.5f)), size,
 				new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 	}
 

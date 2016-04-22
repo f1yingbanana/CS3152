@@ -13,14 +13,14 @@ import com.ramenstudio.sandglass.util.Drawable;
  * @author Nathaniel Hunter*/
 public class ShipPiece extends GameObject implements Drawable {
 	//the texture of this piece
-	private Texture texture = new Texture(Gdx.files.internal("ship.png"));
+	private Texture texture = new Texture(Gdx.files.internal("Sandglass_Icon.png"));
 	
 	private boolean isCollected;
 	
 	public ShipPiece(Vector2 pos){
 		super();
-		size.x = 1f;
-	    size.y = 1f;
+		size.x = 0.5f;
+	    size.y = 0.5f;
 	    getBodyDef().type = BodyDef.BodyType.StaticBody;
 	    getBodyDef().position.set(pos);
 	    fixtureDefs = new FixtureDef[1];
@@ -50,7 +50,7 @@ public class ShipPiece extends GameObject implements Drawable {
 	@Override
 	public void draw(GameCanvas canvas){
 		if (!isCollected) {
-			canvas.draw(texture, getPosition().sub(0.5f,0.5f), getSize());
+			canvas.draw(texture, getPosition().sub(0.25f,0.25f), getSize());
 		}
 	}
 }

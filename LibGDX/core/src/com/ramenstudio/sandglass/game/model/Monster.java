@@ -94,16 +94,15 @@ public class Monster extends GameObject implements Drawable{
 		speed_coeff = spcf;
 		initial = initialPos;
         if (level == 1){
-        	System.out.println("this is over monster");
-            setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
-            fixtureDefs = new FixtureDef[3];
-            setSize(new Vector2(0.8f, 1.2f));
+            setTexture(new Texture(Gdx.app.getFiles().internal("Monster1-01.png")));
+            fixtureDefs = new FixtureDef[1];
+            setSize(new Vector2(0.8f, 0.8f));
             getBodyDef().position.set(initialPos);
             getBodyDef().type = BodyDef.BodyType.StaticBody;
             
             FixtureDef fixtureDef = new FixtureDef();
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox(0.4f, 0.35f);
+            shape.setAsBox(0.4f, 0.4f);
             fixtureDef.density = 100.0f;
             fixtureDef.shape = shape;
             fixtureDefs[0] = fixtureDef;
@@ -111,25 +110,25 @@ public class Monster extends GameObject implements Drawable{
             fixtureDef.isSensor = true;
             
             
-            CircleShape c = new CircleShape();
-            c.setRadius(0.3f);
-            c.setPosition(new Vector2(0, -0.35f));
-            FixtureDef fixtureDef2 = new FixtureDef();
-            fixtureDef2.shape = c;
-            fixtureDef2.isSensor = true;
-            fixtureDefs[1] = fixtureDef2;
-            
-
-            CircleShape c2 = new CircleShape();
-            c2.setRadius(0.3f);
-            c2.setPosition(new Vector2(0, 0.35f));
-            FixtureDef fixtureDef3 = new FixtureDef();
-            fixtureDef3.shape = c2;
-            fixtureDef3.isSensor = true;
-            fixtureDefs[2] = fixtureDef3;
+//            CircleShape c = new CircleShape();
+//            c.setRadius(0.3f);
+//            c.setPosition(new Vector2(0, -0.35f));
+//            FixtureDef fixtureDef2 = new FixtureDef();
+//            fixtureDef2.shape = c;
+//            fixtureDef2.isSensor = true;
+//            fixtureDefs[1] = fixtureDef2;
+//            
+//
+//            CircleShape c2 = new CircleShape();
+//            c2.setRadius(0.3f);
+//            c2.setPosition(new Vector2(0, 0.35f));
+//            FixtureDef fixtureDef3 = new FixtureDef();
+//            fixtureDef3.shape = c2;
+//            fixtureDef3.isSensor = true;
+//            fixtureDefs[2] = fixtureDef3;
         }
         else{
-                setTexture(new Texture(Gdx.app.getFiles().internal("undermonster1.png")));
+                setTexture(new Texture(Gdx.app.getFiles().internal("Monster2-01.png")));
                 fixtureDefs = new FixtureDef[1];
                 setSize(new Vector2(0.8f, 0.8f));
                 getBodyDef().position.set(initialPos);
