@@ -94,7 +94,7 @@ public class Monster extends GameObject implements Drawable{
 		speed_coeff = spcf;
 		initial = initialPos;
         if (level == 1){
-            setTexture(new Texture(Gdx.app.getFiles().internal("Monster1-01.png")));
+            setTexture(new Texture(Gdx.app.getFiles().internal("underMon2.png")));
             fixtureDefs = new FixtureDef[1];
             setSize(new Vector2(0.8f, 0.8f));
             getBodyDef().position.set(initialPos);
@@ -128,7 +128,7 @@ public class Monster extends GameObject implements Drawable{
 //            fixtureDefs[2] = fixtureDef3;
         }
         else{
-                setTexture(new Texture(Gdx.app.getFiles().internal("Monster2-01.png")));
+                setTexture(new Texture(Gdx.app.getFiles().internal("underMon.png")));
                 fixtureDefs = new FixtureDef[1];
                 setSize(new Vector2(0.8f, 0.8f));
                 getBodyDef().position.set(initialPos);
