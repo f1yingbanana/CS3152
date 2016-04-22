@@ -44,7 +44,7 @@ public class Monster extends GameObject implements Drawable{
 
 	// CONSTANTS FOR monster HANDLING
 	/** How far forward this monster can move in a single turn */
-	private static final float MOVE_SPEED = 1f;
+	private static final float MOVE_SPEED = 2.5f;
 		
 	// Instance Attributes
 	/** A unique identifier; used to decouple classes. */
@@ -94,7 +94,6 @@ public class Monster extends GameObject implements Drawable{
 		speed_coeff = spcf;
 		initial = initialPos;
         if (level == 1){
-        	System.out.println("this is over monster");
             setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
             fixtureDefs = new FixtureDef[3];
             setSize(new Vector2(0.8f, 1.2f));
@@ -148,17 +147,17 @@ public class Monster extends GameObject implements Drawable{
 		System.out.println("monster is created");
 		
 		System.out.println("Monster id: " + id );
-		for (int i = 0 ; i < vertices.size ; i ++ ) {
-			System.out.println(vertices.get(i).toString());
-		}
+//		for (int i = 0 ; i < vertices.size ; i ++ ) {
+//			System.out.println(vertices.get(i).toString());
+//		}
 		isLoop = (vertices.get(0).epsilonEquals(vertices.get(vertices.size-1),0.01f));
 		
 		
 		parametrizeVertices();
 		
-		System.out.println(orientationsOnPath);
-		
-		System.out.println(isLoop);
+//		System.out.println(orientationsOnPath);
+//		
+//		System.out.println(isLoop);
 	}
 	
 	/** 
@@ -183,6 +182,7 @@ public class Monster extends GameObject implements Drawable{
 			Vector2 currentVertex = vertices.get(i%(vertices.size - 1));
 			Vector2 nextVertex = vertices.get((i + 1)%(vertices.size - 1));
 			Move currentMove = moveBetweenTwoVertices(currentVertex, nextVertex);
+			System.out.println(this.id + currentMove.toString());
 			currentOrientation = orientationAfterMove(currentOrientation, 
 					previousMove, currentMove);
 			orientationsOnPath.add(currentOrientation);
@@ -217,7 +217,8 @@ public class Monster extends GameObject implements Drawable{
 			}
 		}
 		else {
-			if (nextVertex.x - currentVertex.x > .5f) {
+			System.out.println(nextVertex.toString() + " " + currentVertex.toString());
+			if (nextVertex.x - currentVertex.x < .5f) {
 				return Move.RIGHT;
 			}
 			else {
