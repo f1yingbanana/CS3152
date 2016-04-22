@@ -147,9 +147,9 @@ public class Monster extends GameObject implements Drawable{
 		System.out.println("monster is created");
 		
 		System.out.println("Monster id: " + id );
-//		for (int i = 0 ; i < vertices.size ; i ++ ) {
-//			System.out.println(vertices.get(i).toString());
-//		}
+		for (int i = 0 ; i < vertices.size ; i ++ ) {
+			System.out.println(vertices.get(i).toString());
+		}
 		isLoop = (vertices.get(0).epsilonEquals(vertices.get(vertices.size-1),0.01f));
 		
 		
@@ -218,7 +218,8 @@ public class Monster extends GameObject implements Drawable{
 		}
 		else {
 			System.out.println(nextVertex.toString() + " " + currentVertex.toString());
-			if (nextVertex.x - currentVertex.x < .5f) {
+			System.out.println(nextVertex.x - currentVertex.x);
+			if (nextVertex.x - currentVertex.x > .5f) {
 				return Move.RIGHT;
 			}
 			else {
