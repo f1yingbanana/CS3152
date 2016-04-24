@@ -35,6 +35,12 @@ public class GameModel implements Drawable {
   // Game state
   private GameState gameState = GameState.PLAYING;
   
+  // Current level
+  private int gameLevel;
+  
+  // Max game levels. Minimum level is 1.
+  private static final int MAX_LEVEL = 10;
+  
   /**
    * Initializer.
    */
@@ -207,6 +213,28 @@ public class GameModel implements Drawable {
 
   public List<ShipPiece> getShipPieces() {
 	return shipPieces;
+  }
+
+  /**
+   * @return the gameLevel
+   */
+  public int getGameLevel() {
+    return gameLevel;
+  }
+
+  /**
+   * Sets the game level to the given level. If the game level is out of range,
+   * then we do nothing and return false. Otherwise return true.
+   * @param gameLevel the gameLevel to set
+   */
+  public boolean setGameLevel(int gameLevel) {
+    if (gameLevel > MAX_LEVEL) {
+      return false;
+    }
+    
+    this.gameLevel = gameLevel;
+    
+    return true;
   }
   
 }

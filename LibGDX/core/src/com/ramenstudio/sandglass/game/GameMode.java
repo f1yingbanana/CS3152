@@ -3,18 +3,14 @@ package com.ramenstudio.sandglass.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.ramenstudio.sandglass.game.controller.GameController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.ramenstudio.sandglass.title.controller.UIController;
 import com.ramenstudio.sandglass.util.AbstractMode;
 
 /**
@@ -25,7 +21,7 @@ import com.ramenstudio.sandglass.util.AbstractMode;
  */
 public class GameMode extends AbstractMode implements Screen {
   // The game play controller that handles the basic logic of the game
-  private GameController gameplayController = new GameController();
+  private GameController gameplayController;
   
   // The game canvas.
   private GameCanvas canvas = new GameCanvas();
@@ -44,17 +40,21 @@ public class GameMode extends AbstractMode implements Screen {
   // Debug timer
   private int count = 0;
   
-  TiledMapRenderer tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
+  TiledMapRenderer tiledMapRenderer;
   
   /**
    * Initializes an instance of the game with all the controllers, model and
    * view canvas.
    */
-  public GameMode() {
+  public GameMode(int gameLevel) {
+    gameplayController = new GameController(gameLevel);
+    tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
   }
 
   @Override
   public void show() {
+    // UI needs to be shown.
+    gameplayController.uiController.acquireInputProcesser();
   }
 
   @Override
@@ -98,7 +98,13 @@ public class GameMode extends AbstractMode implements Screen {
     
     // If we want to reset, create a new game controller.
     if (gameplayController.needsReset) {
-      gameplayController = new GameController();
+      //
+      System.out.println("Resetting playing level to: " + gameplayController.getGameModel().getGameLevel());
+      gameplayController = new GameController(gameplayController.getGameModel().getGameLevel());
+    }
+    
+    if (gameplayController.needsMenu) {
+      screenListener.transitionToMode(this, 0);
     }
   }
 

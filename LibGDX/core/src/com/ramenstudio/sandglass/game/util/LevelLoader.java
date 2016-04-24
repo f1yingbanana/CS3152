@@ -34,7 +34,7 @@ public class LevelLoader {
   public TiledMap tiledMap;
   
   public Map<LayerKey, Array<GameObject>> loadLevel(int level) {
-	  return loadLevel("level"+level);
+	  return loadLevel("level"+level+".tmx");
   }
   
   public Map<LayerKey, Array<GameObject>> loadLevel(String filename) {

@@ -9,8 +9,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.view.ui.GameView;
 import com.ramenstudio.sandglass.game.view.ui.LevelCompleteView;
-import com.ramenstudio.sandglass.game.view.ui.OptionsView;
 import com.ramenstudio.sandglass.game.view.ui.PauseView;
+import com.ramenstudio.sandglass.util.view.ui.OptionsView;
 
 /**
  * The root controller for all UI-related functionalities in-game. This keeps
@@ -136,4 +136,12 @@ public class UIController extends AbstractController {
     stage.draw();
   }
 
+  /**
+   * Acquires the input processor for UI in this mode. Must be called after
+   * switching modes.
+   */
+  public void acquireInputProcesser() {
+    Gdx.input.setInputProcessor(stage);
+  }
+  
 }
