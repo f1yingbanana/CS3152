@@ -74,7 +74,15 @@
 </data>
  </layer>
  <objectgroup name="Monster">
-  <object id="132" name="1" gid="69" x="1408" y="1536" width="128" height="128"/>
+  <object id="132" name="1" gid="69" x="1408" y="1536" width="128" height="128">
+   <properties>
+    <property name="X" value="1408.00"/>
+    <property name="Y" value="1536.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="1"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="Path">
   <object id="135" name="1" x="1472" y="1472">

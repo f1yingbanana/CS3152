@@ -74,7 +74,15 @@
 </data>
  </layer>
  <objectgroup name="Monster">
-  <object id="137" name="1" gid="69" x="1408" y="1408" width="128" height="128"/>
+  <object id="137" name="1" gid="69" x="1408" y="1408" width="128" height="128">
+   <properties>
+    <property name="X" value="1408.00"/>
+    <property name="Y" value="1408.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="2"/>
+    <property name="spcf" value="0.8"/>
+   </properties>
+  </object>
   <object id="138" name="1" x="1472" y="1344">
    <polyline points="0,0 0,-512 768,-512 768,0"/>
   </object>

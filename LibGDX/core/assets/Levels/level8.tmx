@@ -74,10 +74,42 @@
 </data>
  </layer>
  <objectgroup name="Monster">
-  <object id="169" name="1" gid="69" x="2944" y="2048" width="128" height="128"/>
-  <object id="171" name="2" gid="59" x="384" y="512" width="128" height="128"/>
-  <object id="173" name="3" gid="59" x="1920" y="1536" width="128" height="128"/>
-  <object id="174" name="4" gid="59" x="1280" y="1664" width="128" height="128"/>
+  <object id="169" name="1" gid="69" x="2944" y="2048" width="128" height="128">
+   <properties>
+    <property name="X" value="2944.00"/>
+    <property name="Y" value="2048.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="2"/>
+    <property name="spcf" value="0.8"/>
+   </properties>
+  </object>
+  <object id="171" name="2" gid="59" x="384" y="512" width="128" height="128">
+   <properties>
+    <property name="X" value="384.00"/>
+    <property name="Y" value="512.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="1"/>
+    <property name="spcf" value="0.7"/>
+   </properties>
+  </object>
+  <object id="173" name="3" gid="59" x="1920" y="1536" width="128" height="128">
+   <properties>
+    <property name="X" value="1920.00"/>
+    <property name="Y" value="1536.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="1"/>
+    <property name="spcf" value="0.9"/>
+   </properties>
+  </object>
+  <object id="174" name="4" gid="59" x="1280" y="1664" width="128" height="128">
+   <properties>
+    <property name="X" value="1280.00"/>
+    <property name="Y" value="1664.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="1"/>
+    <property name="spcf" value="0.9"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="Path">
   <object id="170" name="1" x="3008" y="1984">
