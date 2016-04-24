@@ -21,7 +21,8 @@ public class TitleMode extends AbstractMode implements Screen {
   
   @Override
   public void show() {
-    // TODO Auto-generated method stub
+    // UI needs to be shown.
+    titleController.uiController.acquireInputProcesser();
   }
 
   @Override
@@ -34,6 +35,11 @@ public class TitleMode extends AbstractMode implements Screen {
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     
     titleController.draw();
+    
+    // Flags
+    if (titleController.levelSelected != null) {
+      screenListener.transitionToMode(this, titleController.levelSelected);
+    }
   }
 
   @Override

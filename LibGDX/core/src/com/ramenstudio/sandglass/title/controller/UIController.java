@@ -103,4 +103,13 @@ public class UIController {
   public void draw() {
     stage.draw();
   }
+  
+  /**
+   * Acquires the input processor for UI in this mode. Must be called after
+   * switching modes.
+   */
+  public void acquireInputProcesser() {
+    Gdx.input.setInputProcessor(stage);
+  }
+  
 }

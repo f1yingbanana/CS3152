@@ -29,13 +29,16 @@ public class LevelScrollView extends Table {
    * Adds a level with given information, and makes it visible.
    * @param level is the order of the level in all the levels. Starting from 1.
    * @param imageStyle is the string defining the preview image for the level.
+   * @return the newly created level preview view.
    */
-  public void addLevelView(int level, String imageStyle) {
+  public LevelPreviewView addLevelView(int level, String imageStyle) {
     final LevelPreviewView preview = new LevelPreviewView(cachedSkin, level, imageStyle);
     row();
     add(preview).size(600, 200).pad(40);
     preview.levelSelectButton.setSize(600, 200);
     levelPreviewViews.add(level - 1, preview);
+    
+    return preview;
   }
   
   

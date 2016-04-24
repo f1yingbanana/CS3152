@@ -4,7 +4,7 @@ package com.ramenstudio.sandglass.util;
  * An abstraction for mode that includes some required methods each mode should
  * adhere to.
  * 
- * @author flyingbanana
+ * @author Jiacong Xu
  */
 public abstract class AbstractMode {
   /**
@@ -12,4 +12,11 @@ public abstract class AbstractMode {
    * needs.
    */
   public abstract String[] getResourcePaths();
+  
+  /**
+   * A screen listener that is set after screen creation to provide helpful
+   * methods about screen switching.
+   */
+  public ScreenListener screenListener;
+  
 }

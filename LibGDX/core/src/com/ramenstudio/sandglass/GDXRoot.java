@@ -68,10 +68,7 @@ public class GDXRoot extends Game implements ScreenListener {
     // We create all the modes we need. A title mode, a game mode, and a loading
     // mode. We don't need to load anything yet, though.
     titleMode = new TitleMode();
-    // gameMode = new GameMode();
-    // loadingMode = new LoadingMode();
-    
-    // For now, we simply load the game play mode.
+    titleMode.screenListener = this;
     setApplicationMode(ApplicationMode.TITLE);
   }
 
@@ -90,10 +87,24 @@ public class GDXRoot extends Game implements ScreenListener {
     super.dispose();
   }
   
+  /**
+   * Gives up control on the current mode and transition to a new mode instead.
+   * The mode codes are follows:
+   * 0    go to menu
+   * 1+   go to that level
+   */
   @Override
-  public void exitScreen(Screen screen, int exitCode) {
+  public void transitionToMode(Screen screen, int modeCode) {
     // When the given mode wants to exit the mode. This happens when title chose
     // a level to play on, or when game mode is done, or when loading is done.
-    
+    if (modeCode == 0) {
+      setApplicationMode(ApplicationMode.TITLE);
+    } else {
+      if (gameMode != null)
+        gameMode.dispose();
+      gameMode = new GameMode(modeCode);
+      gameMode.screenListener = this;
+      setApplicationMode(ApplicationMode.GAME);
+    }
   }
 }
