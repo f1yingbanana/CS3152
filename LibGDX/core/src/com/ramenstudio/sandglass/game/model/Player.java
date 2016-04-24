@@ -21,6 +21,9 @@ public class Player extends GameObject implements Drawable {
 
 	/** The Player's sprite. */
 	private FilmStrip playerSprite;
+	
+	/**the number of flips the player has in this level*/
+	private int flips = 10;
     
     /** The direction the player is facing (for drawing)
      *	left is -1, right is 1  
@@ -65,6 +68,26 @@ public class Player extends GameObject implements Drawable {
 		fixtureDefs[2] = fixtureDef3;
 	}
 
+	/**@return the number of flips we have left in this level**/
+	  public int getFlips(){
+		  return flips;
+	  }
+	  
+	  /**increment the number of flips*/
+	  public void addFlip(){
+		  flips++;
+	  }
+	  
+	  /**decrement the number of flips*/
+	  public void subtractFlip(){
+		  flips--;
+	  }
+	  
+	  /**@param s the new number of flips*/
+	  public void setFlips(int s){
+		  flips = s;
+	  }
+	
 	/**
 	 * Sets the image texture for this player
 	 * 

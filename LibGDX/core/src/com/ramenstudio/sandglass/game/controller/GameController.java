@@ -224,7 +224,6 @@ public class GameController extends AbstractController implements ContactListene
     
   //update game model
     gameModel.setWorldPosition(!playerController.isUnder());
-    gameModel.incrementTime();
     
     //if(gameModel.allPiecesCollected()){
     //	gameModel.getGate().setOpen();
@@ -237,9 +236,7 @@ public class GameController extends AbstractController implements ContactListene
     
     stepPhysics(dt);
     
-    if (/**gameModel.getGate().isOpen() && touchingGate ||*/
-    		gameModel.outOfTime() ||
-    		playerController.isReset()){
+    if (playerController.isReset()){
     	reset();
     }
   }
@@ -307,7 +304,11 @@ public void beginContact(Contact contact) {
     
     if ((firstOne instanceof Player && secondOne instanceof Monster) ||
         (secondOne instanceof Player && firstOne instanceof Monster)) {
-      gameModel.setGameState(GameState.LOST);
+      if (playerController.getPlayer().getFlips() <= 0){
+    	  gameModel.setGameState(GameState.LOST);
+      } else {
+    	  playerController.getPlayer().subtractFlip();
+      }
     }
     
     if (firstOne instanceof Player &&
