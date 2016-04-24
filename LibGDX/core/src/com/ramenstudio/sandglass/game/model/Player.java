@@ -21,15 +21,11 @@ public class Player extends GameObject implements Drawable {
 
 	/** The Player's sprite. */
 	private FilmStrip playerSprite;
-	
-	// Player Frame Sprite numbers
-	/** The frame number for the beginning of the animation */
-    public static final int IMG_START = 0;
     
     /** The direction the player is facing (for drawing)
      *	left is -1, right is 1  
      */
-    public float direction;
+//    public float direction;
 
 	/**
 	 * Creates the player at the given initial position.
@@ -41,9 +37,7 @@ public class Player extends GameObject implements Drawable {
 
 		fixtureDefs = new FixtureDef[3];
 
-		Texture player = new Texture(Gdx.files.internal("walkspritesheet.png"));
-		playerSprite = new FilmStrip(player,1,8,8);
-		setTexture(player);
+//		setTexture(player);
 		setSize(new Vector2(0.8f, 1.5f));
 		getBodyDef().position.set(initialPos);
 		getBodyDef().type = BodyDef.BodyType.DynamicBody;
@@ -81,7 +75,6 @@ public class Player extends GameObject implements Drawable {
 	 */
 	public void setFilmStrip(FilmStrip value) {
 		playerSprite = value;
-		playerSprite.setFrame(IMG_START);
 	}
 	
 	/**
@@ -102,12 +95,20 @@ public class Player extends GameObject implements Drawable {
 		playerSprite.setFrame(frame);
 	}
 
+	public FilmStrip getPlayerSprite() {
+		return playerSprite;
+	}
+
+	public void setPlayerSprite(FilmStrip playerSprite) {
+		this.playerSprite = playerSprite;
+	}
+
 	@Override
 	public void draw(GameCanvas canvas) {
 		Vector2 size = getSize();
-		if (direction == 1) {
-			size.x *= -1;
-		}
+//		if (direction == 1) {
+//			size.x *= -1;
+//		}
 		canvas.draw(playerSprite, getPosition().add(getSize().cpy().scl(-0.5f)), size,
 				new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 	}

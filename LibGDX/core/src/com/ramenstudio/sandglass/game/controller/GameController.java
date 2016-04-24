@@ -1,23 +1,42 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
+import com.ramenstudio.sandglass.game.controller.UIController.UIState;
 import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
+import com.ramenstudio.sandglass.game.model.Gate;
+import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.ShipPiece;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
+import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
+import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.TurnTile;
+import com.ramenstudio.sandglass.game.model.WallTile;
 
 /**
  * This takes care of the game initialization, maintains update and drawing
@@ -25,7 +44,10 @@ import com.ramenstudio.sandglass.game.model.GameObject;
  * 
  * @author Jiacong Xu
  */
-public class GameController extends AbstractController implements PhysicsDelegate {
+public class GameController extends AbstractController implements ContactListener {
+  
+  /** If this flag is true, we need a new game controller. */
+  public boolean needsReset = false;
 
   // The physics world object
   public World world = new World(new Vector2(0, -9.8f), true);
@@ -48,6 +70,9 @@ public class GameController extends AbstractController implements PhysicsDelegat
   // The place to store all top-level game related data.
   private GameModel gameModel = new GameModel();
   
+  //Is the player collided with the gate?
+  private boolean touchingGate = false;
+  
   // The player controller for the game
   private PlayerController playerController;
 
@@ -58,24 +83,49 @@ public class GameController extends AbstractController implements PhysicsDelegat
   // controller.
   public UIController uiController = new UIController();
   
+  private Array<MonsterController> monsterController = new Array<MonsterController>();
+  
   public LevelLoader loader = new LevelLoader();
   
-  private Map<LevelLoader.LayerKey, List<GameObject>> mapObjects;
+  private Map<LevelLoader.LayerKey, Array<GameObject>> mapObjects;
+  
   
   public GameController() {
-    playerController = new PlayerController();
+	mapObjects = loader.loadLevel("newLevel.tmx");
+	Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
+    playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
     
-    mapObjects = loader.loadLevel("example.tmx");
+    Array<GameObject> mArray = (Array<GameObject>) 
+            mapObjects.get(LevelLoader.LayerKey.MONSTER);
+    Gate gate = (Gate) ((Array<GameObject>) 
+    		mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
+    Array<GameObject> ship = (Array<GameObject>) 
+    		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
+    List<ShipPiece> shipList = gameModel.getShipPieces();
+    for (GameObject s: ship){
+    	shipList.add((ShipPiece) s);
+    }
+    
+    gameModel.setNumberOfPieces(ship.size);
+    gameModel.setGate(gate);
+      
+    for (GameObject m: mArray){
+        monsterController.add(new MonsterController((Monster) m));
+    }
     
     // Set up the world!
-    objectSetup(this);
+    objectSetup(world);
     
     // Set up UI callbacks
     uiController.gameView.pauseButton.addListener(pauseButtonCallback);
     uiController.pauseView.resumeButton.addListener(resumeButtonCallback);
     uiController.pauseView.restartButton.addListener(restartButtonCallback);
     uiController.pauseView.mainMenuButton.addListener(mainMenuButtonCallback);
+    uiController.levelCompleteView.restartButton.addListener(restartButtonCallback);
+    uiController.levelCompleteView.mainMenuButton.addListener(mainMenuButtonCallback);
+    uiController.levelFailedView.restartButton.addListener(restartButtonCallback);
+    uiController.levelFailedView.mainMenuButton.addListener(mainMenuButtonCallback);
   }
   
   /**
@@ -125,20 +175,47 @@ public class GameController extends AbstractController implements PhysicsDelegat
   };
   
   @Override
-  public void objectSetup(PhysicsDelegate handler) {
-    List<GameObject> mapTiles = mapObjects.get(LevelLoader.LayerKey.GROUND);
+  public void objectSetup(World world) {
+    Array<GameObject> mapTiles = mapObjects.get(LevelLoader.LayerKey.GROUND);
     
     for (GameObject o : mapTiles) {
-      activatePhysics(handler, o);
+      activatePhysics(world, o);
     }
     
-    playerController.objectSetup(handler);
+    playerController.objectSetup(world);
     cameraController.setTarget(playerController.getPlayer());
-    cameraController.objectSetup(handler);
+    cameraController.objectSetup(world);
+    
+    for (MonsterController m: monsterController){
+    	m.objectSetup(world);
+    }
+
+    for (ShipPiece c : gameModel.getShipPieces()) {
+    	activatePhysics(world, c);
+    }
+    
+    activatePhysics(world, gameModel.getGate());
+    
+    world.setContactListener(this);
   }
   
   @Override
   public void update(float dt) {
+    uiController.update(dt);
+    
+    switch (gameModel.getGameState()) {
+    case LOST:
+      uiController.setGameState(UIState.LOST);
+      return;
+    case PAUSED:
+      return;
+    case PLAYING:
+      break;
+    case WON:
+      uiController.setGameState(UIState.WON);
+      return;
+    }
+    
     cameraController.update(dt);
     // Order matters. Must call update BEFORE rotate on cameraController.
     if (playerController.getRotateAngle() != 0f) {
@@ -146,21 +223,32 @@ public class GameController extends AbstractController implements PhysicsDelegat
     }
     
     playerController.update(dt);
-    uiController.update(dt);
+//    System.out.println(playerController.getPlayer().getPosition().toString);
+    
+  //update game model
+    gameModel.setWorldPosition(!playerController.isUnder());
+    gameModel.incrementTime();
+    
+    //if(gameModel.allPiecesCollected()){
+    //	gameModel.getGate().setOpen();
+    //}
+    
+    for (MonsterController m: monsterController){
+        m.update(dt);
+    }
+    
     
     stepPhysics(dt);
     
-    if (playerController.isReset()) {
-      reset();
+    if (/**gameModel.getGate().isOpen() && touchingGate ||*/
+    		gameModel.outOfTime() ||
+    		playerController.isReset()){
+    	reset();
     }
   }
   
   private void reset() {
-    world.dispose();
-    world = new World(new Vector2(0, -9.8f), true);
-    playerController = new PlayerController();
-    gameModel = new GameModel();
-    objectSetup(this);
+    needsReset = true;
   }
   
   /**
@@ -178,8 +266,14 @@ public class GameController extends AbstractController implements PhysicsDelegat
 
   @Override
   public void draw(GameCanvas canvas) {
+    // Draw a background image
     playerController.draw(canvas);
     cameraController.draw(canvas);
+    
+    for (MonsterController m: monsterController){
+        m.draw(canvas);
+    }
+    
     gameModel.draw(canvas);
   }
   
@@ -188,37 +282,6 @@ public class GameController extends AbstractController implements PhysicsDelegat
    */
   public Matrix4 world2ScreenMatrix() {
     return cameraController.world2ScreenMatrix();
-  }
-  
-  
-  @Override
-  public Body addBody(BodyDef definition) {
-    return world.createBody(definition);
-  }
-
-  @Override
-  public Vector2 getGravity() {
-    return world.getGravity().cpy();
-  }
-  
-  /**
-   * @return a copy of the current gravity.
-   */
-  @Override
-  public void setGravity(Vector2 gravity) {
-    world.setGravity(gravity);
-  }
-
-  @Override
-  public void rayCast(RayCastCallback callback, Vector2 point1, 
-    Vector2 point2) {
-    world.rayCast(callback, point1, point2);
-  }
-
-  @Override
-  public void QueryAABB(QueryCallback callback, float lowerX, float lowerY,
-    float upperX, float upperY) {
-    world.QueryAABB(callback, lowerX, lowerY, upperX, upperY);
   }
 
   /**
@@ -235,4 +298,71 @@ public class GameController extends AbstractController implements PhysicsDelegat
   public CameraController getCameraController() {
     return cameraController;
   }
+
+@Override
+public void beginContact(Contact contact) {
+    if(contact.getFixtureA().getBody().getUserData() == Player.class  &&
+            contact.getFixtureB().getBody().getUserData() == Gate.class){
+          touchingGate = true;
+    }
+    
+    GameObject firstOne = (GameObject) contact.getFixtureA().getBody().getUserData();
+    GameObject secondOne = (GameObject) contact.getFixtureB().getBody().getUserData();
+    
+    if ((firstOne instanceof Player && secondOne instanceof Monster) ||
+        (secondOne instanceof Player && firstOne instanceof Monster)) {
+      gameModel.setGameState(GameState.LOST);
+    }
+    
+    if (firstOne instanceof Player &&
+    		secondOne instanceof ShipPiece) {
+    	ShipPiece secondShipPiece = (ShipPiece) secondOne;
+    	if (!secondShipPiece.getIsCollected()) {
+    		secondShipPiece.setCollected();
+    		gameModel.collectPiece();
+    	}
+    } else if (firstOne instanceof ShipPiece &&
+    		secondOne instanceof Player) {
+    	ShipPiece firstShipPiece = (ShipPiece) firstOne;
+    	if (!firstShipPiece.getIsCollected()) {
+    		firstShipPiece.setCollected();
+    		gameModel.collectPiece();
+    	}
+    }
+    
+    if (gameModel.allPiecesCollected()) {
+    	gameModel.getGate().setAllPiecesCollected(true);
+    }
+    
+    if ((firstOne instanceof Player && secondOne instanceof Gate) ||
+        (firstOne instanceof Gate && secondOne instanceof Player)) {
+      if (gameModel.allPiecesCollected()) {
+        // We won!
+        gameModel.setGameState(GameState.WON);
+    	}
+    }
+    
+}
+
+
+
+@Override
+public void endContact(Contact contact) {
+    // TODO Auto-generated method stub
+    if (contact.getFixtureB().getUserData().getClass()==Player.class &&
+            contact.getFixtureA().getUserData().getClass()==Monster.class){
+    }
+}
+
+@Override
+public void preSolve(Contact contact, Manifold oldManifold) {
+    // TODO Auto-generated method stub
+    
+}
+
+@Override
+public void postSolve(Contact contact, ContactImpulse impulse) {
+	    
+}
+
 }

@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.ramenstudio.sandglass.game.model.GameCamera;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -13,23 +15,28 @@ import com.ramenstudio.sandglass.game.view.GameCanvas;
  * A viewCamera controller that supports complex behavior of the viewCamera, like
  * smooth follow, panning to important objects temporarily, position weighting,
  * etc.
- * 
- * @author flyingbanana
  */
 public class CameraController extends AbstractController {
 
-	// The game object to follow
+	/** The game object to follow. */
 	private GameObject target;
 
-	// The underlying math-doing viewCamera.
+	/** The player object to follow. */
+	private GameObject player;
+	
+	private boolean tracking = false;
+	
+	/** The underlying math-doing viewCamera. */
 	private GameCamera viewCamera;
 
 
-	// The position used to store the position to move the viewCamera to. Due to
-	// orthogonal viewCamera only offers translate instead of set position, we can't
-	// initialize box2d body with initial position, but set it afterwards.
+	/** The position used to store the position to move the viewCamera to. Due to
+	 orthogonal viewCamera only offers translate instead of set position, we can't
+	 initialize box2d body with initial position, but set it afterwards. */
 	private Vector2 initPos;
 
+	// Rotation stuff
+	
 	/** The current rotation angle goal. */
 	private float goal;
 
@@ -48,15 +55,35 @@ public class CameraController extends AbstractController {
 
 	// For debugging purposes
 	private int count = 0;
-
+	
+	/** Used to detect if the view is sideways or not */
 	private boolean okeydokey = false;
+	
+	// Zoom stuff
+	
+	/** The original size of the Camera */
+	private Vector2 originalSize;
+	
+	/** The current zoom scale factor of the camera */
+	private float zoomScale = 1f;
+	
+	/** Used to provide drag to the camera as it is zooming in/out */
+	private final float slowFactor = .05f;
+	
+	/** The maximum zoom of the camera */
+	private final float maxZoom = 2f;
+	
+	/** Used to store whether the camera should be currently zooming in or zooming out */
+	private boolean zoomingOut = true;
+	
 
 	/**
 	 * Creates a viewCamera controller and initializes the game viewCamera.
 	 */
 	public CameraController() {
 		float ratio = (float)Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-		viewCamera = new GameCamera(new Vector2(9 * ratio, 9));
+		originalSize = new Vector2(9 * ratio, 9);
+		viewCamera = new GameCamera(originalSize);
 	}
 
 	/**
@@ -85,16 +112,6 @@ public class CameraController extends AbstractController {
 		target = targetObject;
 	}
 
-	//  /**
-	//   * Sets the smoothing factor for the viewCamera.
-	//   * 
-	//   * @param factor	the smoothing factor
-	//   * 				Must be between 0 and 1 inclusive
-	//   */
-	//  public void setSmoothing(float f) {
-	//    factor = f;
-	//  }
-
 	/**
 	 * Rotates the viewCamera view given the amount, with an option to animate.
 	 * 
@@ -122,12 +139,14 @@ public class CameraController extends AbstractController {
 			realCamera.viewportWidth = viewportHeight;
 			okeydokey = !okeydokey;
 		}
-		//      else {
-			//          goal = goal + angle;
-		//          instant = false;
-		//      }
 	}
 
+	/**
+	 * Helper method that's also used in GameController to
+	 * swap the width and height of the camera. This has to be done 
+	 * every frame because, when the camera is rotated, the render
+	 * and actual view of the screen differ.
+	 */
 	public void swapCameraDimensions() {
 		if (okeydokey) {
 			OrthographicCamera realCamera = viewCamera.getCamera();
@@ -136,6 +155,26 @@ public class CameraController extends AbstractController {
 			realCamera.viewportHeight = viewportWidth;
 			realCamera.viewportWidth = viewportHeight;
 		}
+	}
+	
+	public void doZoomInOrOut() {
+		if (zoomingOut) {
+			zoomScale += slowFactor*(maxZoom - zoomScale)/maxZoom;
+			// Don't track the player
+//			player = target;
+//			GameObject center = new GameObject();
+//			center.getBodyDef().position.set(new Vector2(0,0));
+//			center.getBodyDef().type = BodyDef.BodyType.StaticBody;
+//			target = center;
+			tracking = false;
+//			viewCamera.setPosition(new Vector2(14,18));
+		}
+		else {
+			zoomScale -= slowFactor*(zoomScale - 1f)/1f;
+			tracking = true;
+		}
+		// Apply the zoomScale
+		viewCamera.getCamera().zoom = zoomScale;
 	}
 
 	@Override
@@ -152,14 +191,19 @@ public class CameraController extends AbstractController {
 				viewCamera.setRotation(newAngle);
 			}
 		}
-		Vector2 targPos = target.getPosition();
-		Vector2 camPos = viewCamera.getPosition();
-		if (targPos != camPos) {
-			float x = (targPos.x - camPos.x)*translateTime + camPos.x;
-			float y = (targPos.y - camPos.y)*translateTime + camPos.y;
-			Vector2 deltaPos = new Vector2(x,y);
-			viewCamera.setPosition(deltaPos);
+		if (tracking) {
+			Vector2 targPos = target.getPosition();
+			Vector2 camPos = viewCamera.getPosition();
+			if (targPos != camPos) {
+				float x = (targPos.x - camPos.x)*translateTime + camPos.x;
+				float y = (targPos.y - camPos.y)*translateTime + camPos.y;
+				Vector2 deltaPos = new Vector2(x,y);
+				viewCamera.setPosition(deltaPos);
+			}
+		} else {
+			viewCamera.setPosition(new Vector2(14,18));
 		}
+		
 
 		swapCameraDimensions();
 
@@ -169,18 +213,23 @@ public class CameraController extends AbstractController {
 			count = 0;
 			rotate(90,false);
 		}
+		
+		if (InputController.getInstance().didJustPressedZoom()) {
+			zoomingOut = !zoomingOut;
+		}
+		
+		doZoomInOrOut();
 	}
 
 	@Override
 	public void draw(GameCanvas canvas) {}
 
 	@Override
-	public void objectSetup(PhysicsDelegate handler) {
+	public void objectSetup(World world) {
 		// Creates the viewCamera object.
-		viewCamera.setBody(handler.addBody(viewCamera.getBodyDef()));
+		viewCamera.setBody(world.createBody(viewCamera.getBodyDef()));
 		viewCamera.setPosition(initPos);
 		goal = 0;
-		//    initPos = null;
 	}
 
 	/**

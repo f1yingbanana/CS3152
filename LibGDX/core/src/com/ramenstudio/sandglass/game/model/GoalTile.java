@@ -4,7 +4,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
-public class GoalTile extends GameObject implements GameTile{
+public class GoalTile extends GameObject {
 
 	private PolygonShape thePolygonShape;
 	private FixtureDef theFixtureDef;
@@ -17,7 +17,7 @@ public class GoalTile extends GameObject implements GameTile{
 
 		PolygonShape shape = new PolygonShape();
 		thePolygonShape = shape;
-		fixtureDef = new FixtureDef();
+		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.isSensor = true;
 		shape.setAsBox(0.5f, 0.5f);
 		fixtureDef.shape = shape;
@@ -26,27 +26,22 @@ public class GoalTile extends GameObject implements GameTile{
 		height = .5f;
 	}
 	
-	@Override
 	public boolean isFlippable() {
 		return false;
 	}
 
-	@Override
 	public boolean isGround() {
 		return false;
 	}
 	
-	@Override
 	public boolean isGoal() {
 		return true;
 	}
 
-	@Override
 	public float getWidth() {
 		return width;
 	}
 
-	@Override
 	public float getHeight() {
 		return height;
 	}

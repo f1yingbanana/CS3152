@@ -23,6 +23,7 @@ public class GameView extends Table {
     this.setFillParent(true);
     
     pauseButton = new TextButton("PAUSE", skin);
-    add(pauseButton).prefSize(120, 50).expand().top().right().pad(20);
+    add(pauseButton).prefSize(120, 50).expand().top().right().padLeft(128);
   }
+  
 }
