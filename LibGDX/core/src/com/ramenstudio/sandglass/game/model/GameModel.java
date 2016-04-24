@@ -17,7 +17,6 @@ public class GameModel implements Drawable {
   private int pieces;
   //number of pieces the player has collected in this level
   private int collected_pieces;
-  //amount of time remaining in overworld
   //flag for whether or not we are in the overworld
   private boolean in_overworld;
 
@@ -25,6 +24,8 @@ public class GameModel implements Drawable {
   private Gate gate;
   //array of objects in this level (land, resources, etc)
   private List<ShipPiece> shipPieces = new ArrayList<ShipPiece>();
+  //array of resources in this level
+  private List<Resource> resources = new ArrayList<Resource>();
   
   // Game state
   private GameState gameState = GameState.PLAYING;
@@ -126,5 +127,14 @@ public class GameModel implements Drawable {
 	return shipPieces;
   }
   
+  /**get list of resources*/
+  public List<Resource> getResources() {
+	  return resources;
+  }
+  
+  /**set the list of resources*/
+  public void setResources(List<Resource> r){
+	  resources = r;
+  }
 }
 

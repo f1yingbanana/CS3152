@@ -26,6 +26,7 @@ import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.Resource;
 import com.ramenstudio.sandglass.game.model.ShipPiece;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
@@ -324,6 +325,22 @@ public void beginContact(Contact contact) {
     	if (!firstShipPiece.getIsCollected()) {
     		firstShipPiece.setCollected();
     		gameModel.collectPiece();
+    	}
+    }
+    
+    if (firstOne instanceof Player &&
+    		secondOne instanceof Resource) {
+    	Resource secondResource = (Resource) secondOne;
+    	if (!secondResource.getIsCollected()) {
+    		secondResource.setCollected();
+    		playerController.getPlayer().addFlip();
+    	}
+    } else if (firstOne instanceof Resource &&
+    		secondOne instanceof Player) {
+    	Resource firstResource = (Resource) firstOne;
+    	if (!firstResource.getIsCollected()) {
+    		firstResource.setCollected();
+    		playerController.getPlayer().addFlip();
     	}
     }
     
