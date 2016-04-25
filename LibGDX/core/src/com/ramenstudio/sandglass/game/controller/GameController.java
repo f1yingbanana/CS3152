@@ -326,19 +326,31 @@ public class GameController extends AbstractController implements ContactListene
 		if ((firstOne instanceof Player && secondOne instanceof Monster) ||
 				(secondOne instanceof Player && firstOne instanceof Monster)) {
 
+			Monster theMonster;
+
+			if (secondOne instanceof Monster) {
+				theMonster = (Monster)secondOne;
+			} else {
+				theMonster = (Monster)firstOne;
+			}
+
 			//TODO
 			// monster level 1: deducting sand
 			// monster level 2: killing you
 			// monster level 3: inducing flip
 
-			//TODO
-			// apply force when contact
-
-			if (playerController.getPlayer().getFlips() <= 0){
-				gameModel.setGameState(GameState.LOST);
-			} else {
+			if (theMonster.monsterLevel == MonsterLevel.KILL) {
+				getGameModel().setGameState(GameState.LOST);
+			}
+			else if (theMonster.monsterLevel == MonsterLevel.DEDUCTFLIPS) {
 				playerController.getPlayer().subtractFlip();
 			}
+			else if (theMonster.monsterLevel == MonsterLevel.MAKEFLIP) {
+				playerController.setMustFlip();
+			}
+
+			//TODO
+			// apply force when contact
 		}
 
 		if (firstOne instanceof Player &&
