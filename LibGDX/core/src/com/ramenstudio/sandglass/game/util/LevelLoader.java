@@ -51,6 +51,7 @@ public class LevelLoader {
     Array<GameObject> Tilearr = parseGround(groundLayer, "Collision");
     Array<GameObject> playerTile = parseObject(objectLayer, "type", "player");
     MapLayer centerLayer = (MapLayer) tiledMap.getLayers().get("Center");
+    System.out.println(centerLayer==null);
 	MapObject center = centerLayer.getObjects().get(0);
 	
 	maxFlip = getFlipNumber(center);
@@ -77,12 +78,12 @@ public class LevelLoader {
   /**@return the number of flips allowed for the level indicated by n
    * @param filename level file name*/
   public int getFlipNumber(MapObject center){
-	  return Integer.parseInt((String)center.getProperties().get("maxFlip"));
+	  return Integer.parseInt((String)center.getProperties().get("maxFlips"));
   }
   
   public Vector2 getCenter(MapObject center){
-	  return new Vector2(Integer.parseInt((String)center.getProperties().get("X")),
-			  Integer.parseInt((String)center.getProperties().get("Y")));
+	  return new Vector2(Float.parseFloat((String)center.getProperties().get("X")),
+			  Float.parseFloat((String)center.getProperties().get("Y")));
   }
   
   /**

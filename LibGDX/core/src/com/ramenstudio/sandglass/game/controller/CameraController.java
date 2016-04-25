@@ -94,6 +94,8 @@ public class CameraController extends AbstractController {
 	public CameraController(Vector2 initialPosition) {
 		this();
 		initPos = initialPosition.cpy();
+		tracking = false;
+		zoomingOut = true;
 	}
 
 	/**
@@ -167,7 +169,7 @@ public class CameraController extends AbstractController {
 //			center.getBodyDef().type = BodyDef.BodyType.StaticBody;
 //			target = center;
 			tracking = false;
-//			viewCamera.setPosition(new Vector2(14,18));
+			viewCamera.setPosition(initPos);
 		}
 		else {
 			zoomScale -= slowFactor*(zoomScale - 1f)/1f;
@@ -201,7 +203,7 @@ public class CameraController extends AbstractController {
 				viewCamera.setPosition(deltaPos);
 			}
 		} else {
-			viewCamera.setPosition(new Vector2(14,18));
+			viewCamera.setPosition(initPos);
 		}
 		
 

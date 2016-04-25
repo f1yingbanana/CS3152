@@ -82,7 +82,7 @@
     <property name="X" value="1540.00"/>
     <property name="Y" value="1024.00"/>
     <property name="angle" value="NORTH"/>
-    <property name="level" value="2"/>
+    <property name="level" value="KILL"/>
     <property name="spcf" value="0.5"/>
    </properties>
   </object>

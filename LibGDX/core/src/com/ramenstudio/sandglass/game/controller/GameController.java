@@ -86,9 +86,11 @@ public class GameController extends AbstractController implements ContactListene
     getGameModel().setGameLevel(gameLevel);
     mapObjects = loader.loadLevel(gameLevel);
     Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
-	player.setFlips(30);
+	player.setFlips(loader.maxFlip);
+	Vector2 cameraCenter = loader.center;
+	System.out.println(cameraCenter.toString());
     playerController = new PlayerController(player);
-    cameraController = new CameraController(new Vector2(5, 5));
+    cameraController = new CameraController(cameraCenter);
 
     Array<GameObject> mArray = (Array<GameObject>) 
         mapObjects.get(LevelLoader.LayerKey.MONSTER);

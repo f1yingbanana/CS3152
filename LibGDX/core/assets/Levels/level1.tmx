@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="122">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="123">
  <tileset firstgid="1" source="newTile.tsx"/>
  <layer name="Ground" width="32" height="32">
   <properties>
@@ -78,4 +78,13 @@
  </layer>
  <objectgroup name="Monster"/>
  <objectgroup name="Path"/>
+ <objectgroup name="Center">
+  <object id="122" name="center" x="1792" y="1152" width="128" height="128">
+   <properties>
+    <property name="X" value="14"/>
+    <property name="Y" value="9"/>
+    <property name="maxFlips" value="20"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>
