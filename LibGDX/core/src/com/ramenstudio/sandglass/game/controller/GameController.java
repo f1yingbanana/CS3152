@@ -25,6 +25,7 @@ import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Monster.MonsterLevel;
 
 /**
  * This takes care of the game initialization, maintains update and drawing
@@ -318,10 +319,22 @@ public class GameController extends AbstractController implements ContactListene
     if ((firstOne instanceof Player && secondOne instanceof Monster) ||
         (secondOne instanceof Player && firstOne instanceof Monster)) {
     	
+    	Monster theMonster;
+    	
+    	if (secondOne instanceof Monster) {
+    		theMonster = (Monster)secondOne;
+    	} else {
+    		theMonster = (Monster)firstOne;
+    	}
+    	
     	//TODO
     	// monster level 1: deducting sand
     	// monster level 2: killing you
     	// monster level 3: inducing flip
+    	
+    	if (theMonster.monsterLevel == MonsterLevel.KILL) {
+    		
+    	}
     	
     	//TODO
     	// apply force when contact
