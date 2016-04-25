@@ -87,13 +87,14 @@ public class CameraController extends AbstractController {
 	}
 
 	/**
-	 * Creates a viewCamera controller with the given starting position.
+	 * Creates a viewCamera controller with the given starting position and zoom.
 	 * 
 	 * @param initialPosition is the position where the viewCamera is created.
 	 */
-	public CameraController(Vector2 initialPosition) {
+	public CameraController(Vector2 initialPosition, float zoom) {
 		this();
 		initPos = initialPosition.cpy();
+		viewCamera.getCamera().zoom = zoom;
 		tracking = false;
 		zoomingOut = true;
 	}
@@ -163,13 +164,8 @@ public class CameraController extends AbstractController {
 		if (zoomingOut) {
 			zoomScale += slowFactor*(maxZoom - zoomScale)/maxZoom;
 			// Don't track the player
-//			player = target;
-//			GameObject center = new GameObject();
-//			center.getBodyDef().position.set(new Vector2(0,0));
-//			center.getBodyDef().type = BodyDef.BodyType.StaticBody;
-//			target = center;
 			tracking = false;
-			viewCamera.setPosition(initPos);
+//			viewCamera.setPosition(initPos);
 		}
 		else {
 			zoomScale -= slowFactor*(zoomScale - 1f)/1f;
@@ -193,34 +189,34 @@ public class CameraController extends AbstractController {
 				viewCamera.setRotation(newAngle);
 			}
 		}
-		if (tracking) {
-			Vector2 targPos = target.getPosition();
-			Vector2 camPos = viewCamera.getPosition();
-			if (targPos != camPos) {
-				float x = (targPos.x - camPos.x)*translateTime + camPos.x;
-				float y = (targPos.y - camPos.y)*translateTime + camPos.y;
-				Vector2 deltaPos = new Vector2(x,y);
-				viewCamera.setPosition(deltaPos);
-			}
-		} else {
-			viewCamera.setPosition(initPos);
-		}
+//		if (tracking) {
+//			Vector2 targPos = target.getPosition();
+//			Vector2 camPos = viewCamera.getPosition();
+//			if (targPos != camPos) {
+//				float x = (targPos.x - camPos.x)*translateTime + camPos.x;
+//				float y = (targPos.y - camPos.y)*translateTime + camPos.y;
+//				Vector2 deltaPos = new Vector2(x,y);
+//				viewCamera.setPosition(deltaPos);
+//			}
+//		} else {
+//			viewCamera.setPosition(initPos);
+//		}
 		
 
 		swapCameraDimensions();
 
 		// TESTING
-		count++;
-		if (Gdx.input.isKeyPressed(Input.Keys.R) && count > 10) {
-			count = 0;
-			rotate(90,false);
-		}
+//		count++;
+//		if (Gdx.input.isKeyPressed(Input.Keys.R) && count > 10) {
+//			count = 0;
+//			rotate(90,false);
+//		}
+//		
+//		if (InputController.getInstance().didJustPressedZoom()) {
+//			zoomingOut = !zoomingOut;
+//		}
 		
-		if (InputController.getInstance().didJustPressedZoom()) {
-			zoomingOut = !zoomingOut;
-		}
-		
-		doZoomInOrOut();
+//		doZoomInOrOut();
 	}
 
 	@Override
