@@ -53,7 +53,6 @@ public class LevelLoader {
 		Array<GameObject> Tilearr = parseGround(groundLayer, "Collision");
 		Array<GameObject> playerTile = parseObject(objectLayer, "type", "player");
 		MapLayer centerLayer = (MapLayer) tiledMap.getLayers().get("Center");
-		System.out.println(centerLayer==null);
 		MapObject center = centerLayer.getObjects().get(0);
 
 		maxFlip = getFlipNumber(center);
@@ -191,7 +190,6 @@ public class LevelLoader {
 							if (value.equals("player")){
 								Player player = new Player(new Vector2(i+0.5f, j+0.5f));
 								objArr.add(player); 
-								System.out.println("player created at " + i + ", " + j);
 							}
 							else if (value.equals("gate")){
 								Gate gate = new Gate(new Vector2(i+0.5f, j+0.5f));
@@ -228,8 +226,6 @@ public class LevelLoader {
 			Array<Vector2> vertices = new Array<Vector2>();
 			float[] vert = p.getPolyline().getVertices();
 			for (int i = 0 ; i < vert.length-1 ; i = i + 2){
-				//		  		System.out.println(p.getName() +": "+ i);
-				//		  		System.out.println(vert[i]/128 + "," + vert[i+1]/128);
 				Vector2 v = new Vector2((float) Math.round(vert[i]/128)+initPos.x, 
 						(float) Math.round(vert[i+1]/128)+initPos.y);
 				//		  		System.out.println(v.toString());

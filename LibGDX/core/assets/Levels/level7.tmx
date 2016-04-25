@@ -248,7 +248,7 @@
     <property name="X" value="896.00"/>
     <property name="Y" value="896.00"/>
     <property name="angle" value="WEST"/>
-    <property name="level" value="1"/>
+    <property name="level" value="KILL"/>
     <property name="spcf" value="1.2"/>
    </properties>
   </object>
@@ -257,7 +257,7 @@
     <property name="X" value="1664.00"/>
     <property name="Y" value="1408.00"/>
     <property name="angle" value="SOUTH"/>
-    <property name="level" value="1"/>
+    <property name="level" value="DEDUCTFLIPS"/>
     <property name="spcf" value="1.4"/>
    </properties>
   </object>
@@ -266,7 +266,7 @@
     <property name="X" value="2816.00"/>
     <property name="Y" value="1280.00"/>
     <property name="angle" value="NORTH"/>
-    <property name="level" value="1"/>
+    <property name="level" value="KILL"/>
     <property name="spcf" value="1.4"/>
    </properties>
   </object>
@@ -275,7 +275,7 @@
     <property name="X" value="2688.00"/>
     <property name="Y" value="640.00"/>
     <property name="angle" value="NORTH"/>
-    <property name="level" value="1"/>
+    <property name="level" value="DEDUCTFLIPS"/>
     <property name="spcf" value="1.4"/>
    </properties>
   </object>
@@ -284,7 +284,7 @@
     <property name="X" value="1152.00"/>
     <property name="Y" value="2560.00"/>
     <property name="angle" value="NORTH"/>
-    <property name="level" value="2"/>
+    <property name="level" value="DEDUCTFLIPS"/>
     <property name="spcf" value="1.4"/>
    </properties>
   </object>
