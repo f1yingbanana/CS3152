@@ -1,6 +1,10 @@
 package com.ramenstudio.sandglass.title;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.ramenstudio.sandglass.title.controller.TitleController;
 import com.ramenstudio.sandglass.util.AbstractMode;
 
 /**
@@ -11,16 +15,31 @@ import com.ramenstudio.sandglass.util.AbstractMode;
  */
 public class TitleMode extends AbstractMode implements Screen {
 
+  TitleController titleController = new TitleController();
+  
+  Color bgColor = Color.BLACK;
+  
   @Override
   public void show() {
-    // TODO Auto-generated method stub
-    
+    // UI needs to be shown.
+    titleController.uiController.acquireInputProcesser();
   }
 
   @Override
   public void render(float delta) {
-    // TODO Auto-generated method stub
+    // Update controllers then run.
+    titleController.update(delta);
     
+    // Clear color
+    Gdx.gl.glClearColor(bgColor.r, bgColor.b, bgColor.g, 1);
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    
+    titleController.draw();
+    
+    // Flags
+    if (titleController.levelSelected != null) {
+      screenListener.transitionToMode(this, titleController.levelSelected);
+    }
   }
 
   @Override

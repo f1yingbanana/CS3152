@@ -41,6 +41,6 @@ public interface ScreenListener {
   * @param screen   The screen requesting to exit
   * @param exitCode The state of the screen upon exit
   */
- public void exitScreen(Screen screen, int exitCode);
+ public void transitionToMode(Screen screen, int exitCode);
 }
 

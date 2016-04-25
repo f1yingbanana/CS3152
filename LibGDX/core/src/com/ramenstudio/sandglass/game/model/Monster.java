@@ -85,7 +85,7 @@ public class Monster extends GameObject implements Drawable{
 	 */
     
    
-	public Monster(Vector2 initialPos, MType mType, int id, int level,
+	public Monster(Vector2 initialPos, int id, int level,
 			float spcf, Array<Vector2> vertices, String startAngle) {
 		super();
 		this.vertices = vertices;
@@ -93,7 +93,7 @@ public class Monster extends GameObject implements Drawable{
 		angle = initAngle;
 		speed_coeff = spcf;
 		initial = initialPos;
-        if (mType == Monster.MType.OverMonster){
+        if (level == 1){
         	System.out.println("this is over monster");
             setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
             fixtureDefs = new FixtureDef[3];
@@ -144,7 +144,6 @@ public class Monster extends GameObject implements Drawable{
                 fixtureDefs[0] = underFixtureDef;
                 underFixtureDef.friction = 10;
         }
-		this.mType = mType;
 		isAlive = true;
 		System.out.println("monster is created");
 		

@@ -28,10 +28,14 @@ import com.ramenstudio.sandglass.game.model.Monster.MType;
  */
 public class LevelLoader {
   public enum LayerKey {
-    PLAYER, GROUND, UNDER_M, OVER_M, GATE, RESOURCE
+    PLAYER, GROUND, GATE, RESOURCE, MONSTER
   }
   
   public TiledMap tiledMap;
+  
+  public Map<LayerKey, Array<GameObject>> loadLevel(int level) {
+	  return loadLevel("level"+level+".tmx");
+  }
   
   public Map<LayerKey, Array<GameObject>> loadLevel(String filename) {
     tiledMap = new TmxMapLoader().load("Levels/" + filename);
@@ -42,20 +46,17 @@ public class LevelLoader {
     Array<GameObject> Tilearr = parseGround(groundLayer, "Collision");
     Array<GameObject> playerTile = parseObject(objectLayer, "type", "player");
     
-    MapLayer underMon = (MapLayer) tiledMap.getLayers().get("UnderMonster");
-    MapLayer overMon = (MapLayer) tiledMap.getLayers().get("OverMonster");
-    MapLayer underPath = (MapLayer) tiledMap.getLayers().get("UnderPath");
-    MapLayer overPath = (MapLayer) tiledMap.getLayers().get("OverPath");
-    Array<GameObject> umArr = parseMonster(underMon, underPath);
-    Array<GameObject> omArr = parseMonster(overMon, overPath);
+    
+    MapLayer monster = (MapLayer) tiledMap.getLayers().get("Monster");
+    MapLayer path = (MapLayer) tiledMap.getLayers().get("Path");
+    Array<GameObject> mArr = parseMonster(monster, path);
     Array<GameObject> gateTile = parseObject(objectLayer, "type", "gate");
     Array<GameObject> resourceTile = parseObject(objectLayer, "type", "ship");
     
     tiledMap.getLayers().remove(objectLayer);
     layerDict.put(LayerKey.GROUND, Tilearr);
     layerDict.put(LayerKey.PLAYER, playerTile);
-    layerDict.put(LayerKey.UNDER_M, umArr);
-    layerDict.put(LayerKey.OVER_M, omArr);
+    layerDict.put(LayerKey.MONSTER, mArr);
     layerDict.put(LayerKey.RESOURCE, resourceTile);
     layerDict.put(LayerKey.GATE, gateTile);
     return layerDict;
@@ -188,10 +189,9 @@ public class LevelLoader {
 	  
 	  for (PolylineMapObject p : polys){
 		  MapObject monster = monLayer.getObjects().get(p.getName());
-		  Vector2 initPos = new Vector2(Float.parseFloat((String)monster.getProperties().get("X"))/128+0.5f,
-				  32-Float.parseFloat((String)monster.getProperties().get("Y"))/128+0.5f);
+		  Vector2 initPos = new Vector2(Float.parseFloat((String)monster.getProperties().get("X"))/128,
+				  32-Float.parseFloat((String)monster.getProperties().get("Y"))/128+0.15f);
 		  int id = Integer.parseInt(p.getName());
-		  MType mType = Monster.MType.valueOf(monLayer.getName());
 		  int level = Integer.parseInt((String) monster.getProperties().get("level"));
 		  float spcf = Float.parseFloat((String) monster.getProperties().get("spcf"));
 		  Array<Vector2> vertices = new Array<Vector2>();
@@ -205,7 +205,7 @@ public class LevelLoader {
 		  		vertices.add(v);
 		  	}
 		  	String angle = (String) monster.getProperties().get("angle");
-		  Monster mon = new Monster(initPos, mType, id, level, spcf, vertices,angle);
+		  Monster mon = new Monster(initPos, id, level, spcf, vertices,angle);
 		  objArr.add(mon);
 	  }
 	  return objArr;

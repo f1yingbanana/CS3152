@@ -22,7 +22,7 @@ import com.ramenstudio.sandglass.game.view.GameCanvas;
  * InputController corresponding to AI control.
  * 
  */
-public abstract class MonsterController extends AbstractController {
+public class MonsterController extends AbstractController {
 
 
 	public enum AngleEnum {
@@ -145,7 +145,6 @@ public abstract class MonsterController extends AbstractController {
 	
 	public World delegate;
 	
-	public RayCastHandler oneFrameRayHandler;
 	/**
 	 * Creates an AIController for the monster with the given id.
 	 *
@@ -158,14 +157,6 @@ public abstract class MonsterController extends AbstractController {
 		this.monster = monster;
 		action = Move.NONE;
 	}
-	
-	/**
-	 * Returns the action selected by this MonsterController
-	 * 
-	 * 
-	 * @return the action selected by this MonsterController
-	 */
-	public abstract void getAction(float dt);
 	
 	
 	@Override
@@ -183,32 +174,4 @@ public abstract class MonsterController extends AbstractController {
 	    delegate = handler;
 		activatePhysics(handler, monster);
 	}
-	
-    public class RayCastHandler implements RayCastCallback {
-        boolean isGrounded = false;
-        boolean isFlip = false;
-        boolean isCorner = false;
-        public AbstractTile tileUnderneath;
-        public TurnTile cornerTile;
-
-        @Override
-        public float reportRayFixture(Fixture fixture, Vector2 point, 
-                Vector2 normal, float fraction) {
-            Object obj = fixture.getBody().getUserData();
-
-            if (obj != null && obj instanceof AbstractTile && !(obj instanceof TurnTile)) {
-                AbstractTile tempGameObject = (AbstractTile)obj;
-                isGrounded = tempGameObject.isGround() || isGrounded;
-                isFlip = tempGameObject.isFlippable() || isFlip;
-                tileUnderneath = tempGameObject;
-            }
-            if (obj != null && obj instanceof TurnTile) {
-                TurnTile tempCorner = (TurnTile) obj;
-                isCorner = true;
-                cornerTile = tempCorner;
-            }
-
-            return -1;
-        }
-    }
 }
