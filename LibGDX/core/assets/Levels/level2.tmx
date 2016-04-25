@@ -248,7 +248,7 @@
     <property name="X" value="1540.00"/>
     <property name="Y" value="1024.00"/>
     <property name="angle" value="NORTH"/>
-    <property name="level" value="KILL"/>
+    <property name="level" value="2"/>
     <property name="spcf" value="0.5"/>
    </properties>
   </object>
@@ -261,8 +261,9 @@
  <objectgroup name="Center">
   <object id="132" name="center" x="1792" y="1152" width="128" height="128">
    <properties>
-    <property name="X" value="14"/>
-    <property name="Y" value="9"/>
+    <property name="X" value="14.5"/>
+    <property name="Y" value="9.5"/>
+    <property name="longest" value="16"/>
     <property name="maxFlips" value="20"/>
    </properties>
   </object>

@@ -35,6 +35,7 @@ import com.ramenstudio.sandglass.game.model.Monster.MonsterLevel;
  * @author Jiacong Xu
  */
 public class GameController extends AbstractController implements ContactListener {
+
 	/** If this flag is true, we need a new game controller. */
 	public boolean needsReset = false;
 
@@ -88,9 +89,9 @@ public class GameController extends AbstractController implements ContactListene
 		Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
 		player.setFlips(loader.maxFlip);
 		Vector2 cameraCenter = loader.center;
-		System.out.println(cameraCenter.toString());
+		//	System.out.println(cameraCenter.toString());
 		playerController = new PlayerController(player);
-		cameraController = new CameraController(cameraCenter);
+		cameraController = new CameraController(cameraCenter,loader.zoom);
 
 		Array<GameObject> mArray = (Array<GameObject>) 
 				mapObjects.get(LevelLoader.LayerKey.MONSTER);
@@ -199,7 +200,7 @@ public class GameController extends AbstractController implements ContactListene
 		}
 
 		playerController.objectSetup(world);
-		cameraController.setTarget(playerController.getPlayer());
+		//    cameraController.setTarget(playerController.getPlayer());
 		cameraController.objectSetup(world);
 
 		for (MonsterController m: monsterController){
@@ -224,16 +225,16 @@ public class GameController extends AbstractController implements ContactListene
 		uiController.update(dt);
 
 		switch (getGameModel().getGameState()) {
-			case LOST:
-				uiController.setGameState(UIState.LOST);
-				return;
-			case PAUSED:
-				return;
-			case PLAYING:
-				break;
-			case WON:
-				uiController.setGameState(UIState.WON);
-				return;
+		case LOST:
+			uiController.setGameState(UIState.LOST);
+			return;
+		case PAUSED:
+			return;
+		case PLAYING:
+			break;
+		case WON:
+			uiController.setGameState(UIState.WON);
+			return;
 		}
 
 		cameraController.update(dt);
@@ -324,36 +325,20 @@ public class GameController extends AbstractController implements ContactListene
 
 		if ((firstOne instanceof Player && secondOne instanceof Monster) ||
 				(secondOne instanceof Player && firstOne instanceof Monster)) {
-            Monster theMonster;
-            Player thePlayer = playerController.getPlayer();
 
-            if (secondOne instanceof Monster) {
-                theMonster = (Monster)secondOne;
-            } else {
-                theMonster = (Monster)firstOne;
-            }
+			//TODO
+			// monster level 1: deducting sand
+			// monster level 2: killing you
+			// monster level 3: inducing flip
 
-            //TODO
-            // monster level 1: deducting flips
-            // monster level 2: killing you
-            // monster level 3: inducing flip
+			//TODO
+			// apply force when contact
 
-            if (theMonster.monsterLevel == MonsterLevel.KILL) {
-                getGameModel().setGameState(GameState.LOST);
-            }
-            else if (theMonster.monsterLevel == MonsterLevel.DEDUCTFLIPS) {
-                playerController.getPlayer().subtractFlip();
-            }
-            else if (theMonster.monsterLevel == MonsterLevel.MAKEFLIP) {
-                playerController.setMustFlip();
-            }
-
-            //TODO
-            // apply force when contact
-            
-//          Vector2 collisionDirection = thePlayer.getPosition().cpy().sub(theMonster.getPosition());
-//          collisionDirection.setLength(1000);
-//          thePlayer.getBody().applyForceToCenter(collisionDirection, true);
+			if (playerController.getPlayer().getFlips() <= 0){
+				gameModel.setGameState(GameState.LOST);
+			} else {
+				playerController.getPlayer().subtractFlip();
+			}
 		}
 
 		if (firstOne instanceof Player &&

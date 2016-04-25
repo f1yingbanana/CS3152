@@ -38,6 +38,8 @@ public class LevelLoader {
 
 	public int maxFlip;
 
+	public float zoom;
+
 	public Map<LayerKey, Array<GameObject>> loadLevel(int level) {
 		return loadLevel("level"+level+".tmx");
 	}
@@ -56,7 +58,7 @@ public class LevelLoader {
 
 		maxFlip = getFlipNumber(center);
 		this.center = getCenter(center);
-
+		zoom = getZoom(center);
 
 		MapLayer monster = (MapLayer) tiledMap.getLayers().get("Monster");
 		MapLayer path = (MapLayer) tiledMap.getLayers().get("Path");
@@ -81,9 +83,14 @@ public class LevelLoader {
 		return Integer.parseInt((String)center.getProperties().get("maxFlips"));
 	}
 
+	public float getZoom(MapObject center) {
+		float longest = Float.parseFloat((String)center.getProperties().get("longest"));
+		return longest/9.0f;
+	}
+
 	public Vector2 getCenter(MapObject center){
 		return new Vector2(Float.parseFloat((String)center.getProperties().get("X")),
-				Float.parseFloat((String)center.getProperties().get("Y")));
+				32-Float.parseFloat((String)center.getProperties().get("Y")));
 	}
 
 	/**
@@ -109,53 +116,53 @@ public class LevelLoader {
 					TurnTile tt= new TurnTile();
 
 					switch (propval) {
-						case "top_left": 
-							type = WallTile.WallType.TOPLEFT;
-							break;
-						case "bottom_left": 
-							type = WallTile.WallType.BOTLEFT;
-							break;
-						case "top_right": 
-							type = WallTile.WallType.TOPRIGHT;
-							break;
-						case "bottom_right": 
-							type = WallTile.WallType.BOTRIGHT;
-							break;
-						case "top": 
-							type = WallTile.WallType.TOP;
-							break;
-						case "left": 
-							type = WallTile.WallType.LEFT;
-							break;
-						case "bottom": 
-							type = WallTile.WallType.BOT;
-							break;
-						case "right": 
-							type = WallTile.WallType.RIGHT;
-							break;
-						case "inside_top_left":
-							type = WallTile.WallType.BOTRIGHT;
-							tt.getBodyDef().position.set(new Vector2(i+0.55f,j+0.45f));
-							tArr.add(tt);
-							break;
-						case "inside_top_right":
-							type = WallTile.WallType.BOTLEFT;
-							tt.getBodyDef().position.set(new Vector2(i+0.45f,j+0.45f));
-							tArr.add(tt);
-							break;
-						case "inside_bottom_left":
-							type = WallTile.WallType.TOPRIGHT;
-							tt.getBodyDef().position.set(new Vector2(i+0.55f,j+0.55f));
-							tArr.add(tt);
-							break;
-						case "inside_bottom_right":
-							type = WallTile.WallType.TOPLEFT;
-							tt.getBodyDef().position.set(new Vector2(i+0.45f,j+0.55f));
-							tArr.add(tt);
-							break;
-						default:
-							type = WallTile.WallType.TOP;
-							break;
+					case "top_left": 
+						type = WallTile.WallType.TOPLEFT;
+						break;
+					case "bottom_left": 
+						type = WallTile.WallType.BOTLEFT;
+						break;
+					case "top_right": 
+						type = WallTile.WallType.TOPRIGHT;
+						break;
+					case "bottom_right": 
+						type = WallTile.WallType.BOTRIGHT;
+						break;
+					case "top": 
+						type = WallTile.WallType.TOP;
+						break;
+					case "left": 
+						type = WallTile.WallType.LEFT;
+						break;
+					case "bottom": 
+						type = WallTile.WallType.BOT;
+						break;
+					case "right": 
+						type = WallTile.WallType.RIGHT;
+						break;
+					case "inside_top_left":
+						type = WallTile.WallType.BOTRIGHT;
+						tt.getBodyDef().position.set(new Vector2(i+0.55f,j+0.45f));
+						tArr.add(tt);
+						break;
+					case "inside_top_right":
+						type = WallTile.WallType.BOTLEFT;
+						tt.getBodyDef().position.set(new Vector2(i+0.45f,j+0.45f));
+						tArr.add(tt);
+						break;
+					case "inside_bottom_left":
+						type = WallTile.WallType.TOPRIGHT;
+						tt.getBodyDef().position.set(new Vector2(i+0.55f,j+0.55f));
+						tArr.add(tt);
+						break;
+					case "inside_bottom_right":
+						type = WallTile.WallType.TOPLEFT;
+						tt.getBodyDef().position.set(new Vector2(i+0.45f,j+0.55f));
+						tArr.add(tt);
+						break;
+					default:
+						type = WallTile.WallType.TOP;
+						break;
 					}
 
 					WallTile wt = new WallTile(type);
