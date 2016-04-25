@@ -1,5 +1,7 @@
 package com.ramenstudio.sandglass.title.view.ui;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -22,17 +24,17 @@ public class LevelPreviewView extends Table {
    * @param level
    * @param imageStyle
    */
-  public LevelPreviewView(Skin skin, int level, String imageStyle) {
+  public LevelPreviewView(Skin skin, int level, String imagePath) {
     // We just make it such that we have left image followed by right level info
     super();
     
     this.level = level;
     
     // Add preview sprite.
-    previewSprite = new Image(skin, imageStyle);
+    previewSprite = new Image(new Texture(Gdx.files.internal(imagePath)));
     add(previewSprite).pad(20);
     
-    levelNameLabel = new Label("Level " + level, skin);
+    levelNameLabel = new Label("Level " + level, skin, "title");
     add(levelNameLabel).pad(20);
     
     levelSelectButton = new Button(skin);

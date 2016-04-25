@@ -28,7 +28,6 @@ public class GameMode extends AbstractMode implements Screen {
   // BG renderer
   private PolygonSpriteBatch bgBatch = new PolygonSpriteBatch();
   
-
   private Texture backgroundImage = new Texture(Gdx.files.internal("Textures/bg1.png"));
   
   // A debug renderer
