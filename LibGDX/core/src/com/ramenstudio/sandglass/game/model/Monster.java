@@ -76,6 +76,10 @@ public class Monster extends GameObject implements Drawable{
     /** the total time of one path */
     public float cycleTime = 0;
 
+    public enum MonsterLevel {
+    	KILL, DEDUCTFLIPS, MAKEFLIP;
+    }
+    
 	/**
 	 * Create monster # id at the given position.
 	 *
@@ -83,8 +87,6 @@ public class Monster extends GameObject implements Drawable{
 	 * @param x The initial x-coordinate of the monster
 	 * @param y The initial y-coordinate of the monster
 	 */
-    
-   
 	public Monster(Vector2 initialPos, int id, int level,
 			float spcf, Array<Vector2> vertices, String startAngle) {
 		super();
