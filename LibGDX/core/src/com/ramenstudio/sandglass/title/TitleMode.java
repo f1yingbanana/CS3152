@@ -38,8 +38,9 @@ public class TitleMode extends AbstractMode implements Screen {
     
     // Flags
     if (titleController.levelSelected != null) {
+      int level = titleController.levelSelected;
       titleController.levelSelected = null;
-      screenListener.transitionToMode(this, titleController.levelSelected);
+      screenListener.transitionToMode(this, level);
     }
   }
 
