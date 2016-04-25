@@ -334,11 +334,6 @@ public class GameController extends AbstractController implements ContactListene
 				theMonster = (Monster)firstOne;
 			}
 
-			//TODO
-			// monster level 1: deducting sand
-			// monster level 2: killing you
-			// monster level 3: inducing flip
-
 			if (theMonster.monsterLevel == MonsterLevel.KILL) {
 				getGameModel().setGameState(GameState.LOST);
 			}
@@ -351,6 +346,7 @@ public class GameController extends AbstractController implements ContactListene
 
 			//TODO
 			// apply force when contact
+			
 		}
 
 		if (firstOne instanceof Player &&

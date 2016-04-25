@@ -31,7 +31,7 @@ public class PlayerController extends AbstractController {
 	private Player player;
 
 	/** This is the offset from the center of the body to the foot. */
-	private float footOffset = -0.7f;
+	private float footOffset = -0.5f;
 
 	/** This is the distance from where we are raycasting */
 	private float rayDist = 0.3f;
