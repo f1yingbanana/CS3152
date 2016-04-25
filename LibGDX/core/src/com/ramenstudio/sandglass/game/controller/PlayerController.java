@@ -108,6 +108,9 @@ public class PlayerController extends AbstractController {
     private int counter = 0;
 
     private float rotateAngle;
+
+    /** Boolean for if the player must flip, after hitting a monster or something */
+	private boolean mustFlip;
     
 	/**
 	 * Default constructor for player object.
@@ -231,7 +234,9 @@ public class PlayerController extends AbstractController {
 			activeCorner = null;
 		}
 		// Handle flipping
-		else if (inputController.didPressFlip() && canFlip() && !jump) {
+		else if (inputController.didPressFlip() && canFlip() && !jump
+				|| mustFlip) {
+			mustFlip = false;
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
 				rotateAngle = 180;
@@ -505,6 +510,10 @@ public class PlayerController extends AbstractController {
 	 */
 	public boolean isUnder() {
 		return isUnder;
+	}
+	
+	public void setMustFlip() {
+		mustFlip = true;
 	}
 
 	/**
