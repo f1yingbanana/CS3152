@@ -83,7 +83,7 @@ public class LevelLoader {
   
   public Vector2 getCenter(MapObject center){
 	  return new Vector2(Float.parseFloat((String)center.getProperties().get("X")),
-			  Float.parseFloat((String)center.getProperties().get("Y")));
+			  32-Float.parseFloat((String)center.getProperties().get("Y")));
   }
   
   /**
