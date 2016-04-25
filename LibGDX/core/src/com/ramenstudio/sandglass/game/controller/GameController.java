@@ -199,7 +199,7 @@ public class GameController extends AbstractController implements ContactListene
     }
 
     playerController.objectSetup(world);
-    cameraController.setTarget(playerController.getPlayer());
+//    cameraController.setTarget(playerController.getPlayer());
     cameraController.objectSetup(world);
 
     for (MonsterController m: monsterController){
