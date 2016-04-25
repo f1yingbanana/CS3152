@@ -113,6 +113,8 @@ public class LevelLoader {
 					String propval = (String) this_tile.getProperties().get(str);
 					WallTile.WallType type;
 					TurnTile tt= new TurnTile();
+					
+					float boxSize = .15f;
 
 					switch (propval) {
 					case "top_left": 
@@ -141,22 +143,22 @@ public class LevelLoader {
 						break;
 					case "inside_top_left":
 						type = WallTile.WallType.BOTRIGHT;
-						tt.getBodyDef().position.set(new Vector2(i+0.55f,j+0.45f));
+						tt.getBodyDef().position.set(new Vector2(i+0.5f+boxSize,j+0.5f-boxSize));
 						tArr.add(tt);
 						break;
 					case "inside_top_right":
 						type = WallTile.WallType.BOTLEFT;
-						tt.getBodyDef().position.set(new Vector2(i+0.45f,j+0.45f));
+						tt.getBodyDef().position.set(new Vector2(i+0.5f-boxSize,j+0.5f-boxSize));
 						tArr.add(tt);
 						break;
 					case "inside_bottom_left":
 						type = WallTile.WallType.TOPRIGHT;
-						tt.getBodyDef().position.set(new Vector2(i+0.55f,j+0.55f));
+						tt.getBodyDef().position.set(new Vector2(i+0.5f+boxSize,j+0.5f+boxSize));
 						tArr.add(tt);
 						break;
 					case "inside_bottom_right":
 						type = WallTile.WallType.TOPLEFT;
-						tt.getBodyDef().position.set(new Vector2(i+0.45f,j+0.55f));
+						tt.getBodyDef().position.set(new Vector2(i+0.5f-boxSize,j+0.5f+boxSize));
 						tArr.add(tt);
 						break;
 					default:
