@@ -31,10 +31,10 @@ public class PlayerController extends AbstractController {
 	private Player player;
 
 	/** This is the offset from the center of the body to the foot. */
-	private float footOffset = -0.7f;
+	private float footOffset = -0.5f;
 
 	/** This is the distance from where we are raycasting */
-	private float rayDist = 0.1f;
+	private float rayDist = 0.3f;
 
 	/** Maximum move speed in horizontal movement */
 	private float moveSpeed = 3.0f;
@@ -248,8 +248,7 @@ public class PlayerController extends AbstractController {
 			activeCorner = null;
 		}
 		// Handle flipping
-		else if (inputController.didPressFlip() && canFlip() && !jump
-				|| mustFlip) {
+		else if ((inputController.didPressFlip() || mustFlip) && canFlip() && !jump) {
 			mustFlip = false;
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {

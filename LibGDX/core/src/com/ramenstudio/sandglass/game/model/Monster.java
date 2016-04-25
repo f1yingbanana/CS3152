@@ -103,7 +103,7 @@ public class Monster extends GameObject implements Drawable{
             fixtureDefs = new FixtureDef[3];
             setSize(new Vector2(0.8f, 1.2f));
             getBodyDef().position.set(initialPos);
-            getBodyDef().type = BodyDef.BodyType.StaticBody;
+            getBodyDef().type = BodyDef.BodyType.KinematicBody;
             
             FixtureDef fixtureDef = new FixtureDef();
             PolygonShape shape = new PolygonShape();
@@ -137,7 +137,7 @@ public class Monster extends GameObject implements Drawable{
                 fixtureDefs = new FixtureDef[1];
                 setSize(new Vector2(0.8f, 0.8f));
                 getBodyDef().position.set(initialPos);
-                getBodyDef().type = BodyDef.BodyType.StaticBody;
+                getBodyDef().type = BodyDef.BodyType.KinematicBody;
                 getBodyDef().gravityScale=0;
                 
                 FixtureDef underFixtureDef = new FixtureDef();
