@@ -19,6 +19,7 @@ import com.ramenstudio.sandglass.game.model.GameModel;
 import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.Resource;
 import com.ramenstudio.sandglass.game.model.ShipPiece;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
@@ -85,6 +86,7 @@ public class GameController extends AbstractController implements ContactListene
     getGameModel().setGameLevel(gameLevel);
     mapObjects = loader.loadLevel(gameLevel);
     Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
+	player.setFlips(loader.getFlipNumber("newLevel.tmx"));
     playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
 
@@ -93,14 +95,20 @@ public class GameController extends AbstractController implements ContactListene
     Gate gate = (Gate) ((Array<GameObject>) 
         mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
     Array<GameObject> ship = (Array<GameObject>) 
-        mapObjects.get(LevelLoader.LayerKey.RESOURCE);
-    List<ShipPiece> shipList = getGameModel().getShipPieces();
+    		mapObjects.get(LevelLoader.LayerKey.SHIP);
+    List<ShipPiece> shipList = gameModel.getShipPieces();
     for (GameObject s: ship){
       shipList.add((ShipPiece) s);
     }
-
-    getGameModel().setNumberOfPieces(ship.size);
-    getGameModel().setGate(gate);
+    Array<GameObject> resource = (Array<GameObject>)
+    		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
+    List<Resource> resourceList = gameModel.getResources();
+    for (GameObject r: resource){
+    	resourceList.add((Resource) r);
+    }
+    
+    gameModel.setNumberOfPieces(ship.size);
+    gameModel.setGate(gate);
 
     for (GameObject m: mArray){
       monsterController.add(new MonsterController((Monster) m));
@@ -199,8 +207,12 @@ public class GameController extends AbstractController implements ContactListene
     for (ShipPiece c : getGameModel().getShipPieces()) {
       activatePhysics(world, c);
     }
-
-    activatePhysics(world, getGameModel().getGate());
+    
+    for (Resource r: gameModel.getResources()){
+    	activatePhysics(world, r);
+    }
+    
+    activatePhysics(world, gameModel.getGate());
 
     world.setContactListener(this);
   }
@@ -229,15 +241,8 @@ public class GameController extends AbstractController implements ContactListene
     }
 
     playerController.update(dt);
-    //    System.out.println(playerController.getPlayer().getPosition().toString);
 
-    //update game model
-    getGameModel().setWorldPosition(!playerController.isUnder());
-    getGameModel().incrementTime();
-
-    //if(gameModel.allPiecesCollected()){
-    //	gameModel.getGate().setOpen();
-    //}
+    gameModel.setWorldPosition(!playerController.isUnder());
 
     for (MonsterController m: monsterController){
       m.update(dt);
@@ -246,10 +251,10 @@ public class GameController extends AbstractController implements ContactListene
 
     stepPhysics(dt);
 
-    if (/**gameModel.getGate().isOpen() && touchingGate ||*/
-        getGameModel().outOfTime() ||
-        playerController.isReset()){
-      reset();
+    
+    if (playerController.isReset()){
+    	reset();
+
     }
   }
 
@@ -326,7 +331,11 @@ public class GameController extends AbstractController implements ContactListene
     	//TODO
     	// apply force when contact
     	
-      getGameModel().setGameState(GameState.LOST);
+      if (playerController.getPlayer().getFlips() <= 0){
+    	  gameModel.setGameState(GameState.LOST);
+      } else {
+    	  playerController.getPlayer().subtractFlip();
+      }
     }
 
     if (firstOne instanceof Player &&
@@ -347,6 +356,22 @@ public class GameController extends AbstractController implements ContactListene
 
     if (getGameModel().allPiecesCollected()) {
       getGameModel().getGate().setAllPiecesCollected(true);
+    }
+    
+    if (firstOne instanceof Player &&
+    		secondOne instanceof Resource) {
+    	Resource secondResource = (Resource) secondOne;
+    	if (!secondResource.getIsCollected()) {
+    		secondResource.setCollected();
+    		playerController.getPlayer().addFlip();
+    	}
+    } else if (firstOne instanceof Resource &&
+    		secondOne instanceof Player) {
+    	Resource firstResource = (Resource) firstOne;
+    	if (!firstResource.getIsCollected()) {
+    		firstResource.setCollected();
+    		playerController.getPlayer().addFlip();
+    	}
     }
 
     if ((firstOne instanceof Player && secondOne instanceof Gate) ||

@@ -15,6 +15,7 @@ import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Monster;
 import com.ramenstudio.sandglass.game.model.Player;
+import com.ramenstudio.sandglass.game.model.Resource;
 import com.ramenstudio.sandglass.game.model.ShipPiece;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
@@ -28,7 +29,7 @@ import com.ramenstudio.sandglass.game.model.Monster.MType;
  */
 public class LevelLoader {
   public enum LayerKey {
-    PLAYER, GROUND, GATE, RESOURCE, MONSTER
+    PLAYER, GROUND, GATE, RESOURCE, MONSTER, SHIP
   }
   
   public TiledMap tiledMap;
@@ -51,15 +52,27 @@ public class LevelLoader {
     MapLayer path = (MapLayer) tiledMap.getLayers().get("Path");
     Array<GameObject> mArr = parseMonster(monster, path);
     Array<GameObject> gateTile = parseObject(objectLayer, "type", "gate");
-    Array<GameObject> resourceTile = parseObject(objectLayer, "type", "ship");
+    Array<GameObject> shipTile = parseObject(objectLayer, "type", "ship");
+    Array<GameObject> resourceTile = parseObject(objectLayer, "type", "resource");
     
     tiledMap.getLayers().remove(objectLayer);
     layerDict.put(LayerKey.GROUND, Tilearr);
     layerDict.put(LayerKey.PLAYER, playerTile);
     layerDict.put(LayerKey.MONSTER, mArr);
     layerDict.put(LayerKey.RESOURCE, resourceTile);
+    layerDict.put(LayerKey.SHIP, shipTile);
     layerDict.put(LayerKey.GATE, gateTile);
     return layerDict;
+  }
+  
+  /**@return the number of flips allowed for the level indicated by n
+   * @param filename level file name*/
+  public int getFlipNumber(String filename){
+	  tiledMap = new TmxMapLoader().load("Levels/"+filename);
+	  TiledMapTileLayer groundLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
+	  //TODO: Get this to actually work
+	  //return (int) groundLayer.getProperties().get("maxFlip");
+	  return 30;
   }
   
   /**
@@ -171,8 +184,8 @@ public class LevelLoader {
     						objArr.add(ship);
     					}
     					else if (value.equals("resource")){
-    						//ShipPiece ship = new Resource(new Vector2(i+0.5f, j+0.5f));
-    						//objArr.add(ship);
+    						Resource resource = new Resource(new Vector2(i+0.5f, j+0.5f));
+    						objArr.add(resource);
     					}
     				}
     			}

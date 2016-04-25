@@ -46,6 +46,9 @@ public class PlayerController extends AbstractController {
 	private World world;
 
 	// Variables concerned with turning at corners.
+	
+	//number of flips we have left in this level
+	private int flips;
 
 	/** The active corner we are tracking whether we should turn or not. */
 	private TurnTile activeCorner;
@@ -248,6 +251,7 @@ public class PlayerController extends AbstractController {
 				player.setRotation(AngleEnum.convertToAngle(heading));
 				world.setGravity(world.getGravity().rotate(180));
 				isUnder ^= true;
+				player.subtractFlip();
 			}
 		}
 		// Handle goal collision
@@ -313,6 +317,8 @@ public class PlayerController extends AbstractController {
 		player.draw(canvas);
 	}
 
+
+	
 	/**
 	 * @return whether player is touching the ground.
 	 */
@@ -353,7 +359,7 @@ public class PlayerController extends AbstractController {
 		return rotateAngle;
 	}
 
-	public GameObject getPlayer() {
+	public Player getPlayer() {
 		return player;
 	}
 
@@ -363,6 +369,9 @@ public class PlayerController extends AbstractController {
 	 * @return whether player can flip
 	 */
 	private boolean canFlip() {
+		if (player.getFlips() <= 0){
+			return false;
+		}
 		if (oneFrameRayHandler == null) {
 			Vector2 g = world.getGravity().nor();
 			Vector2 footPos = player.getPosition().add(g.cpy().scl(-footOffset));
