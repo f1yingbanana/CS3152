@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="175">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="176">
  <tileset firstgid="1" name="newTile" tilewidth="128" tileheight="128" tilecount="72" columns="9">
   <image source="newTile.png" width="1153" height="1024"/>
   <terraintypes>
@@ -248,7 +248,7 @@
     <property name="X" value="896.00"/>
     <property name="Y" value="896.00"/>
     <property name="angle" value="WEST"/>
-    <property name="level" value="DEDUCTFLIPS"/>
+    <property name="level" value="1"/>
     <property name="spcf" value="1.2"/>
    </properties>
   </object>
@@ -257,7 +257,7 @@
     <property name="X" value="1664.00"/>
     <property name="Y" value="1408.00"/>
     <property name="angle" value="SOUTH"/>
-    <property name="level" value="DEDUCTFLIPS"/>
+    <property name="level" value="1"/>
     <property name="spcf" value="1.4"/>
    </properties>
   </object>
@@ -266,7 +266,7 @@
     <property name="X" value="2816.00"/>
     <property name="Y" value="1280.00"/>
     <property name="angle" value="NORTH"/>
-    <property name="level" value="DEDUCTFLIPS"/>
+    <property name="level" value="1"/>
     <property name="spcf" value="1.4"/>
    </properties>
   </object>
@@ -275,7 +275,7 @@
     <property name="X" value="2688.00"/>
     <property name="Y" value="640.00"/>
     <property name="angle" value="NORTH"/>
-    <property name="level" value="DEDUCTFLIPS"/>
+    <property name="level" value="1"/>
     <property name="spcf" value="1.4"/>
    </properties>
   </object>
@@ -284,7 +284,7 @@
     <property name="X" value="1152.00"/>
     <property name="Y" value="2560.00"/>
     <property name="angle" value="NORTH"/>
-    <property name="level" value="KILL"/>
+    <property name="level" value="2"/>
     <property name="spcf" value="1.4"/>
    </properties>
   </object>
@@ -309,10 +309,12 @@
  <objectgroup name="Center">
   <object id="173" name="center" x="1984" y="1600" width="128" height="128">
    <properties>
-    <property name="X" value="15.5"/>
-    <property name="Y" value="12.5"/>
+    <property name="X" value="16"/>
+    <property name="Y" value="13"/>
+    <property name="longest" value="15"/>
     <property name="maxFlips" value="20"/>
    </properties>
   </object>
+  <object id="175" x="3700" y="640"/>
  </objectgroup>
 </map>

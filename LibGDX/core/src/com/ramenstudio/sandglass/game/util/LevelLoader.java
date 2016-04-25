@@ -38,6 +38,8 @@ public class LevelLoader {
   
   public int maxFlip;
   
+  public float zoom;
+  
   public Map<LayerKey, Array<GameObject>> loadLevel(int level) {
 	  return loadLevel("level"+level+".tmx");
   }
@@ -56,7 +58,7 @@ public class LevelLoader {
 	
 	maxFlip = getFlipNumber(center);
 	this.center = getCenter(center);
-    
+    zoom = getZoom(center);
     
     MapLayer monster = (MapLayer) tiledMap.getLayers().get("Monster");
     MapLayer path = (MapLayer) tiledMap.getLayers().get("Path");
@@ -79,6 +81,11 @@ public class LevelLoader {
    * @param filename level file name*/
   public int getFlipNumber(MapObject center){
 	  return Integer.parseInt((String)center.getProperties().get("maxFlips"));
+  }
+  
+  public float getZoom(MapObject center) {
+	  float longest = Float.parseFloat((String)center.getProperties().get("longest"));
+	  return longest/9.0f;
   }
   
   public Vector2 getCenter(MapObject center){

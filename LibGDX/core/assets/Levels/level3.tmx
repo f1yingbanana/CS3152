@@ -261,8 +261,9 @@
  <objectgroup name="Center">
   <object id="137" name="center" x="1792" y="1408" width="128" height="128">
    <properties>
-    <property name="X" value="14"/>
-    <property name="Y" value="11"/>
+    <property name="X" value="14.5"/>
+    <property name="Y" value="11.5"/>
+    <property name="longest" value="16"/>
     <property name="maxFlips" value="20"/>
    </properties>
   </object>

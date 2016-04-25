@@ -94,7 +94,7 @@ public class CameraController extends AbstractController {
 	public CameraController(Vector2 initialPosition, float zoom) {
 		this();
 		initPos = initialPosition.cpy();
-		viewCamera.getCamera().zoom = zoom;
+		viewCamera.getCamera().zoom = zoom + 0.5f;
 		tracking = false;
 		zoomingOut = true;
 	}
@@ -206,11 +206,11 @@ public class CameraController extends AbstractController {
 		swapCameraDimensions();
 
 		// TESTING
-//		count++;
-//		if (Gdx.input.isKeyPressed(Input.Keys.R) && count > 10) {
-//			count = 0;
-//			rotate(90,false);
-//		}
+		count++;
+		if (Gdx.input.isKeyPressed(Input.Keys.R) && count > 10) {
+			count = 0;
+			rotate(90,false);
+		}
 //		
 //		if (InputController.getInstance().didJustPressedZoom()) {
 //			zoomingOut = !zoomingOut;
