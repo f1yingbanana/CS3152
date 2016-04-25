@@ -207,7 +207,7 @@ public class CameraController extends AbstractController {
 
 		// TESTING
 		count++;
-		if (Gdx.input.isKeyPressed(Input.Keys.R) && count > 10) {
+		if (Gdx.input.isKeyPressed(Input.Keys.L) && count > 10) {
 			count = 0;
 			rotate(90,false);
 		}
