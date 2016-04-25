@@ -234,8 +234,7 @@ public class PlayerController extends AbstractController {
 			activeCorner = null;
 		}
 		// Handle flipping
-		else if (inputController.didPressFlip() && canFlip() && !jump
-				|| mustFlip) {
+		else if ((inputController.didPressFlip() || mustFlip) && canFlip() && !jump) {
 			mustFlip = false;
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
