@@ -2,6 +2,9 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="122">
  <tileset firstgid="1" source="newTile.tsx"/>
  <layer name="Ground" width="32" height="32">
+  <properties>
+   <property name="maxFlip" value="20"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -76,8 +79,8 @@
  <objectgroup name="Monster">
   <object id="114" name="2" type="UnderMonster" gid="59" x="2688" y="1664" width="128" height="128">
    <properties>
-    <property name="X" type="float" value="2688"/>
-    <property name="Y" type="float" value="1664"/>
+    <property name="X" value="2688"/>
+    <property name="Y" value="1664"/>
     <property name="angle" value="NORTH"/>
     <property name="level" value="20"/>
     <property name="spcf" value="1.00"/>
@@ -85,8 +88,8 @@
   </object>
   <object id="115" name="1" type="UnderMonster" gid="59" x="2048" y="1920" width="128" height="128">
    <properties>
-    <property name="X" type="float" value="2048"/>
-    <property name="Y" type="float" value="1920"/>
+    <property name="X" value="2048"/>
+    <property name="Y" value="1920"/>
     <property name="angle" value="NORTH"/>
     <property name="level" value="30"/>
     <property name="spcf" value="1.00"/>
@@ -94,8 +97,8 @@
   </object>
   <object id="118" name="3" type="OverMonster" gid="69" x="2176" y="1024" width="128" height="128">
    <properties>
-    <property name="X" type="float" value="2176"/>
-    <property name="Y" type="float" value="1024"/>
+    <property name="X" value="2176"/>
+    <property name="Y" value="1024"/>
     <property name="angle" value="NORTH"/>
     <property name="level" value="1"/>
     <property name="spcf" value="1.00"/>

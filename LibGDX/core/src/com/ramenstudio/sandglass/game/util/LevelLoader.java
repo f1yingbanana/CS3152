@@ -66,11 +66,13 @@ public class LevelLoader {
   }
   
   /**@return the number of flips allowed for the level indicated by n
-   * @param n the level number*/
-  public int getFlipNumber(int n){
-	  tiledMap = new TmxMapLoader().load("Levels/level" + n);
+   * @param filename level file name*/
+  public int getFlipNumber(String filename){
+	  tiledMap = new TmxMapLoader().load("Levels/"+filename);
 	  TiledMapTileLayer groundLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
-	  return (int) groundLayer.getProperties().get("maxFlip");
+	  //TODO: Get this to actually work
+	  //return (int) groundLayer.getProperties().get("maxFlip");
+	  return 30;
   }
   
   /**
