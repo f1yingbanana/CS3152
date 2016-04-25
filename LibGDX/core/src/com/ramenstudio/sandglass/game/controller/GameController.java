@@ -3,6 +3,10 @@ package com.ramenstudio.sandglass.game.controller;
 import java.util.List;
 import java.util.Map;
 
+import javafx.scene.input.KeyCode;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -142,8 +146,7 @@ public class GameController extends AbstractController implements ContactListene
 	private ClickListener pauseButtonCallback = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			uiController.setGameState(UIController.UIState.PAUSED);
-			getGameModel().setGameState(GameState.PAUSED);
+		  pauseGame();
 		}
 	};
 
@@ -153,8 +156,7 @@ public class GameController extends AbstractController implements ContactListene
 	private ClickListener resumeButtonCallback = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-			uiController.setGameState(UIController.UIState.PLAYING);
-			getGameModel().setGameState(GameState.PLAYING);
+		  resumeGame();
 		}
 	};
 
@@ -223,6 +225,14 @@ public class GameController extends AbstractController implements ContactListene
 	@Override
 	public void update(float dt) {
 		uiController.update(dt);
+    
+    if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+      if (getGameModel().getGameState() == GameState.PLAYING) {
+        pauseGame();
+      } else if (getGameModel().getGameState() == GameState.PAUSED) {
+        resumeGame();
+      }
+    }
 
 		switch (getGameModel().getGameState()) {
 		case LOST:
@@ -257,10 +267,19 @@ public class GameController extends AbstractController implements ContactListene
 
 		if (playerController.isReset()){
 			reset();
-
 		}
 	}
 
+	private void pauseGame() {
+    uiController.setGameState(UIController.UIState.PAUSED);
+    getGameModel().setGameState(GameState.PAUSED);
+	}
+	
+	private void resumeGame() {
+    uiController.setGameState(UIController.UIState.PLAYING);
+    getGameModel().setGameState(GameState.PLAYING);
+	}
+	
 	private void reset() {
 		needsReset = true;
 	}
