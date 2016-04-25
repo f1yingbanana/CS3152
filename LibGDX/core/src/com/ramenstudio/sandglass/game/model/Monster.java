@@ -99,7 +99,6 @@ public class Monster extends GameObject implements Drawable{
 		initial = initialPos;
 		monsterLevel = level;
         if (level == MonsterLevel.DEDUCTFLIPS) {
-        	System.out.println("this is over monster");
             setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
             fixtureDefs = new FixtureDef[3];
             setSize(new Vector2(0.8f, 1.2f));
@@ -150,20 +149,10 @@ public class Monster extends GameObject implements Drawable{
                 underFixtureDef.friction = 10;
         }
 		isAlive = true;
-		System.out.println("monster is created");
-		
-		System.out.println("Monster id: " + id );
-		for (int i = 0 ; i < vertices.size ; i ++ ) {
-			System.out.println(vertices.get(i).toString());
-		}
 		isLoop = (vertices.get(0).epsilonEquals(vertices.get(vertices.size-1),0.01f));
 		
 		
 		parametrizeVertices();
-		
-		System.out.println(orientationsOnPath);
-		
-		System.out.println(isLoop);
 	}
 	
 	/** 
