@@ -10,7 +10,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.ramenstudio.sandglass.game.controller.GameController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
-import com.ramenstudio.sandglass.title.controller.UIController;
 import com.ramenstudio.sandglass.util.AbstractMode;
 
 /**
