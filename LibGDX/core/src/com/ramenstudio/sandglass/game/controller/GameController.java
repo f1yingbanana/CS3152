@@ -91,6 +91,7 @@ public class GameController extends AbstractController implements ContactListene
   public GameController() {
 	mapObjects = loader.loadLevel("newLevel.tmx");
 	Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
+	player.setFlips(loader.getFlipNumber(1));
     playerController = new PlayerController(player);
     cameraController = new CameraController(new Vector2(5, 5));
     
@@ -99,10 +100,16 @@ public class GameController extends AbstractController implements ContactListene
     Gate gate = (Gate) ((Array<GameObject>) 
     		mapObjects.get(LevelLoader.LayerKey.GATE)).get(0);
     Array<GameObject> ship = (Array<GameObject>) 
-    		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
+    		mapObjects.get(LevelLoader.LayerKey.SHIP);
     List<ShipPiece> shipList = gameModel.getShipPieces();
     for (GameObject s: ship){
     	shipList.add((ShipPiece) s);
+    }
+    Array<GameObject> resource = (Array<GameObject>)
+    		mapObjects.get(LevelLoader.LayerKey.RESOURCE);
+    List<Resource> resourceList = gameModel.getResources();
+    for (GameObject r: resource){
+    	resourceList.add((Resource) r);
     }
     
     gameModel.setNumberOfPieces(ship.size);
@@ -192,6 +199,10 @@ public class GameController extends AbstractController implements ContactListene
     	activatePhysics(world, c);
     }
     
+    for (Resource r: gameModel.getResources()){
+    	activatePhysics(world, r);
+    }
+    
     activatePhysics(world, gameModel.getGate());
     
     world.setContactListener(this);
@@ -221,14 +232,9 @@ public class GameController extends AbstractController implements ContactListene
     }
     
     playerController.update(dt);
-//    System.out.println(playerController.getPlayer().getPosition().toString);
-    
-  //update game model
+
     gameModel.setWorldPosition(!playerController.isUnder());
-    
-    //if(gameModel.allPiecesCollected()){
-    //	gameModel.getGate().setOpen();
-    //}
+
     
     for (MonsterController m: monsterController){
         m.update(dt);
