@@ -1,13 +1,18 @@
 package com.ramenstudio.sandglass.title.view.ui;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
  * The main menu view.
@@ -15,7 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * @author Jiacong Xu
  */
 public class TitleView extends Table {
-  public final Label gameTitleLabel;
   public final TextButton gameStartButton;
   public final ImageButton optionsButton;
   
@@ -24,14 +28,13 @@ public class TitleView extends Table {
     
     setFillParent(true);
     
-    // Create center text
-    gameTitleLabel = new Label("Sandglass", skin, "title");
-    add(gameTitleLabel).expand();
+    // Create image
+    Sprite bgSprite = new Sprite(new Texture(Gdx.files.internal("Textures/bgmenu.png")));
+    setBackground(new SpriteDrawable(bgSprite));
     
-    // Create a button to play demo level
-    row();
+    // Create a play button
     gameStartButton = new TextButton("Start", skin);
-    add(gameStartButton).padTop(120);
+    add(gameStartButton).expand().bottom().padBottom(100).padLeft(350);
     
     gameStartButton.addListener(new ClickListener() {
       @Override
@@ -48,7 +51,7 @@ public class TitleView extends Table {
     // Create an image button
     row();
     optionsButton = new ImageButton(skin, "OptionButton");
-    add(optionsButton).expand().bottom().right().pad(20);
+    add(optionsButton).bottom().right().pad(20);
     
   }
 }
