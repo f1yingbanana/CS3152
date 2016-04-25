@@ -2,6 +2,9 @@
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="159">
  <tileset firstgid="1" source="newTile.tsx"/>
  <layer name="Ground" width="32" height="32">
+  <properties>
+   <property name="maxFlip" value="20"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -74,10 +77,42 @@
 </data>
  </layer>
  <objectgroup name="Monster">
-  <object id="150" name="1" gid="59" x="1408" y="1280" width="128" height="128"/>
-  <object id="151" name="2" gid="59" x="2816" y="2048" width="128" height="128"/>
-  <object id="152" name="3" gid="69" x="1152" y="1280" width="128" height="128"/>
-  <object id="153" name="4" gid="69" x="2816" y="1792" width="128" height="128"/>
+  <object id="150" name="1" gid="59" x="1408" y="1280" width="128" height="128">
+   <properties>
+    <property name="X" value="1408.00"/>
+    <property name="Y" value="1280.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="2"/>
+    <property name="spcf" value="1.3"/>
+   </properties>
+  </object>
+  <object id="151" name="2" gid="59" x="2816" y="2048" width="128" height="128">
+   <properties>
+    <property name="X" value="2816.00"/>
+    <property name="Y" value="2048.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="1"/>
+    <property name="spcf" value="1.3"/>
+   </properties>
+  </object>
+  <object id="152" name="3" gid="69" x="1152" y="1280" width="128" height="128">
+   <properties>
+    <property name="X" value="1152.00"/>
+    <property name="Y" value="1280.00"/>
+    <property name="angle" value="WEST"/>
+    <property name="level" value="1"/>
+    <property name="spcf" value="1.5"/>
+   </properties>
+  </object>
+  <object id="153" name="4" gid="69" x="2816" y="1792" width="128" height="128">
+   <properties>
+    <property name="X" value="2816.00"/>
+    <property name="Y" value="1792.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="2"/>
+    <property name="spcf" value="1.5"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="Path">
   <object id="154" name="1" x="1472" y="1216">

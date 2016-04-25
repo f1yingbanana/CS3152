@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="169">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="172">
  <tileset firstgid="1" source="newTile.tsx"/>
  <layer name="Ground" width="32" height="32">
+  <properties>
+   <property name="20" value="maxFlip"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -74,27 +77,67 @@
 </data>
  </layer>
  <objectgroup name="Monster">
-  <object id="159" name="1" gid="69" x="896" y="896" width="128" height="128"/>
-  <object id="160" name="2" gid="69" x="1664" y="1408" width="128" height="128"/>
-  <object id="161" name="3" gid="69" x="2816" y="1280" width="128" height="128"/>
-  <object id="162" name="4" gid="69" x="2688" y="640" width="128" height="128"/>
-  <object id="164" name="5" gid="59" x="1152" y="2560" width="128" height="128"/>
+  <object id="159" name="1" gid="69" x="896" y="896" width="128" height="128">
+   <properties>
+    <property name="X" value="896.00"/>
+    <property name="Y" value="896.00"/>
+    <property name="angle" value="WEST"/>
+    <property name="level" value="1"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
+  <object id="160" name="2" gid="69" x="1664" y="1408" width="128" height="128">
+   <properties>
+    <property name="X" value="1664.00"/>
+    <property name="Y" value="1408.00"/>
+    <property name="angle" value="SOUTH"/>
+    <property name="level" value="1"/>
+    <property name="spcf" value="1.4"/>
+   </properties>
+  </object>
+  <object id="161" name="3" gid="69" x="2816" y="1280" width="128" height="128">
+   <properties>
+    <property name="X" value="2816.00"/>
+    <property name="Y" value="1280.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="1"/>
+    <property name="spcf" value="1.4"/>
+   </properties>
+  </object>
+  <object id="162" name="4" gid="69" x="2688" y="640" width="128" height="128">
+   <properties>
+    <property name="X" value="2688.00"/>
+    <property name="Y" value="640.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="1"/>
+    <property name="spcf" value="1.4"/>
+   </properties>
+  </object>
+  <object id="164" name="5" gid="59" x="1152" y="2560" width="128" height="128">
+   <properties>
+    <property name="X" value="1152.00"/>
+    <property name="Y" value="2560.00"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="2"/>
+    <property name="spcf" value="1.4"/>
+   </properties>
+  </object>
   <object id="165" name="5" x="1216" y="2496">
    <polyline points="0,0 0,-1664"/>
-  </object>
-  <object id="166" name="2" x="1728" y="1344">
-   <polyline points="0,0 -128,0 -128,640 -128,768 128,768 128,128 512,128 512,-128 1152,-128"/>
-  </object>
-  <object id="167" name="3" x="2880" y="1216">
-   <polyline points="0,0 -640,0 -640,256 -1024,256 -1024,896 -1280,896 -1280,128 -1152,128"/>
-  </object>
-  <object id="168" name="4" x="2752" y="576">
-   <polyline points="0,0 384,0 384,640 -256,640 -256,0 0,0"/>
   </object>
  </objectgroup>
  <objectgroup name="Path">
   <object id="163" name="1" x="960" y="832">
    <polyline points="0,0 0,1664"/>
+  </object>
+  <object id="169" name="4" x="2752" y="576">
+   <polyline points="0,0 384,0 384,640 -256,640 -256,0 0,0"/>
+  </object>
+  <object id="170" name="2" x="1728" y="1344">
+   <polyline points="0,0 -128,0 -128,640 -128,768 128,768 128,128 512,128 512,-128 1152,-128"/>
+  </object>
+  <object id="171" name="3" x="2880" y="1216">
+   <polyline points="0,0 -640,0 -640,256 -1024,256 -1024,896 -1280,896 -1280,128 -1152,128"/>
   </object>
  </objectgroup>
 </map>
