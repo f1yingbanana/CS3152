@@ -75,6 +75,8 @@ public class Monster extends GameObject implements Drawable{
     public float totalTime = 0;
     /** the total time of one path */
     public float cycleTime = 0;
+    /** the level of this monster */
+    public MonsterLevel monsterLevel;
 
     public enum MonsterLevel {
     	KILL, DEDUCTFLIPS, MAKEFLIP;
