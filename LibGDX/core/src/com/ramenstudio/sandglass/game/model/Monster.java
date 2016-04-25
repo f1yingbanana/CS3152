@@ -75,7 +75,13 @@ public class Monster extends GameObject implements Drawable{
     public float totalTime = 0;
     /** the total time of one path */
     public float cycleTime = 0;
+    /** the level of this monster */
+    public MonsterLevel monsterLevel;
 
+    public enum MonsterLevel {
+    	KILL, DEDUCTFLIPS, MAKEFLIP;
+    }
+    
 	/**
 	 * Create monster # id at the given position.
 	 *
@@ -83,9 +89,7 @@ public class Monster extends GameObject implements Drawable{
 	 * @param x The initial x-coordinate of the monster
 	 * @param y The initial y-coordinate of the monster
 	 */
-    
-   
-	public Monster(Vector2 initialPos, int id, int level,
+	public Monster(Vector2 initialPos, int id, MonsterLevel level,
 			float spcf, Array<Vector2> vertices, String startAngle) {
 		super();
 		this.vertices = vertices;
@@ -93,7 +97,7 @@ public class Monster extends GameObject implements Drawable{
 		angle = initAngle;
 		speed_coeff = spcf;
 		initial = initialPos;
-        if (level == 1){
+        if (level == MonsterLevel.DEDUCTFLIPS) {
         	System.out.println("this is over monster");
             setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
             fixtureDefs = new FixtureDef[3];
