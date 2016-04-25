@@ -325,6 +325,7 @@ public class GameController extends AbstractController implements ContactListene
 				(secondOne instanceof Player && firstOne instanceof Monster)) {
 
 			Monster theMonster;
+			Player thePlayer = playerController.getPlayer();
 
 			if (secondOne instanceof Monster) {
 				theMonster = (Monster)secondOne;
@@ -349,6 +350,10 @@ public class GameController extends AbstractController implements ContactListene
 
 			//TODO
 			// apply force when contact
+			
+			Vector2 collisionDirection = thePlayer.getPosition().cpy().sub(theMonster.getPosition());
+			collisionDirection.setLength(1000);
+			thePlayer.getBody().applyForceToCenter(collisionDirection, true);
 		}
 
 		if (firstOne instanceof Player &&
