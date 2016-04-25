@@ -35,7 +35,6 @@ import com.ramenstudio.sandglass.game.model.Monster.MonsterLevel;
  * @author Jiacong Xu
  */
 public class GameController extends AbstractController implements ContactListener {
-
 	/** If this flag is true, we need a new game controller. */
 	public boolean needsReset = false;
 
