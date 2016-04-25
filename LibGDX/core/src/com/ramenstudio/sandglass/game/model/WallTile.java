@@ -1,7 +1,5 @@
 package com.ramenstudio.sandglass.game.model;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -126,6 +124,14 @@ public class WallTile extends AbstractTile {
       shape.setAsBox(THICKNESS / 2, TILE_WIDTH / 2);
       fixtureDefs[0].shape = shape;
       break;
+    }
+
+    if (fixtureDefs.length > 0 && fixtureDefs[0] != null) {
+      fixtureDefs[0].friction = 0;
+    }
+    
+    if (fixtureDefs.length > 1 && fixtureDefs[1] != null) {
+      fixtureDefs[1].friction = 0;
     }
   }
 }
