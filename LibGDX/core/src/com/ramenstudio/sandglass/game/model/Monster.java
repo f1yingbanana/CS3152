@@ -180,8 +180,8 @@ public class Monster extends GameObject implements Drawable{
 			previousMove = moveBetweenTwoVertices(currentVertex, nextVertex);
 		}
 		for (int i = 1; i < vertices.size - 1; i++) {
-			Vector2 currentVertex = vertices.get(i%(vertices.size - 1));
-			Vector2 nextVertex = vertices.get((i + 1)%(vertices.size - 1));
+			Vector2 currentVertex = vertices.get(i%(vertices.size));
+			Vector2 nextVertex = vertices.get((i + 1)%(vertices.size));
 			Move currentMove = moveBetweenTwoVertices(currentVertex, nextVertex);
 			currentOrientation = orientationAfterMove(currentOrientation, 
 					previousMove, currentMove);
