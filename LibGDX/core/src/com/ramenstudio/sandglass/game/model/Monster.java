@@ -137,7 +137,7 @@ public class Monster extends GameObject implements Drawable{
                 fixtureDefs = new FixtureDef[1];
                 setSize(new Vector2(0.8f, 0.8f));
                 getBodyDef().position.set(initialPos);
-                getBodyDef().type = BodyDef.BodyType.DynamicBody;
+                getBodyDef().type = BodyDef.BodyType.StaticBody;
                 getBodyDef().gravityScale=0;
                 
                 FixtureDef underFixtureDef = new FixtureDef();

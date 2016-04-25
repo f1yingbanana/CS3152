@@ -334,7 +334,7 @@ public class GameController extends AbstractController implements ContactListene
 			}
 
 			//TODO
-			// monster level 1: deducting sand
+			// monster level 1: deducting flips
 			// monster level 2: killing you
 			// monster level 3: inducing flip
 
@@ -351,9 +351,9 @@ public class GameController extends AbstractController implements ContactListene
 			//TODO
 			// apply force when contact
 			
-			Vector2 collisionDirection = thePlayer.getPosition().cpy().sub(theMonster.getPosition());
-			collisionDirection.setLength(1000);
-			thePlayer.getBody().applyForceToCenter(collisionDirection, true);
+//			Vector2 collisionDirection = thePlayer.getPosition().cpy().sub(theMonster.getPosition());
+//			collisionDirection.setLength(1000);
+//			thePlayer.getBody().applyForceToCenter(collisionDirection, true);
 		}
 
 		if (firstOne instanceof Player &&
