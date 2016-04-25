@@ -97,6 +97,7 @@ public class Monster extends GameObject implements Drawable{
 		angle = initAngle;
 		speed_coeff = spcf;
 		initial = initialPos;
+		monsterLevel = level;
         if (level == MonsterLevel.DEDUCTFLIPS) {
         	System.out.println("this is over monster");
             setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
