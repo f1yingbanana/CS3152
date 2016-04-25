@@ -333,13 +333,15 @@ public class GameController extends AbstractController implements ContactListene
     	// monster level 3: inducing flip
     	
     	if (theMonster.monsterLevel == MonsterLevel.KILL) {
+    		getGameModel().setGameState(GameState.LOST);
+    	}
+    	else if (theMonster.monsterLevel == MonsterLevel.DEDUCTFLIPS) {
     		
     	}
     	
     	//TODO
     	// apply force when contact
     	
-      getGameModel().setGameState(GameState.LOST);
     }
 
     if (firstOne instanceof Player &&
