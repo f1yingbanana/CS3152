@@ -92,6 +92,7 @@ public class GameController extends AbstractController implements ContactListene
 		//	System.out.println(cameraCenter.toString());
 		playerController = new PlayerController(player);
 		cameraController = new CameraController(cameraCenter,loader.zoom);
+		cameraController.setTarget(player);
 
 		Array<GameObject> mArray = (Array<GameObject>) 
 				mapObjects.get(LevelLoader.LayerKey.MONSTER);

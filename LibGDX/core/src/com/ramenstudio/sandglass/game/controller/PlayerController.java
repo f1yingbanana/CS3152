@@ -77,15 +77,25 @@ public class PlayerController extends AbstractController {
 	private static final int FILMSTRIP_SIZE = 34;
 	
 	/** The frame number for neutral stance. */
-    private static final int NEUTRAL_START = 0;
+    private static final int NEUTRAL_START_EAST = 9;
+    /** The frame number for neutral stance. */
+    private static final int NEUTRAL_START_WEST = 0;
     /** The frame number for beginning a jump. */
-    private static final int JUMP_START = 1;
+    private static final int JUMP_START_EAST = 18;
     /** The frame number for ending a jump. */
-    private static final int JUMP_END = 8;
+    private static final int JUMP_END_EAST = 25;
+    /** The frame number for beginning a jump. */
+    private static final int JUMP_START_WEST = 26;
+    /** The frame number for ending a jump. */
+    private static final int JUMP_END_WEST = 33;
     /** The frame number for beginning a walk. */
-    private static final int WALK_START = 9;
+    private static final int WALK_START_EAST = 10;
     /** The frame number for ending a walk. */
-    private static final int WALK_END = 16;
+    private static final int WALK_END_EAST = 17;
+    /** The frame number for beginning a walk. */
+    private static final int WALK_START_WEST = 1;
+    /** The frame number for ending a walk. */
+    private static final int WALK_END_WEST = 8;
 	
     /** The enum for animation states. */
     public enum State {
@@ -99,11 +109,14 @@ public class PlayerController extends AbstractController {
     
     /** The direction the player is facing, relative to the camera. */
     private AngleEnum direction = AngleEnum.EAST;
+    /** The direction the player used to face, relative to the camera. */
+    private AngleEnum prevDirection = AngleEnum.EAST;
 
     private boolean isReset = false;
     
     /** Frame cooldown (frames are too quick) */
-    private static final int COOLDOWN = 3;
+    private static final int WALK_COOLDOWN = 4;
+    private static final int JUMP_COOLDOWN = 7;
     /** Frame counter */
     private int counter = 0;
 
@@ -117,9 +130,9 @@ public class PlayerController extends AbstractController {
 	 */
 	public PlayerController(Player player) {
 		this.player = player;
-		Texture playerTexture = new Texture(Gdx.files.internal("spritesheet_complete.png"));
+		Texture playerTexture = new Texture(Gdx.files.internal("Character_spritesheet.png"));
 		player.setPlayerSprite(new FilmStrip(playerTexture,FILMSTRIP_ROWS,FILMSTRIP_COLS,FILMSTRIP_SIZE));
-		player.setFrame(NEUTRAL_START);
+		player.setFrame(NEUTRAL_START_EAST);
 	}
 
 	@Override
@@ -145,6 +158,7 @@ public class PlayerController extends AbstractController {
 		boolean jump = false;
 		float x = moveSpeed * inputController.getHorizontal();
 		if (x != 0) {
+			prevDirection = direction;
 			direction = (x > 0)? AngleEnum.EAST : AngleEnum.WEST;
 		}
 //		player.direction = inputController.getHorizontal();
@@ -273,36 +287,47 @@ public class PlayerController extends AbstractController {
 	}
 
 	private void handleAnimation() {
-		int directionOffset = (direction == AngleEnum.WEST) ? 0 : FILMSTRIP_SIZE/2;
+		boolean facingEast = direction == AngleEnum.EAST;
+		boolean facedEast = prevDirection == AngleEnum.EAST;
 		int frame = player.getFrame();
 		switch (next) {
 		case NEUTRAL:
-			player.setFrame(NEUTRAL_START + directionOffset);
+			if (facingEast) player.setFrame(NEUTRAL_START_EAST);
+			else player.setFrame(NEUTRAL_START_WEST);
 			break;
 		case JUMP:
 			if (state == State.JUMP) {
-				int newFrame = frame - directionOffset + 1;
-				if (newFrame > JUMP_END) newFrame = JUMP_END;
+				int offset = (facedEast)? -JUMP_START_EAST : -JUMP_START_WEST;
+				offset += frame + 1;
+				offset = Math.min(offset, JUMP_END_EAST - JUMP_START_EAST);
 				counter++;
-				if (counter > COOLDOWN) {
+				if (counter > JUMP_COOLDOWN) {
 					counter = 0;
-					player.setFrame(newFrame + directionOffset);
+					if (facingEast) player.setFrame(JUMP_START_EAST + offset);
+					else player.setFrame(JUMP_START_WEST + offset);
+				} else {
+					if (facingEast) player.setFrame(JUMP_START_EAST + offset-1);
+					else player.setFrame(JUMP_START_WEST + offset-1);
 				}
 			} else {
-				player.setFrame(JUMP_START + directionOffset);
+				if (facingEast) player.setFrame(JUMP_START_EAST);
+				else player.setFrame(JUMP_START_WEST);
 			}
 			break;
 		case WALK:
 			if (state == State.WALK) {
-				int newFrame = frame - directionOffset + 1;
-				if (newFrame > WALK_END) newFrame = WALK_START;
+				int offset = (facedEast)? -WALK_START_EAST : -WALK_START_WEST;
+				offset += frame + 1;
+				offset = offset%(WALK_END_EAST - WALK_START_EAST);
 				counter++;
-				if (counter > COOLDOWN) {
+				if (counter > WALK_COOLDOWN) {
 					counter = 0;
-					player.setFrame(newFrame + directionOffset);
+					if (facingEast) player.setFrame(WALK_START_EAST + offset);
+					else player.setFrame(WALK_START_WEST + offset);
 				}
 			} else {
-				player.setFrame(WALK_START + directionOffset);
+				if (facingEast) player.setFrame(WALK_START_EAST);
+				else player.setFrame(WALK_START_WEST);
 			}
 			break;
 		}
