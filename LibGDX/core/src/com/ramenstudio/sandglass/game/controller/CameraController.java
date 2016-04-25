@@ -163,11 +163,6 @@ public class CameraController extends AbstractController {
 		if (zoomingOut) {
 			zoomScale += slowFactor*(maxZoom - zoomScale)/maxZoom;
 			// Don't track the player
-//			player = target;
-//			GameObject center = new GameObject();
-//			center.getBodyDef().position.set(new Vector2(0,0));
-//			center.getBodyDef().type = BodyDef.BodyType.StaticBody;
-//			target = center;
 			tracking = false;
 			viewCamera.setPosition(initPos);
 		}
@@ -210,12 +205,12 @@ public class CameraController extends AbstractController {
 		swapCameraDimensions();
 
 		// TESTING
-		count++;
-		if (Gdx.input.isKeyPressed(Input.Keys.R) && count > 10) {
-			count = 0;
-			rotate(90,false);
-		}
-		
+//		count++;
+//		if (Gdx.input.isKeyPressed(Input.Keys.R) && count > 10) {
+//			count = 0;
+//			rotate(90,false);
+//		}
+//		
 		if (InputController.getInstance().didJustPressedZoom()) {
 			zoomingOut = !zoomingOut;
 		}
