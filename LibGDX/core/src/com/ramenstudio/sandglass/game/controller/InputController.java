@@ -135,7 +135,7 @@ public class InputController extends AbstractController {
 	    right = Input.Keys.RIGHT;
 	    jump  = Input.Keys.SPACE;
 	    flip  = Input.Keys.F;
-	    reset = Input.Keys.L;
+	    reset = Input.Keys.R;
 	    zoom = Input.Keys.Z;
 			
 	    // Convert keyboard state into game commands
