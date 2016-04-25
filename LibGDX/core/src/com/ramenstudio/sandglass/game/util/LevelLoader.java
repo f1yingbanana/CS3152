@@ -14,12 +14,12 @@ import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Gate;
 import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Monster.MonsterLevel;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.Resource;
 import com.ramenstudio.sandglass.game.model.ShipPiece;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.model.WallTile;
-import com.ramenstudio.sandglass.game.model.Monster.MType;
 
 /**
  * Takes a tile map file and parses all the tiles into different layers with
@@ -34,6 +34,10 @@ public class LevelLoader {
   
   public TiledMap tiledMap;
   
+  public Vector2 center;
+  
+  public int maxFlip;
+  
   public Map<LayerKey, Array<GameObject>> loadLevel(int level) {
 	  return loadLevel("level"+level+".tmx");
   }
@@ -46,6 +50,11 @@ public class LevelLoader {
     
     Array<GameObject> Tilearr = parseGround(groundLayer, "Collision");
     Array<GameObject> playerTile = parseObject(objectLayer, "type", "player");
+    MapLayer centerLayer = (MapLayer) tiledMap.getLayers().get("Center");
+	MapObject center = centerLayer.getObjects().get(0);
+	
+	maxFlip = getFlipNumber(center);
+	this.center = getCenter(center);
     
     
     MapLayer monster = (MapLayer) tiledMap.getLayers().get("Monster");
@@ -67,12 +76,13 @@ public class LevelLoader {
   
   /**@return the number of flips allowed for the level indicated by n
    * @param filename level file name*/
-  public int getFlipNumber(String filename){
-	  tiledMap = new TmxMapLoader().load("Levels/"+filename);
-	  TiledMapTileLayer groundLayer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
-	  //TODO: Get this to actually work
-	  //return (int) groundLayer.getProperties().get("maxFlip");
-	  return 30;
+  public int getFlipNumber(MapObject center){
+	  return Integer.parseInt((String)center.getProperties().get("maxFlip"));
+  }
+  
+  public Vector2 getCenter(MapObject center){
+	  return new Vector2(Integer.parseInt((String)center.getProperties().get("X")),
+			  Integer.parseInt((String)center.getProperties().get("Y")));
   }
   
   /**
@@ -155,7 +165,7 @@ public class LevelLoader {
     }
     
     return tArr;
-  }
+  }	
   
   public Array<GameObject> parseObject(TiledMapTileLayer layer, String key, String value){
     if (layer == null)
@@ -205,7 +215,7 @@ public class LevelLoader {
 		  Vector2 initPos = new Vector2(Float.parseFloat((String)monster.getProperties().get("X"))/128,
 				  32-Float.parseFloat((String)monster.getProperties().get("Y"))/128+0.15f);
 		  int id = Integer.parseInt(p.getName());
-		  int level = Integer.parseInt((String) monster.getProperties().get("level"));
+		  MonsterLevel level = MonsterLevel.valueOf((String) monster.getProperties().get("level"));
 		  float spcf = Float.parseFloat((String) monster.getProperties().get("spcf"));
 		  Array<Vector2> vertices = new Array<Vector2>();
 		  float[] vert = p.getPolyline().getVertices();
