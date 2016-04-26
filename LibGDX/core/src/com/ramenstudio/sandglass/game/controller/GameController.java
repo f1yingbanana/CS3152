@@ -270,6 +270,10 @@ public class GameController extends AbstractController implements ContactListene
 
 
     stepPhysics(dt);
+    
+    if (!bound.contains(playerController.getPlayer().getPosition())){
+    	getGameModel().setGameState(GameState.LOST);
+    }
 
     
     if (playerController.isReset()){

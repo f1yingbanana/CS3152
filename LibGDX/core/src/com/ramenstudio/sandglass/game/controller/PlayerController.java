@@ -421,6 +421,7 @@ public class PlayerController extends AbstractController {
 	 * we decide whether we want to flip or not.
 	 */
 	private void checkCorner() {
+		activeCorner = null;
 		RayCastHandler handler;
 		if (oneFrameRayHandler == null) {
 			//            handler = new OverlapHandler();
