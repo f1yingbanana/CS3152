@@ -1,5 +1,6 @@
 package com.ramenstudio.sandglass.title.view.ui;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -10,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
  * @author Jiacong Xu
  */
 public class LevelSelectView extends Table {
+  public final Label titleLabel;
+  
   public final TextButton backButton;
   
   public final ScrollPane levelScrollPane;
@@ -23,18 +26,22 @@ public class LevelSelectView extends Table {
     
     setFillParent(true);
     
-    // Create a button to go back.
+    Table tbTable = new Table();
+    
+    titleLabel = new Label("SELECT LEVEL", skin, "title");
+    tbTable.add(titleLabel).top().left().pad(20);
+    
+    tbTable.row();
+    
     backButton = new TextButton("BACK", skin);
     
-    add(backButton).bottom().left().pad(20);
+    tbTable.add(backButton).bottom().left().pad(20).fill();
+    
+    add(tbTable).fill();
     
     levelScrollView = new LevelScrollView(skin);
     
     levelScrollPane = new ScrollPane(levelScrollView, skin);
     add(levelScrollPane).expand();
-    
-    // Add appropriate number of levels. This SHOULD be done by TitleController.
-    // Now we just add some static levels here.
-    
   }
 }

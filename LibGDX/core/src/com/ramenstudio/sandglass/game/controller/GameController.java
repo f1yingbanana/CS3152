@@ -227,10 +227,8 @@ public class GameController extends AbstractController implements ContactListene
 		world.setContactListener(this);
 	}
 
-	@Override
-	public void update(float dt) {
-		uiController.update(dt);
-    
+  @Override
+  public void update(float dt) {
     if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
       if (getGameModel().getGameState() == GameState.PLAYING) {
         pauseGame();
@@ -239,48 +237,46 @@ public class GameController extends AbstractController implements ContactListene
       }
     }
 
-		switch (getGameModel().getGameState()) {
-		case LOST:
-			uiController.setGameState(UIState.LOST);
-			return;
-		case PAUSED:
-			return;
-		case PLAYING:
-			break;
-		case WON:
-			uiController.setGameState(UIState.WON);
-			return;
-		}
+    uiController.update(dt);
+    uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
 
-		cameraController.update(dt);
-		// Order matters. Must call update BEFORE rotate on cameraController.
-		if (playerController.getRotateAngle() != 0f) {
-			cameraController.rotate(playerController.getRotateAngle());
-		}
+    switch (getGameModel().getGameState()) {
+    case LOST:
+      uiController.setGameState(UIState.LOST);
+      return;
+    case PAUSED:
+      return;
+    case PLAYING:
+      break;
+    case WON:
+      uiController.setGameState(UIState.WON);
+      return;
+    }
 
-		playerController.update(dt);
+    cameraController.update(dt);
+    // Order matters. Must call update BEFORE rotate on cameraController.
+    if (playerController.getRotateAngle() != 0f) {
+      cameraController.rotate(playerController.getRotateAngle());
+    }
 
-		boolean isUnder = playerController.isUnder();
-		gameModel.setWorldPosition(!isUnder);
+    playerController.update(dt);
 
-		for (MonsterController m: monsterController){
-			m.monster.setUnder(isUnder);
-			m.monster.update(dt);
-		}
+    gameModel.setWorldPosition(!playerController.isUnder());
 
-
-		stepPhysics(dt);
+    for (MonsterController m: monsterController){
+      m.update(dt);
+    }
 
 
-		if (playerController.isReset()){
-			reset();
-		}
-		
-		if (!bound.contains(playerController.getPlayer().getPosition())){
-			System.out.println(playerController.getPlayer().getPosition().toString());
-			getGameModel().setGameState(GameState.LOST);
-		}
-	}
+    stepPhysics(dt);
+
+    
+    if (playerController.isReset()){
+    	reset();
+
+    }
+  }
+
 
 	private void pauseGame() {
     uiController.setGameState(UIController.UIState.PAUSED);
