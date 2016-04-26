@@ -249,7 +249,7 @@ public class PlayerController extends AbstractController {
 		}
 		// Handle flipping
 		else if ((inputController.didPressFlip() || mustFlip) && canFlip() && !jump) {
-			mustFlip = false;
+
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
 				rotateAngle = 180;
@@ -269,9 +269,13 @@ public class PlayerController extends AbstractController {
 				player.setRotation(AngleEnum.convertToAngle(heading));
 				world.setGravity(world.getGravity().rotate(180));
 				isUnder ^= true;
-				player.subtractFlip();
+				if(!mustFlip){
+					player.subtractFlip();					
+				}
 			}
 		}
+		
+		mustFlip = false;
 		// Handle goal collision
 		collidedWithGoal();
 		// Handle reset button
