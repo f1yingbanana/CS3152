@@ -38,7 +38,7 @@ public class TitleView extends Table {
     setBackground(new SpriteDrawable(bgSprite));
     
     // Create a play button
-    gameStartButton = new TextButton("Start", skin);
+    gameStartButton = new TextButton("Start", skin, "purple");
     add(gameStartButton).padTop(250).padLeft(420);
     
     gameStartButton.addListener(new ClickListener() {
@@ -55,7 +55,7 @@ public class TitleView extends Table {
     
     // Create an image button
     row();
-    optionsButton = new TextButton("Options", skin);
+    optionsButton = new TextButton("Options", skin, "purple");
     add(optionsButton).padTop(50).padLeft(420);
     
     optionsButton.addListener(new ClickListener() {
@@ -71,7 +71,7 @@ public class TitleView extends Table {
     }); 
 
     row();
-    creditsButton = new TextButton("CREDITS", skin);
+    creditsButton = new TextButton("CREDITS", skin, "purple");
     add(creditsButton).padTop(50).padLeft(420);
     
     creditsButton.addListener(new ClickListener() {
@@ -87,7 +87,7 @@ public class TitleView extends Table {
     });
     
     row();
-    quitButton = new TextButton("QUIT", skin);
+    quitButton = new TextButton("QUIT", skin, "purple");
     add(quitButton).padTop(50).padLeft(420);
     
     quitButton.addListener(new ClickListener() {

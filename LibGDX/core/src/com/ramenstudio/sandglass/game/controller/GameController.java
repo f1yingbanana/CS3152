@@ -220,6 +220,7 @@ public class GameController extends AbstractController implements ContactListene
   @Override
   public void update(float dt) {
     uiController.update(dt);
+    uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
 
     switch (getGameModel().getGameState()) {
     case LOST:
@@ -335,7 +336,6 @@ public class GameController extends AbstractController implements ContactListene
     	  gameModel.setGameState(GameState.LOST);
       } else {
     	  playerController.getPlayer().subtractFlip();
-    	  uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
       }
     }
 
