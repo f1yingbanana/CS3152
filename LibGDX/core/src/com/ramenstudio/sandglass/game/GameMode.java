@@ -29,7 +29,7 @@ public class GameMode extends AbstractMode implements Screen {
   private PolygonSpriteBatch bgBatch = new PolygonSpriteBatch();
   
 
-  private Texture backgroundImage = new Texture(Gdx.files.internal("Textures/bg1.png"));
+  private Texture backgroundImage;
   
   // A debug renderer
   Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
@@ -46,6 +46,12 @@ public class GameMode extends AbstractMode implements Screen {
    * view canvas.
    */
   public GameMode(int gameLevel) {
+	if (gameLevel < 5){
+		 backgroundImage = new Texture(Gdx.files.internal("Textures/bg1.png"));
+	}
+	else {
+		 backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V1.png"));
+	}
     gameplayController = new GameController(gameLevel);
     tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
   }
