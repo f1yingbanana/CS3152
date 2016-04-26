@@ -40,7 +40,7 @@ public class PlayerController extends AbstractController {
 	private float moveSpeed = 3.0f;
 
 	/** Vertical jump velocity when jump is begun. */
-	private float jumpVelocity = 5.0f;
+	private float jumpVelocity = 5.125f;
 
 	/** Saving an instance of the delegate */
 	private World world;
@@ -72,26 +72,26 @@ public class PlayerController extends AbstractController {
 	/** Number of rows in the player image filmstrip */
 	private static final int FILMSTRIP_ROWS = 1;
 	/** Number of columns in the player image filmstrip */
-	private static final int FILMSTRIP_COLS = 34;
+	private static final int FILMSTRIP_COLS = 32;
 	/** Number of elements in the player image filmstrip */
-	private static final int FILMSTRIP_SIZE = 34;
+	private static final int FILMSTRIP_SIZE = 32;
 	
 	/** The frame number for neutral stance. */
-    private static final int NEUTRAL_START_EAST = 9;
+    private static final int NEUTRAL_START_EAST = 16;
     /** The frame number for neutral stance. */
     private static final int NEUTRAL_START_WEST = 0;
     /** The frame number for beginning a jump. */
-    private static final int JUMP_START_EAST = 18;
+    private static final int JUMP_START_EAST = 25;
     /** The frame number for ending a jump. */
-    private static final int JUMP_END_EAST = 25;
+    private static final int JUMP_END_EAST = 31;
     /** The frame number for beginning a jump. */
-    private static final int JUMP_START_WEST = 26;
+    private static final int JUMP_START_WEST = 9;
     /** The frame number for ending a jump. */
-    private static final int JUMP_END_WEST = 33;
+    private static final int JUMP_END_WEST = 15;
     /** The frame number for beginning a walk. */
-    private static final int WALK_START_EAST = 10;
+    private static final int WALK_START_EAST = 17;
     /** The frame number for ending a walk. */
-    private static final int WALK_END_EAST = 17;
+    private static final int WALK_END_EAST = 24;
     /** The frame number for beginning a walk. */
     private static final int WALK_START_WEST = 1;
     /** The frame number for ending a walk. */

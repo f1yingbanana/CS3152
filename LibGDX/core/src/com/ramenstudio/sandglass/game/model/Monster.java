@@ -16,7 +16,9 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
-import com.ramenstudio.sandglass.game.controller.MonsterController.AngleEnum;
+import com.ramenstudio.sandglass.game.controller.AngleEnum;
+import com.ramenstudio.sandglass.game.controller.PlayerController.State;
+import com.ramenstudio.sandglass.game.view.FilmStrip;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
 import com.badlogic.gdx.Gdx;
@@ -26,14 +28,14 @@ import com.badlogic.gdx.graphics.Texture;
  * A model class representing a monster.
  */
 public class Monster extends GameObject implements Drawable{
-    
-    public enum Move {
-        LEFT,
-        RIGHT,
-        UP,
-        DOWN,
-        NONE;
-    }
+
+	public enum Move {
+		LEFT,
+		RIGHT,
+		UP,
+		DOWN,
+		NONE;
+	}
 
 	public static enum MType {
 		/* For over world */
@@ -45,7 +47,7 @@ public class Monster extends GameObject implements Drawable{
 	// CONSTANTS FOR monster HANDLING
 	/** How far forward this monster can move in a single turn */
 	private static final float MOVE_SPEED = 1f;
-		
+
 	// Instance Attributes
 	/** A unique identifier; used to decouple classes. */
 	private int id;
@@ -58,30 +60,93 @@ public class Monster extends GameObject implements Drawable{
 	/** Boolean to track if we are dead yet */
 	private boolean isAlive;
 	/** Speed coefficient*/
-    public float speed_coeff;
-    /** is the path loop?*/
-    public boolean isLoop;
-    /** Starting angle orientation */
-    public AngleEnum initAngle;
-    /** heading*/
-    public AngleEnum angle;
-    /** the patrol path of the monster*/
-    public Array<Vector2> vertices;
-    /** the array of orientations the monster should take on the path */
-    public Array<AngleEnum> orientationsOnPath;
-    /** the time it takes to get from vertex i to i+1 */
-    public Array<Float> timeBetweenVertices;
-    /** the total dt time that has passed for this monster. */
-    public float totalTime = 0;
-    /** the total time of one path */
-    public float cycleTime = 0;
-    /** the level of this monster */
-    public MonsterLevel monsterLevel;
+	public float speed_coeff;
+	/** is the path loop?*/
+	public boolean isLoop;
+	/** Starting angle orientation */
+	public AngleEnum initAngle;
+	/** heading*/
+	public AngleEnum angle;
+	/** the patrol path of the monster*/
+	public Array<Vector2> vertices;
+	/** the array of orientations the monster should take on the path */
+	public Array<AngleEnum> orientationsOnPath;
+	/** the time it takes to get from vertex i to i+1 */
+	public Array<Float> timeBetweenVertices;
+	/** the total dt time that has passed for this monster. */
+	public float totalTime = 0;
+	/** the total time of one path */
+	public float cycleTime = 0;
+	/** the level of this monster */
+	public MonsterLevel monsterLevel;
 
-    public enum MonsterLevel {
-    	KILL, DEDUCTFLIPS, MAKEFLIP;
-    }
-    
+	public enum MonsterLevel {
+		DEDUCT_FLIPS, KILL, MAKE_FLIP;
+	}
+
+	// Variables for animation
+
+	/** The sprite sheet for this monster. */
+	private FilmStrip monsterSpriteLight;
+	private FilmStrip monsterSpriteDark;
+
+	/** Number of rows in the monster image filmstrip */
+	private static final int FILMSTRIP_ROWS_DEDUCT_FLIPS_LIGHT = 1;
+	/** Number of columns in the monster image filmstrip */
+	private static final int FILMSTRIP_COLS_DEDUCT_FLIPS_LIGHT = 4;
+	/** Number of elements in the monster image filmstrip */
+	private static final int FILMSTRIP_SIZE_DEDUCT_FLIPS_LIGHT = 4;
+
+	/** Number of rows in the monster image filmstrip */
+	private static final int FILMSTRIP_ROWS_DEDUCT_FLIPS_DARK = 1;
+	/** Number of columns in the monster image filmstrip */
+	private static final int FILMSTRIP_COLS_DEDUCT_FLIPS_DARK = 8;
+	/** Number of elements in the monster image filmstrip */
+	private static final int FILMSTRIP_SIZE_DEDUCT_FLIPS_DARK = 8;
+
+	/** Number of rows in the monster image filmstrip */
+	private static final int FILMSTRIP_ROWS_KILL_LIGHT = 1;
+	/** Number of columns in the monster image filmstrip */
+	private static final int FILMSTRIP_COLS_KILL_LIGHT = 4;
+	/** Number of elements in the monster image filmstrip */
+	private static final int FILMSTRIP_SIZE_KILL_LIGHT = 4;
+
+	/** Number of rows in the monster image filmstrip */
+	private static final int FILMSTRIP_ROWS_KILL_DARK = 1;
+	/** Number of columns in the monster image filmstrip */
+	private static final int FILMSTRIP_COLS_KILL_DARK = 12;
+	/** Number of elements in the monster image filmstrip */
+	private static final int FILMSTRIP_SIZE_KILL_DARK = 12;
+
+	/** Number of rows in the monster image filmstrip */
+	private static final int FILMSTRIP_ROWS_MAKE_FLIP_LIGHT = 1;
+	/** Number of columns in the monster image filmstrip */
+	private static final int FILMSTRIP_COLS_MAKE_FLIP_LIGHT = 1;
+	/** Number of elements in the monster image filmstrip */
+	private static final int FILMSTRIP_SIZE_MAKE_FLIP_LIGHT = 1;
+
+	/** Number of rows in the monster image filmstrip */
+	private static final int FILMSTRIP_ROWS_MAKE_FLIP_DARK = 1;
+	/** Number of columns in the monster image filmstrip */
+	private static final int FILMSTRIP_COLS_MAKE_FLIP_DARK = 1;
+	/** Number of elements in the monster image filmstrip */
+	private static final int FILMSTRIP_SIZE_MAKE_FLIP_DARK = 1;
+
+	/** The enum for animation states. */
+	public enum State {
+		NEUTRAL, WALK 
+	}
+
+	/** The current animation state. */
+	private State state = State.WALK;
+	/** The next animation state. */
+	private State next = State.WALK;
+
+	private boolean isUnder = false;
+	private int frame = 0;
+	private int count = 0;
+	private static final int COOLDOWN = 7;
+
 	/**
 	 * Create monster # id at the given position.
 	 *
@@ -98,63 +163,89 @@ public class Monster extends GameObject implements Drawable{
 		speed_coeff = spcf;
 		initial = initialPos;
 		monsterLevel = level;
-        if (level == MonsterLevel.DEDUCTFLIPS) {
-            setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
-            fixtureDefs = new FixtureDef[3];
-            setSize(new Vector2(0.8f, 1.2f));
-            getBodyDef().position.set(initialPos);
-            getBodyDef().type = BodyDef.BodyType.KinematicBody;
-            
-            FixtureDef fixtureDef = new FixtureDef();
-            PolygonShape shape = new PolygonShape();
-            shape.setAsBox(0.4f, 0.35f);
-            fixtureDef.density = 100.0f;
-            fixtureDef.shape = shape;
-            fixtureDefs[0] = fixtureDef;
-            fixtureDef.friction = 0.0f;
-            fixtureDef.isSensor = true;
-            
-            
-            CircleShape c = new CircleShape();
-            c.setRadius(0.3f);
-            c.setPosition(new Vector2(0, -0.35f));
-            FixtureDef fixtureDef2 = new FixtureDef();
-            fixtureDef2.shape = c;
-            fixtureDef2.isSensor = true;
-            fixtureDefs[1] = fixtureDef2;
-            
+		if (level == MonsterLevel.DEDUCT_FLIPS) {
+			//			setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
 
-            CircleShape c2 = new CircleShape();
-            c2.setRadius(0.3f);
-            c2.setPosition(new Vector2(0, 0.35f));
-            FixtureDef fixtureDef3 = new FixtureDef();
-            fixtureDef3.shape = c2;
-            fixtureDef3.isSensor = true;
-            fixtureDefs[2] = fixtureDef3;
-        }
-        else{
-                setTexture(new Texture(Gdx.app.getFiles().internal("undermonster1.png")));
-                fixtureDefs = new FixtureDef[1];
-                setSize(new Vector2(0.8f, 0.8f));
-                getBodyDef().position.set(initialPos);
-                getBodyDef().type = BodyDef.BodyType.KinematicBody;
-                getBodyDef().gravityScale=0;
-                
-                FixtureDef underFixtureDef = new FixtureDef();
-                PolygonShape underShape = new PolygonShape();
-                underShape.setAsBox(0.4f, 0.4f);
-                underFixtureDef.density = 100.0f;
-                underFixtureDef.shape = underShape;
-                fixtureDefs[0] = underFixtureDef;
-                underFixtureDef.friction = 10;
-        }
+			Texture monsterTextureLight = new Texture(Gdx.files.internal("deduct_spritesheet_light.png"));
+			Texture monsterTextureDark = new Texture(Gdx.files.internal("deduct_spritesheet_dark.png"));
+
+			monsterSpriteLight = new FilmStrip(monsterTextureLight,
+					FILMSTRIP_ROWS_DEDUCT_FLIPS_LIGHT,
+					FILMSTRIP_COLS_DEDUCT_FLIPS_LIGHT,
+					FILMSTRIP_SIZE_DEDUCT_FLIPS_LIGHT);
+			monsterSpriteDark = new FilmStrip(monsterTextureDark,
+					FILMSTRIP_ROWS_DEDUCT_FLIPS_DARK,
+					FILMSTRIP_COLS_DEDUCT_FLIPS_DARK,
+					FILMSTRIP_SIZE_DEDUCT_FLIPS_DARK);
+
+			fixtureDefs = new FixtureDef[3];
+			setSize(new Vector2(0.9f, 1.2f));
+			getBodyDef().position.set(initialPos);
+			getBodyDef().type = BodyDef.BodyType.KinematicBody;
+
+			FixtureDef fixtureDef = new FixtureDef();
+			PolygonShape shape = new PolygonShape();
+			shape.setAsBox(0.3f, 0.35f);
+			fixtureDef.density = 100.0f;
+			fixtureDef.shape = shape;
+			fixtureDefs[0] = fixtureDef;
+			fixtureDef.friction = 0.0f;
+			fixtureDef.isSensor = true;
+
+
+			CircleShape c = new CircleShape();
+			c.setRadius(0.3f);
+			c.setPosition(new Vector2(0, -0.35f));
+			FixtureDef fixtureDef2 = new FixtureDef();
+			fixtureDef2.shape = c;
+			fixtureDef2.isSensor = true;
+			fixtureDefs[1] = fixtureDef2;
+
+
+			CircleShape c2 = new CircleShape();
+			c2.setRadius(0.3f);
+			c2.setPosition(new Vector2(0, 0.35f));
+			FixtureDef fixtureDef3 = new FixtureDef();
+			fixtureDef3.shape = c2;
+			fixtureDef3.isSensor = true;
+			fixtureDefs[2] = fixtureDef3;
+		} else{
+			//			setTexture(new Texture(Gdx.app.getFiles().internal("undermonster1.png")));
+
+			Texture monsterTextureLight = new Texture(Gdx.files.internal("kill_spritesheet_light.png"));
+			Texture monsterTextureDark = new Texture(Gdx.files.internal("kill_spritesheet_dark.png"));
+
+			monsterSpriteLight = new FilmStrip(monsterTextureLight,
+					FILMSTRIP_ROWS_KILL_LIGHT,
+					FILMSTRIP_COLS_KILL_LIGHT,
+					FILMSTRIP_SIZE_KILL_LIGHT);
+			monsterSpriteDark = new FilmStrip(monsterTextureDark,
+					FILMSTRIP_ROWS_KILL_DARK,
+					FILMSTRIP_COLS_KILL_DARK,
+					FILMSTRIP_SIZE_KILL_DARK);
+
+			fixtureDefs = new FixtureDef[1];
+			setSize(new Vector2(0.8f, 0.8f));
+			getBodyDef().position.set(initialPos);
+			getBodyDef().type = BodyDef.BodyType.KinematicBody;
+			getBodyDef().gravityScale=0;
+
+			FixtureDef underFixtureDef = new FixtureDef();
+			CircleShape underShape = new CircleShape();
+			underShape.setRadius(0.4f);
+//			underShape.setAsBox(0.4f, 0.4f);
+			underFixtureDef.density = 100.0f;
+			underFixtureDef.shape = underShape;
+			fixtureDefs[0] = underFixtureDef;
+			underFixtureDef.friction = 10;
+		}
 		isAlive = true;
 		isLoop = (vertices.get(0).epsilonEquals(vertices.get(vertices.size-1),0.01f));
-		
-		
+
+
 		parametrizeVertices();
 	}
-	
+
 	/** 
 	 * Private helper method to help parametrize vertices and orientations
 	 * during the path of the monster.
@@ -162,12 +253,12 @@ public class Monster extends GameObject implements Drawable{
 	private void parametrizeVertices() {
 		orientationsOnPath = new Array<AngleEnum>();
 		timeBetweenVertices = new Array<Float>();
-		
+
 		AngleEnum currentOrientation = initAngle;
 		orientationsOnPath.add(initAngle);
-		
+
 		Move previousMove = null;
-		
+
 		if (vertices.size >= 2) {
 			Vector2 currentVertex = vertices.get(0);
 			Vector2 nextVertex = vertices.get(1);
@@ -194,7 +285,7 @@ public class Monster extends GameObject implements Drawable{
 			cycleTime = cycleTime * 2;
 		}
 	}
-	
+
 	/**
 	 * Calculates the move that the monster must take between the
 	 * two vertices.
@@ -219,7 +310,7 @@ public class Monster extends GameObject implements Drawable{
 			}
 		}
 	}
-	
+
 	private AngleEnum orientationAfterMove(AngleEnum currentAngle, Move currentMove, Move nextMove) {
 		if (currentAngle == AngleEnum.NORTH) {
 			if (currentMove == Move.LEFT) {
@@ -293,11 +384,11 @@ public class Monster extends GameObject implements Drawable{
 				}
 			}
 		}
-		
+
 		assert(false);
 		return null;
 	}
-	
+
 	/** 
 	 * Returns the unique monster id number 
 	 * 
@@ -306,7 +397,7 @@ public class Monster extends GameObject implements Drawable{
 	public int getId() {
 		return id;
 	}
-	
+
 
 	/* Returns the monster ypte
 	 *
@@ -315,29 +406,29 @@ public class Monster extends GameObject implements Drawable{
 	public MType getType() {
 		return mType;
 	}
-	
+
 	/**
 	 * Returns the goal of this monster
 	 *
 	 * @return the goal
 	 */
-	
+
 	public Vector2 getGoal(){
 		return goal;
 	}
-	
+
 	/**
 	 * Sets the goal of this monster
 	 * 
 	 * @param the goal of this monster
 	 */
-	
+
 	public void setGoal(Vector2 goal){
 		this.goal = goal;
 	}
-	
 
-	
+
+
 	/**
 	 * Returns whether or not the monster is alive.
 	 *
@@ -350,11 +441,11 @@ public class Monster extends GameObject implements Drawable{
 	public boolean isAlive() {
 		return isAlive;
 	}
-	
+
 	public boolean isAtGoal(){
-	    return this.getBody().getPosition().epsilonEquals(goal, 0.0f);
+		return this.getBody().getPosition().epsilonEquals(goal, 0.0f);
 	}
-	
+
 	/**
 	 * Sets whether or not the monster is alive.
 	 *
@@ -366,7 +457,7 @@ public class Monster extends GameObject implements Drawable{
 	public void setAlive(boolean value) {
 		isAlive = value;
 	}
-	
+
 	/**
 	 * Push the monster so that it starts to fall.
 	 * 
@@ -376,12 +467,12 @@ public class Monster extends GameObject implements Drawable{
 	public void destroy() {
 		// TODO: Implement
 	}
-	
+
 	/**
 	 * Plays the appropriate sound for this monster's current 
 	 */
 	public void play() {
-		
+
 	}
 
 	/**
@@ -391,6 +482,10 @@ public class Monster extends GameObject implements Drawable{
 	 */
 	public void update(float dt) {
 		totalTime += dt;
+		
+		// Animation
+		handleAnimation();
+				
 		if (isLoop) {
 			float periodicTime = totalTime % cycleTime;
 			for (int i = 0; i < timeBetweenVertices.size; i++) {
@@ -441,11 +536,55 @@ public class Monster extends GameObject implements Drawable{
 			}
 		}
 	}
-	
+
+
+	private void handleAnimation() {
+		if (next == State.WALK) {
+			int maxFrame = 0;
+			switch (monsterLevel) {
+			case DEDUCT_FLIPS:
+				if (isUnder) {
+					maxFrame = FILMSTRIP_SIZE_DEDUCT_FLIPS_DARK;
+				} else {
+					maxFrame = FILMSTRIP_SIZE_DEDUCT_FLIPS_LIGHT;
+				}
+				break;
+			case KILL:
+				if (isUnder) {
+					maxFrame = FILMSTRIP_SIZE_KILL_DARK;
+				} else {
+					maxFrame = FILMSTRIP_SIZE_KILL_LIGHT;
+				}
+				break;
+			case MAKE_FLIP:
+				if (isUnder) {
+					maxFrame = FILMSTRIP_SIZE_MAKE_FLIP_DARK;
+				} else {
+					maxFrame = FILMSTRIP_SIZE_MAKE_FLIP_LIGHT;
+				}
+				break;
+			}
+			count++;
+			if (count > COOLDOWN) {
+				count = 0;
+				frame ++;
+			} 
+			frame = frame%maxFrame;
+		}
+		
+	}
 
 	@Override
 	public void draw(GameCanvas canvas){
-		canvas.draw(getTextureRegion(), getBody().getPosition().add(getSize().cpy().scl(-0.5f)), 
-		        getSize(), new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+		//		canvas.draw(getTextureRegion(), getBody().getPosition().add(getSize().cpy().scl(-0.5f)), 
+		//		        getSize(), new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+		FilmStrip monsterSprite = (isUnder)? monsterSpriteDark : monsterSpriteLight;
+		monsterSprite.setFrame(frame);
+		canvas.draw(monsterSprite, getBody().getPosition().add(getSize().cpy().scl(-0.5f)), 
+				getSize(), new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+	}
+
+	public void setUnder(boolean under) {
+		isUnder  = under;
 	}
 }

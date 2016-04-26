@@ -256,10 +256,12 @@ public class GameController extends AbstractController implements ContactListene
 
 		playerController.update(dt);
 
-		gameModel.setWorldPosition(!playerController.isUnder());
+		boolean isUnder = playerController.isUnder();
+		gameModel.setWorldPosition(!isUnder);
 
 		for (MonsterController m: monsterController){
-			m.update(dt);
+			m.monster.setUnder(isUnder);
+			m.monster.update(dt);
 		}
 
 
@@ -357,10 +359,10 @@ public class GameController extends AbstractController implements ContactListene
 			if (theMonster.monsterLevel == MonsterLevel.KILL) {
 				getGameModel().setGameState(GameState.LOST);
 			}
-			else if (theMonster.monsterLevel == MonsterLevel.DEDUCTFLIPS) {
+			else if (theMonster.monsterLevel == MonsterLevel.DEDUCT_FLIPS) {
 				playerController.getPlayer().subtractFlip();
 			}
-			else if (theMonster.monsterLevel == MonsterLevel.MAKEFLIP) {
+			else if (theMonster.monsterLevel == MonsterLevel.MAKE_FLIP) {
 				playerController.setMustFlip();
 			}
 

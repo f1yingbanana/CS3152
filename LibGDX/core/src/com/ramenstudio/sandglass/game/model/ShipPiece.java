@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -24,10 +25,10 @@ public class ShipPiece extends GameObject implements Drawable {
 	    getBodyDef().type = BodyDef.BodyType.StaticBody;
 	    getBodyDef().position.set(pos);
 	    fixtureDefs = new FixtureDef[1];
-	    PolygonShape shape = new PolygonShape();
+	    CircleShape shape = new CircleShape();
 	    fixtureDefs[0] = new FixtureDef();
 	    fixtureDefs[0].isSensor = true;
-	    shape.setAsBox(size.x*0.5f, size.y*0.5f);
+	    shape.setRadius(0.35f);
 	    fixtureDefs[0].shape = shape;
 	}
 	

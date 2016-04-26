@@ -61,7 +61,7 @@ public class Player extends GameObject implements Drawable {
 		fixtureDefs[1] = fixtureDef2;
 
 		CircleShape c2 = new CircleShape();
-		c2.setRadius(0.4f);
+		c2.setRadius(0.3f);
 		c2.setPosition(new Vector2(0, 0.35f));
 		FixtureDef fixtureDef3 = new FixtureDef();
 		fixtureDef3.shape = c2;
