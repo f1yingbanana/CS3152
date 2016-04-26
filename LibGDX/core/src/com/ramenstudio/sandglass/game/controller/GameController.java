@@ -276,7 +276,8 @@ public class GameController extends AbstractController implements ContactListene
 			reset();
 		}
 		
-		if (!bound.contains(playerController.getPlayer().getPosition())){
+		if (!bound.contains(playerController.getPlayer().getPosition()) || 
+				playerController.getPlayer().getFlips() < 0){
 			System.out.println(playerController.getPlayer().getPosition().toString());
 			getGameModel().setGameState(GameState.LOST);
 		}
