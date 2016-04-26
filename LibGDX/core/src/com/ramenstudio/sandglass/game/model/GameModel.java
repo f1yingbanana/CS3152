@@ -98,6 +98,7 @@ public class GameModel implements Drawable {
   /**@param the Gate object for this level*/
   public void setGate(Gate g){
 	  gate = g;
+	  g.setTextureLevel(gameLevel);
   }
   
   
@@ -109,6 +110,10 @@ public class GameModel implements Drawable {
     // Tells all objects to render themselves with the given canvas.
       for (ShipPiece s : getShipPieces()) {
         s.draw(canvas);
+      }
+      
+      for (Resource r: getResources()){
+    	  r.draw(canvas);
       }
     
     gate.draw(canvas);

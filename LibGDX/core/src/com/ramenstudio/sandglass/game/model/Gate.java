@@ -22,7 +22,7 @@ public class Gate extends GameObject implements Drawable {
 	//the texture of the gate while open
 	private Texture openTexture;
 	//the current texture of the gate
-	private Texture texture = new Texture(Gdx.files.internal("gate.png"));
+	private Texture texture;
 	
 	private boolean allPiecesCollected;
 	
@@ -45,6 +45,15 @@ public class Gate extends GameObject implements Drawable {
 	public void setOpen(){
 		open = true;
 		//texture = openTexture;
+	}
+	
+	public void setTextureLevel(int gameLevel){
+		if (gameLevel < 5){
+	    	texture = new Texture(Gdx.files.internal("gate.png"));
+	    }
+	    else{
+	    	texture = new Texture(Gdx.files.internal("gate.v2.png"));
+	    }
 	}
 	
 	/**@return true if the gate is open*/
