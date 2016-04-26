@@ -86,7 +86,7 @@ public class GameController extends AbstractController implements ContactListene
 	public LevelLoader loader = new LevelLoader();
 
 	private Map<LevelLoader.LayerKey, Array<GameObject>> mapObjects;
-	
+
 	private Rectangle bound;
 
 
@@ -151,7 +151,7 @@ public class GameController extends AbstractController implements ContactListene
 	private ClickListener pauseButtonCallback = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-		  pauseGame();
+			pauseGame();
 		}
 	};
 
@@ -161,7 +161,7 @@ public class GameController extends AbstractController implements ContactListene
 	private ClickListener resumeButtonCallback = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-		  resumeGame();
+			resumeGame();
 		}
 	};
 
@@ -227,72 +227,75 @@ public class GameController extends AbstractController implements ContactListene
 		world.setContactListener(this);
 	}
 
-  @Override
-  public void update(float dt) {
-    if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-      if (getGameModel().getGameState() == GameState.PLAYING) {
-        pauseGame();
-      } else if (getGameModel().getGameState() == GameState.PAUSED) {
-        resumeGame();
-      }
-    }
+	@Override
+	public void update(float dt) {
+		if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+			if (getGameModel().getGameState() == GameState.PLAYING) {
+				pauseGame();
+			} else if (getGameModel().getGameState() == GameState.PAUSED) {
+				resumeGame();
+			}
+		}
 
-    uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
-    uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
-    uiController.update(dt);
+		uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
+		uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
+		uiController.update(dt);
 
-    switch (getGameModel().getGameState()) {
-    case LOST:
-      uiController.setGameState(UIState.LOST);
-      return;
-    case PAUSED:
-      return;
-    case PLAYING:
-      break;
-    case WON:
-      uiController.setGameState(UIState.WON);
-      return;
-    }
+		switch (getGameModel().getGameState()) {
+			case LOST:
+				uiController.setGameState(UIState.LOST);
+				return;
+			case PAUSED:
+				return;
+			case PLAYING:
+				break;
+			case WON:
+				uiController.setGameState(UIState.WON);
+				return;
+		}
 
-    cameraController.update(dt);
-    // Order matters. Must call update BEFORE rotate on cameraController.
-    if (playerController.getRotateAngle() != 0f) {
-      cameraController.rotate(playerController.getRotateAngle());
-    }
+		cameraController.update(dt);
+		// Order matters. Must call update BEFORE rotate on cameraController.
+		if (playerController.getRotateAngle() != 0f) {
+			cameraController.rotate(playerController.getRotateAngle());
+		}
 
-    playerController.update(dt);
+		playerController.update(dt);
 
-    gameModel.setWorldPosition(!playerController.isUnder());
+		boolean isUnder = playerController.isUnder();
+		gameModel.setWorldPosition(!isUnder);
 
-    for (MonsterController m: monsterController){
-      m.update(dt);
-    }
+		for (MonsterController m: monsterController){
+			m.monster.setUnder(isUnder);
+			m.monster.update(dt);
+		}
 
 
-    stepPhysics(dt);
-    
-    if (!bound.contains(playerController.getPlayer().getPosition())){
-    	getGameModel().setGameState(GameState.LOST);
-    }
+		stepPhysics(dt);
 
-    
-    if (playerController.isReset()){
-    	reset();
+		if (!bound.contains(playerController.getPlayer().getPosition()) || 
+				playerController.getPlayer().getFlips()<0){
+			getGameModel().setGameState(GameState.LOST);
+		}
 
-    }
-  }
+
+		if (playerController.isReset()){
+			reset();
+
+		}
+	}
 
 
 	private void pauseGame() {
-    uiController.setGameState(UIController.UIState.PAUSED);
-    getGameModel().setGameState(GameState.PAUSED);
+		uiController.setGameState(UIController.UIState.PAUSED);
+		getGameModel().setGameState(GameState.PAUSED);
 	}
-	
+
 	private void resumeGame() {
-    uiController.setGameState(UIController.UIState.PLAYING);
-    getGameModel().setGameState(GameState.PLAYING);
+		uiController.setGameState(UIController.UIState.PLAYING);
+		getGameModel().setGameState(GameState.PLAYING);
 	}
-	
+
 	private void reset() {
 		needsReset = true;
 	}
@@ -378,7 +381,7 @@ public class GameController extends AbstractController implements ContactListene
 
 			//TODO
 			// apply force when contact
-			
+
 		}
 
 		if (firstOne instanceof Player &&
