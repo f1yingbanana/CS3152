@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -85,6 +86,8 @@ public class GameController extends AbstractController implements ContactListene
 	public LevelLoader loader = new LevelLoader();
 
 	private Map<LevelLoader.LayerKey, Array<GameObject>> mapObjects;
+	
+	private Rectangle bound;
 
 
 	public GameController(int gameLevel) {
@@ -93,6 +96,7 @@ public class GameController extends AbstractController implements ContactListene
 		Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
 		player.setFlips(loader.maxFlip);
 		Vector2 cameraCenter = loader.center;
+		bound = loader.bound;
 		//	System.out.println(cameraCenter.toString());
 		playerController = new PlayerController(player);
 		cameraController = new CameraController(cameraCenter,loader.zoom);
@@ -268,6 +272,11 @@ public class GameController extends AbstractController implements ContactListene
 
 		if (playerController.isReset()){
 			reset();
+		}
+		
+		if (!bound.contains(playerController.getPlayer().getPosition())){
+			System.out.println(playerController.getPlayer().getPosition().toString());
+			getGameModel().setGameState(GameState.LOST);
 		}
 	}
 
