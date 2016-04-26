@@ -3,6 +3,7 @@ package com.ramenstudio.sandglass.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -66,7 +67,12 @@ public class GameMode extends AbstractMode implements Screen {
   public void render(float delta) {
     // Implements an update-draw loop
     gameplayController.update(delta);
-    
+    if (!gameplayController.getGameModel().isInOverworld()){
+    	bgBatch.setColor(Color.GRAY);
+    }
+    else{
+    	bgBatch.setColor(Color.WHITE);
+    }
     // Now we render all objects that we can render
     canvas.clear();
     
