@@ -3,6 +3,7 @@ package com.ramenstudio.sandglass.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -19,6 +20,7 @@ import com.ramenstudio.sandglass.util.AbstractMode;
  * @author Jiacong Xu
  */
 public class GameMode extends AbstractMode implements Screen {
+
 	// The game play controller that handles the basic logic of the game
 	private GameController gameplayController;
 
@@ -29,7 +31,7 @@ public class GameMode extends AbstractMode implements Screen {
 	private PolygonSpriteBatch bgBatch = new PolygonSpriteBatch();
 
 
-	private Texture backgroundImage = new Texture(Gdx.files.internal("Textures/bg1.png"));
+	private Texture backgroundImage;
 
 	// A debug renderer
 	Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
@@ -46,6 +48,12 @@ public class GameMode extends AbstractMode implements Screen {
 	 * view canvas.
 	 */
 	public GameMode(int gameLevel) {
+		if (gameLevel < 5){
+			backgroundImage = new Texture(Gdx.files.internal("Textures/bg1.png"));
+		}
+		else {
+			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V1.png"));
+		}
 		gameplayController = new GameController(gameLevel);
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
 	}
@@ -60,7 +68,12 @@ public class GameMode extends AbstractMode implements Screen {
 	public void render(float delta) {
 		// Implements an update-draw loop
 		gameplayController.update(delta);
-
+		if (!gameplayController.getGameModel().isInOverworld()){
+			bgBatch.setColor(Color.GRAY);
+		}
+		else{
+			bgBatch.setColor(Color.WHITE);
+		}
 		// Now we render all objects that we can render
 		canvas.clear();
 
@@ -88,7 +101,6 @@ public class GameMode extends AbstractMode implements Screen {
 		if (debug) {
 			debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
 		}
-
 
 		// UI RENDER - special case. UI has to be rendered outside loop.
 		gameplayController.uiController.draw(canvas);
@@ -133,5 +145,4 @@ public class GameMode extends AbstractMode implements Screen {
 	public String[] getResourcePaths() {
 		return null;
 	}
-
 }

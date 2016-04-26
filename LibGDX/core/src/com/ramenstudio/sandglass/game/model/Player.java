@@ -41,7 +41,7 @@ public class Player extends GameObject implements Drawable {
 		fixtureDefs = new FixtureDef[3];
 
 //		setTexture(player);
-		setSize(new Vector2(0.8f, 1.5f));
+		setSize(new Vector2(1.0f, 1.5f));
 		getBodyDef().position.set(initialPos);
 		getBodyDef().type = BodyDef.BodyType.DynamicBody;
 
