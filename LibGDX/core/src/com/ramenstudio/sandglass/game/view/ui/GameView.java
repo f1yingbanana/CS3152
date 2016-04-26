@@ -22,6 +22,8 @@ public class GameView extends Table {
   
   public final Label flipCountLabel;
   
+  public final Label shipPieceCountLabel;
+  
   /**
    * Default constructor. Uses the given skin to set up the pause screen UI.
    * @param skin is the style-sheet for the widgets.
@@ -33,7 +35,12 @@ public class GameView extends Table {
     this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UIOverlay.png")))));
 
     flipCountLabel = new Label("10", skin, "title");
-    add(flipCountLabel).top().left().pad(80);
+    add(flipCountLabel).top().left().pad(85);
+
+    shipPieceCountLabel = new Label("10", skin, "title");
+    add(shipPieceCountLabel).top().right().padTop(265).padRight(30);
+    
+    
     row();
     
     pauseButton = new TextButton("         ", skin);
@@ -44,4 +51,9 @@ public class GameView extends Table {
   public void setFlipCount(int flipsLeft) {
     flipCountLabel.setText("" + flipsLeft);
   }
+  
+  public void setShipPieceCount(int shipPiecesLeft, int maxShipPieces) {
+    shipPieceCountLabel.setText("" + shipPiecesLeft + "/" + maxShipPieces);
+  }
 }
+

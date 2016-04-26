@@ -237,8 +237,9 @@ public class GameController extends AbstractController implements ContactListene
       }
     }
 
-    uiController.update(dt);
     uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
+    uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
+    uiController.update(dt);
 
     switch (getGameModel().getGameState()) {
     case LOST:
