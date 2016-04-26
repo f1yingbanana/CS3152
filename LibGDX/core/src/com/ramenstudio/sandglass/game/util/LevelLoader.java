@@ -237,8 +237,8 @@ public class LevelLoader {
 
 		for (PolylineMapObject p : polys){
 			MapObject monster = monLayer.getObjects().get(p.getName());
-			Vector2 initPos = new Vector2(Float.parseFloat((String)monster.getProperties().get("X"))/128,
-					32-Float.parseFloat((String)monster.getProperties().get("Y"))/128+0.15f);
+			Vector2 initPos = new Vector2(Float.parseFloat((String)monster.getProperties().get("X"))/128+0.5f,
+					32-Float.parseFloat((String)monster.getProperties().get("Y"))/128+0.5f);
 			int id = Integer.parseInt(p.getName());
 			MonsterLevel level = MonsterLevel.valueOf((String) monster.getProperties().get("level"));
 			float spcf = Float.parseFloat((String) monster.getProperties().get("spcf"));

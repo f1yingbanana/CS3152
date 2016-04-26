@@ -178,39 +178,20 @@ public class Monster extends GameObject implements Drawable{
 					FILMSTRIP_COLS_DEDUCT_FLIPS_DARK,
 					FILMSTRIP_SIZE_DEDUCT_FLIPS_DARK);
 
-			fixtureDefs = new FixtureDef[3];
-			setSize(new Vector2(0.9f, 1.2f));
+			fixtureDefs = new FixtureDef[1];
+			setSize(new Vector2(0.8f, 0.8f));
 			getBodyDef().position.set(initialPos);
 			getBodyDef().type = BodyDef.BodyType.KinematicBody;
 
 			FixtureDef fixtureDef = new FixtureDef();
 			PolygonShape shape = new PolygonShape();
-			shape.setAsBox(0.3f, 0.35f);
+			shape.setAsBox(0.4f, 0.4f);
 			fixtureDef.density = 100.0f;
 			fixtureDef.shape = shape;
 			fixtureDefs[0] = fixtureDef;
 			fixtureDef.friction = 0.0f;
 			fixtureDef.isSensor = true;
-
-
-			CircleShape c = new CircleShape();
-			c.setRadius(0.3f);
-			c.setPosition(new Vector2(0, -0.35f));
-			FixtureDef fixtureDef2 = new FixtureDef();
-			fixtureDef2.shape = c;
-			fixtureDef2.isSensor = true;
-			fixtureDefs[1] = fixtureDef2;
-
-
-			CircleShape c2 = new CircleShape();
-			c2.setRadius(0.3f);
-			c2.setPosition(new Vector2(0, 0.35f));
-			FixtureDef fixtureDef3 = new FixtureDef();
-			fixtureDef3.shape = c2;
-			fixtureDef3.isSensor = true;
-			fixtureDefs[2] = fixtureDef3;
 		} else{
-			//			setTexture(new Texture(Gdx.app.getFiles().internal("undermonster1.png")));
 
 			Texture monsterTextureLight = new Texture(Gdx.files.internal("kill_spritesheet_light.png"));
 			Texture monsterTextureDark = new Texture(Gdx.files.internal("kill_spritesheet_dark.png"));
