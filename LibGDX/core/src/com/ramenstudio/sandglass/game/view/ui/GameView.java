@@ -36,7 +36,7 @@ public class GameView extends Table {
     add(flipCountLabel).top().left().pad(80);
     row();
     
-    pauseButton = new TextButton("PAUSE [P]", skin);
+    pauseButton = new TextButton("         ", skin);
     add(pauseButton).expand().bottom().right().padTop(60).padLeft(40);
     
   }
