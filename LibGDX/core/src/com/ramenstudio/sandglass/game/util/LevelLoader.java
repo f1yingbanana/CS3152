@@ -90,7 +90,6 @@ public class LevelLoader {
 		Rectangle rec = ((RectangleMapObject) bound).getRectangle();
 		rec.setSize(Math.round(rec.width/128),Math.round(rec.height/128));
 		rec.setPosition(Math.round(rec.x/128),Math.round(rec.y/128));
-		System.out.println(rec.toString());
 		return rec;
 	}
 
