@@ -1,6 +1,7 @@
 package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -41,14 +42,12 @@ public class PlayerController extends AbstractController {
 
 	/** Vertical jump velocity when jump is begun. */
 	private float jumpVelocity = 5.125f;
-
 	/** Saving an instance of the delegate */
 	private World world;
 
 	// Variables concerned with turning at corners.
 	
 	//number of flips we have left in this level
-	private int flips;
 
 	/** The active corner we are tracking whether we should turn or not. */
 	private TurnTile activeCorner;
@@ -66,6 +65,8 @@ public class PlayerController extends AbstractController {
 
 	/** The direction the player's head is facing. */
 	private AngleEnum heading = AngleEnum.NORTH;
+	
+	private int tick;
 	
 	// Variables for animation
 	
@@ -145,13 +146,12 @@ public class PlayerController extends AbstractController {
 	@Override
 	public void update(float dt) {
 		inputController.update(dt);
-
+		player.isGrounded = isGrounded();
 		// Reset variables
 		rotateAngle = 0f;
 
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.getBody().getLinearVelocity();
-		Vector2 grav = world.getGravity();
 		Vector2 size = player.getSize();
 
 		// Handle movement
@@ -249,7 +249,7 @@ public class PlayerController extends AbstractController {
 		}
 		// Handle flipping
 		else if ((inputController.didPressFlip() || mustFlip) && canFlip() && !jump) {
-			mustFlip = false;
+
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
 				rotateAngle = 180;
@@ -269,9 +269,16 @@ public class PlayerController extends AbstractController {
 				player.setRotation(AngleEnum.convertToAngle(heading));
 				world.setGravity(world.getGravity().rotate(180));
 				isUnder ^= true;
-				player.subtractFlip();
+				if(player.isTouchMF()){
+					player.setTouchMF(false);
+				}
+				if(!mustFlip){
+					player.subtractFlip();					
+				}
 			}
 		}
+		
+		mustFlip = false;
 		// Handle goal collision
 		collidedWithGoal();
 		// Handle reset button
@@ -280,6 +287,26 @@ public class PlayerController extends AbstractController {
 		}
 		oneFrameRayHandler = null;
 		oneFrameOverlapHandler = null;
+		
+		if (player.isImpulse){
+			player.getBody().applyLinearImpulse(player.getImpulse(), player.getBody().getPosition(), true);
+			player.isImpulse = false;
+		}
+		
+		if (player.isDeductFlip()){
+			tick++;
+			if (tick < player.DEDUCT_COOL_TIME){
+				player.subtractFlip();
+			}
+			else{
+				tick = 0;
+				player.setDeductFlip(false);
+			}
+		}
+		
+		if (player.isTouchMF()){
+			mustFlip = true;
+		}
 		
 		// Handle animation
 		handleAnimation();

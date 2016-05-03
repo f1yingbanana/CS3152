@@ -51,8 +51,14 @@ public class GameMode extends AbstractMode implements Screen {
 		if (gameLevel < 5){
 			backgroundImage = new Texture(Gdx.files.internal("Textures/bg1.png"));
 		}
-		else {
+		else if (gameLevel < 9){
 			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V1.png"));
+		}
+		else if (gameLevel < 13){
+			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V2.png"));
+		}
+		else {
+			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V3.png"));
 		}
 		gameplayController = new GameController(gameLevel);
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
