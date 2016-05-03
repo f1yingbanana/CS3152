@@ -212,6 +212,7 @@ public class GameController extends AbstractController implements ContactListene
 
 		for (MonsterController m: monsterController){
 			m.objectSetup(world);
+			m.monster.target = playerController.getPlayer();
 		}
 
 		for (ShipPiece c : getGameModel().getShipPieces()) {
@@ -362,23 +363,28 @@ public class GameController extends AbstractController implements ContactListene
 				(secondOne instanceof Player && firstOne instanceof Monster)) {
 
 			Monster theMonster;
+			Player thePlayer;
 
 			if (secondOne instanceof Monster) {
 				theMonster = (Monster)secondOne;
+				thePlayer = (Player)firstOne;
 			} else {
 				theMonster = (Monster)firstOne;
+				thePlayer = (Player)secondOne;
 			}
 
 			if (theMonster.monsterLevel == MonsterLevel.KILL) {
 				getGameModel().setGameState(GameState.LOST);
 			}
 			else if (theMonster.monsterLevel == MonsterLevel.DEDUCT_FLIPS) {
-				playerController.getPlayer().subtractFlip();
+				playerController.getPlayer().setDeductFlip(true);
 			}
 			else if (theMonster.monsterLevel == MonsterLevel.MAKE_FLIP) {
-				playerController.setMustFlip();
+				playerController.getPlayer().setTouchMF(true);
 			}
-
+			Vector2 impulse = theMonster.getBody().getLinearVelocity().scl(theMonster.getBody().getMass()).
+					sub(thePlayer.getBody().getLinearVelocity().scl(thePlayer.getBody().getMass()));
+			thePlayer.setImpulse(impulse.cpy().scl(1.2f));
 			//TODO
 			// apply force when contact
 

@@ -77,6 +77,8 @@ public class Monster extends GameObject implements Drawable{
 	public float totalTime = 0;
 	/** the total time of one path */
 	public float cycleTime = 0;
+	/** the target, which is the player*/
+	public Player target;
 	/** the level of this monster */
 	public MonsterLevel monsterLevel;
 
@@ -178,20 +180,31 @@ public class Monster extends GameObject implements Drawable{
 					FILMSTRIP_COLS_DEDUCT_FLIPS_DARK,
 					FILMSTRIP_SIZE_DEDUCT_FLIPS_DARK);
 
-			fixtureDefs = new FixtureDef[1];
+			fixtureDefs = new FixtureDef[2];
 			setSize(new Vector2(0.8f, 0.8f));
 			getBodyDef().position.set(initialPos);
 			getBodyDef().type = BodyDef.BodyType.KinematicBody;
 
 			FixtureDef fixtureDef = new FixtureDef();
-			PolygonShape shape = new PolygonShape();
-			shape.setAsBox(0.4f, 0.4f);
+			CircleShape shape = new CircleShape();
+			shape.setRadius(0.2f);
+			shape.setPosition(new Vector2(0.0f,0.2f));
 			fixtureDef.density = 100.0f;
 			fixtureDef.shape = shape;
+			fixtureDef.isSensor =true;
 			fixtureDefs[0] = fixtureDef;
 			fixtureDef.friction = 0.0f;
-			fixtureDef.isSensor = true;
-		} else{
+			
+			FixtureDef fixtureDef1 = new FixtureDef();
+			CircleShape shape1 = new CircleShape();
+			shape1.setRadius(0.2f);
+			shape1.setPosition(new Vector2(0.0f,-0.2f));
+			fixtureDef1.density = 100.0f;
+			fixtureDef1.shape = shape1;
+			fixtureDef1.isSensor =true;
+			fixtureDefs[1] = fixtureDef1;
+			fixtureDef1.friction = 0.0f;
+		} else if (level == MonsterLevel.KILL){
 
 			Texture monsterTextureLight = new Texture(Gdx.files.internal("kill_spritesheet_light.png"));
 			Texture monsterTextureDark = new Texture(Gdx.files.internal("kill_spritesheet_dark.png"));
@@ -216,6 +229,31 @@ public class Monster extends GameObject implements Drawable{
 			underShape.setRadius(0.4f);
 //			underShape.setAsBox(0.4f, 0.4f);
 			underFixtureDef.density = 100.0f;
+			underFixtureDef.shape = underShape;
+			underFixtureDef.isSensor = true;
+			fixtureDefs[0] = underFixtureDef;
+			underFixtureDef.friction = 10;
+		}
+		
+		else if (level == MonsterLevel.MAKE_FLIP){
+			Texture monsterTextureLight = new Texture(Gdx.files.internal("Makeflip.png"));
+			Texture monsterTextureDark = new Texture(Gdx.files.internal("Makeflip2.png"));
+
+			monsterSpriteLight = new FilmStrip(monsterTextureLight,1,1,1);
+			monsterSpriteDark = new FilmStrip(monsterTextureDark,1,1,1);
+
+			fixtureDefs = new FixtureDef[1];
+			setSize(new Vector2(0.8f, 0.8f));
+			getBodyDef().position.set(initialPos);
+			getBodyDef().type = BodyDef.BodyType.KinematicBody;
+			getBodyDef().gravityScale=0;
+
+			FixtureDef underFixtureDef = new FixtureDef();
+			CircleShape underShape = new CircleShape();
+			underShape.setRadius(0.4f);
+//			underShape.setAsBox(0.4f, 0.4f);
+			underFixtureDef.density = 100.0f;
+			underFixtureDef.isSensor = true;
 			underFixtureDef.shape = underShape;
 			fixtureDefs[0] = underFixtureDef;
 			underFixtureDef.friction = 10;
@@ -466,7 +504,7 @@ public class Monster extends GameObject implements Drawable{
 		
 		// Animation
 		handleAnimation();
-				
+
 		if (isLoop) {
 			float periodicTime = totalTime % cycleTime;
 			for (int i = 0; i < timeBetweenVertices.size; i++) {
@@ -478,8 +516,13 @@ public class Monster extends GameObject implements Drawable{
 					distanceVectorToNext.scl(periodicTime);
 					Vector2 finalPos = distanceVectorToNext.add(vertices.get(i));
 					setPosition(finalPos);
-					angle = orientationsOnPath.get(i);
-					setRotation(AngleEnum.convertToAngle(angle));
+					if (monsterLevel==MonsterLevel.MAKE_FLIP){
+						angle = orientationsOnPath.get(i);
+						setRotation(AngleEnum.convertToAngle(angle));
+					}
+					else{
+						setRotation(target.getRotation());
+					}
 					return;
 				}
 			}
@@ -496,8 +539,13 @@ public class Monster extends GameObject implements Drawable{
 					distanceVectorToNext.scl(periodicTime);
 					Vector2 finalPos = distanceVectorToNext.add(vertices.get(i));
 					setPosition(finalPos);
-					angle = orientationsOnPath.get(i);
-					setRotation(AngleEnum.convertToAngle(angle));
+					if (monsterLevel==MonsterLevel.MAKE_FLIP){
+						angle = orientationsOnPath.get(i);
+						setRotation(AngleEnum.convertToAngle(angle));
+					}
+					else{
+						setRotation(target.getRotation());
+					}
 					return;
 				}
 			}
@@ -510,8 +558,13 @@ public class Monster extends GameObject implements Drawable{
 					distanceVectorToPrevious.scl(periodicTime);
 					Vector2 finalPos = distanceVectorToPrevious.add(vertices.get(i+1));
 					setPosition(finalPos);
-					angle = orientationsOnPath.get(i);
-					setRotation(AngleEnum.convertToAngle(angle));
+					if (monsterLevel==MonsterLevel.MAKE_FLIP){
+						angle = orientationsOnPath.get(i);
+						setRotation(AngleEnum.convertToAngle(angle));
+					}
+					else{
+						setRotation(target.getRotation());
+					}
 					return;
 				}
 			}
@@ -554,6 +607,7 @@ public class Monster extends GameObject implements Drawable{
 		}
 		
 	}
+	
 
 	@Override
 	public void draw(GameCanvas canvas){

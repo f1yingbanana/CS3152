@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="189">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="214">
  <tileset firstgid="1" source="newTile.tsx"/>
  <tileset firstgid="73" source="tileset.V1.tsx"/>
  <layer name="Ground" width="32" height="32">
@@ -14,14 +14,14 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,73,75,76,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,80,79,84,85,98,0,80,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,73,75,75,91,90,128,85,129,75,91,75,75,76,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,84,85,85,85,85,85,85,85,85,85,85,85,98,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,84,85,140,107,107,139,85,140,107,107,139,85,114,115,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,84,85,98,0,0,84,85,98,0,110,111,85,98,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,99,100,85,98,0,110,111,85,98,80,0,84,85,98,79,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,73,75,128,85,129,75,75,128,85,129,91,75,128,85,129,90,76,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,84,85,85,85,85,85,85,85,85,85,85,85,85,85,85,85,98,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,106,107,107,107,123,124,107,107,107,123,124,123,107,107,107,107,109,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,73,75,75,75,91,90,128,85,129,75,91,75,75,75,76,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,84,85,85,85,85,85,85,85,85,85,85,85,85,85,98,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,84,85,85,140,107,107,139,85,140,107,107,139,85,85,98,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,84,85,85,98,0,0,84,85,98,0,110,84,85,85,98,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,84,85,85,98,0,110,111,85,98,80,0,84,85,85,98,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,73,75,128,85,85,129,75,75,128,85,129,91,75,128,85,85,129,75,76,0,0,0,0,0,0,
+0,0,0,0,0,0,0,84,85,85,85,85,85,85,85,85,85,85,85,85,85,85,85,85,85,98,0,0,0,0,0,0,
+0,0,0,0,0,0,0,106,107,107,107,107,123,124,107,107,107,123,124,123,107,107,107,107,107,109,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,134,135,0,0,0,134,135,134,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -39,19 +39,19 @@
 </data>
  </layer>
  <objectgroup name="Monster">
-  <object id="161" name="1" gid="59" x="1408" y="1536" width="128" height="128">
+  <object id="161" name="1" gid="59" x="1216" y="1536" width="128" height="128">
    <properties>
-    <property name="X" value="1408"/>
+    <property name="X" value="1216"/>
     <property name="Y" value="1536"/>
-    <property name="angle" value="NORTH"/>
+    <property name="angle" value="EAST"/>
     <property name="level" value="MAKE_FLIP"/>
     <property name="spcf" value="1.6"/>
    </properties>
   </object>
-  <object id="165" name="2" gid="59" x="2048" y="1792" width="128" height="128">
+  <object id="165" name="2" gid="59" x="2432" y="2240" width="128" height="128">
    <properties>
     <property name="X" value="2048"/>
-    <property name="Y" value="1792"/>
+    <property name="Y" value="2240"/>
     <property name="angle" value="NORTH"/>
     <property name="level" value="MAKE_FLIP"/>
     <property name="spcf" value="1.6"/>
@@ -75,14 +75,35 @@
     <property name="spcf" value="1.3"/>
    </properties>
   </object>
-  <object id="174" name="5" gid="59" x="2688" y="1536" width="128" height="128">
+  <object id="174" name="5" gid="59" x="2624" y="1856" width="128" height="128">
    <properties>
-    <property name="X" value="2688"/>
-    <property name="Y" value="1536"/>
-    <property name="angle" value="NORTH"/>
+    <property name="X" value="2624"/>
+    <property name="Y" value="1856"/>
+    <property name="angle" value="EAST"/>
     <property name="level" value="MAKE_FLIP"/>
     <property name="spcf" value="1.6"/>
    </properties>
+  </object>
+  <object id="192" name="6" gid="157" x="1024" y="1792" width="128" height="128">
+   <properties>
+    <property name="X" value="1024"/>
+    <property name="Y" value="1792"/>
+    <property name="angle" value="WEST"/>
+    <property name="level" value="DEDUCT_FLIPS"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
+  <object id="195" name="7" gid="157" x="3072" y="1792" width="128" height="128">
+   <properties>
+    <property name="X" value="3072"/>
+    <property name="Y" value="1792"/>
+    <property name="angle" value="EAST"/>
+    <property name="level" value="DEDUCT_FLIPS"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
+  <object id="213" name="2" x="2560" y="2240">
+   <polyline points="0,0 -896,0"/>
   </object>
  </objectgroup>
  <layer name="Object" width="32" height="32">
@@ -100,7 +121,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,71,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -122,23 +143,26 @@
 </data>
  </layer>
  <objectgroup name="Path">
-  <object id="164" name="1" x="1472" y="1472">
-   <polyline points="0,0 0,640"/>
-  </object>
-  <object id="169" name="3" x="2176" y="1024">
-   <polyline points="0,0 -256,0 -256,256 -256,0 128,0 128,256"/>
-  </object>
-  <object id="177" name="5" x="2752" y="1472">
-   <polyline points="0,0 0,640"/>
+  <object id="164" name="1" x="1344" y="1472">
+   <polyline points="0,0 0,382.417"/>
   </object>
   <object id="179" name="4" x="2112" y="2368">
    <polyline points="0,0 -384,0 384,0"/>
   </object>
-  <object id="182" name="2" x="2112" y="1728">
-   <polyline points="0,0 0,384"/>
+  <object id="191" name="3" x="2112" y="960">
+   <polyline points="0,0 -256,0 -256,256 -256,0 256,0 256,256"/>
+  </object>
+  <object id="199" name="7" x="3200" y="1792">
+   <polyline points="0,0 0,-256 0,128"/>
+  </object>
+  <object id="200" name="6" x="1152" y="1792">
+   <polyline points="0,0 0,-256 0,128"/>
+  </object>
+  <object id="208" name="5" x="2688" y="1792">
+   <polyline points="0,0 0,-256 -512,-256 -512,256 0,256 0,0"/>
   </object>
  </objectgroup>
- <objectgroup name="Center">
+ <objectgroup name="Center" visible="0">
   <object id="185" name="center" x="2048" y="1600" width="128" height="128">
    <properties>
     <property name="X" value="16"/>
