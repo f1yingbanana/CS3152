@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.scene.input.KeyCode;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -275,8 +274,7 @@ public class GameController extends AbstractController implements ContactListene
 
 		stepPhysics(dt);
 
-		System.out.println("the player velocity is : " +
-				playerController.getPlayer().getBody().getLinearVelocity());
+		//System.out.println("the player velocity is : " + playerController.getPlayer().getBody().getLinearVelocity());
 
 		if (!bound.contains(playerController.getPlayer().getPosition()) || 
 				playerController.getPlayer().getFlips()<0){
@@ -365,7 +363,7 @@ public class GameController extends AbstractController implements ContactListene
 
 		if ((firstOne instanceof Player && secondOne instanceof Monster) ||
 				(secondOne instanceof Player && firstOne instanceof Monster)) {
-			System.out.println("monsterContact");
+			//System.out.println("monsterContact");
 
 			Monster theMonster;
 			Player thePlayer;
@@ -389,23 +387,23 @@ public class GameController extends AbstractController implements ContactListene
 			}
 			
 			
-			System.out.println("original velocity : " + thePlayer.getBody().getLinearVelocity());
+			//System.out.println("original velocity : " + thePlayer.getBody().getLinearVelocity());
 			
 			float angle = (float)(180/Math.PI) *
 					AngleEnum.convertToAngle(playerController.getHeading());
-			System.out.println("angle: "+ angle);
+			//System.out.println("angle: "+ angle);
 			
 
-			Vector2 impulse = thePlayer.getBody().getLinearVelocity().x > 0 ? new Vector2(-300f,-100f) :
-				new Vector2(300f,-100f);
-			System.out.println(" the player is rotating at " + playerController.getHeading().toString());
+			Vector2 impulse = thePlayer.getBody().getLinearVelocity().x > 0 ? new Vector2(-900f,-50f) :
+				new Vector2(900f,-50f);
+			//System.out.println(" the player is rotating at " + playerController.getHeading().toString());
 			Vector2 relativeVel = thePlayer.getBody().getLinearVelocity().
 					cpy().rotate((float)(180/Math.PI) *
 							AngleEnum.convertToAngle(playerController.getHeading()));
-			System.out.println("The relative velocity is : "+ relativeVel);
+			//System.out.println("The relative velocity is : "+ relativeVel);
 			Vector2 relImpulse = impulse.rotate(angle);
 			
-			System.out.println("the impulse is : " + relImpulse);
+			//System.out.println("the impulse is : " + relImpulse);
 			thePlayer.setImpulse(relImpulse);
 			//TODO
 			// apply force when contact
