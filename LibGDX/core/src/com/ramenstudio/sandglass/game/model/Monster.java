@@ -180,30 +180,31 @@ public class Monster extends GameObject implements Drawable{
 					FILMSTRIP_COLS_DEDUCT_FLIPS_DARK,
 					FILMSTRIP_SIZE_DEDUCT_FLIPS_DARK);
 
-			fixtureDefs = new FixtureDef[2];
+			fixtureDefs = new FixtureDef[1];
 			setSize(new Vector2(0.8f, 0.8f));
 			getBodyDef().position.set(initialPos);
-			getBodyDef().type = BodyDef.BodyType.KinematicBody;
+			getBodyDef().type = BodyDef.BodyType.StaticBody;
+			getBodyDef().gravityScale = 0;
 
 			FixtureDef fixtureDef = new FixtureDef();
 			CircleShape shape = new CircleShape();
-			shape.setRadius(0.2f);
-			shape.setPosition(new Vector2(0.0f,0.2f));
+			shape.setRadius(0.4f);
+//			shape.setPosition(new Vector2(0.0f,0.2f));
 			fixtureDef.density = 100.0f;
 			fixtureDef.shape = shape;
-			fixtureDef.isSensor =true;
+			//fixtureDef.isSensor =true;
 			fixtureDefs[0] = fixtureDef;
 			fixtureDef.friction = 0.0f;
 			
-			FixtureDef fixtureDef1 = new FixtureDef();
-			CircleShape shape1 = new CircleShape();
-			shape1.setRadius(0.2f);
-			shape1.setPosition(new Vector2(0.0f,-0.2f));
-			fixtureDef1.density = 100.0f;
-			fixtureDef1.shape = shape1;
-			fixtureDef1.isSensor =true;
-			fixtureDefs[1] = fixtureDef1;
-			fixtureDef1.friction = 0.0f;
+//			FixtureDef fixtureDef1 = new FixtureDef();
+//			CircleShape shape1 = new CircleShape();
+//			shape1.setRadius(0.2f);
+//			shape1.setPosition(new Vector2(0.0f,-0.2f));
+//			fixtureDef1.density = 100.0f;
+//			fixtureDef1.shape = shape1;
+//			fixtureDef1.isSensor =true;
+//			fixtureDefs[1] = fixtureDef1;
+//			fixtureDef1.friction = 0.0f;
 		} else if (level == MonsterLevel.KILL){
 
 			Texture monsterTextureLight = new Texture(Gdx.files.internal("kill_spritesheet_light.png"));
@@ -221,8 +222,8 @@ public class Monster extends GameObject implements Drawable{
 			fixtureDefs = new FixtureDef[1];
 			setSize(new Vector2(0.8f, 0.8f));
 			getBodyDef().position.set(initialPos);
-			getBodyDef().type = BodyDef.BodyType.KinematicBody;
-			getBodyDef().gravityScale=0;
+			getBodyDef().type = BodyDef.BodyType.StaticBody;
+			getBodyDef().gravityScale = 0;
 
 			FixtureDef underFixtureDef = new FixtureDef();
 			CircleShape underShape = new CircleShape();
@@ -230,7 +231,7 @@ public class Monster extends GameObject implements Drawable{
 //			underShape.setAsBox(0.4f, 0.4f);
 			underFixtureDef.density = 100.0f;
 			underFixtureDef.shape = underShape;
-			underFixtureDef.isSensor = true;
+			//underFixtureDef.isSensor = true;
 			fixtureDefs[0] = underFixtureDef;
 			underFixtureDef.friction = 10;
 		}
@@ -245,18 +246,41 @@ public class Monster extends GameObject implements Drawable{
 			fixtureDefs = new FixtureDef[1];
 			setSize(new Vector2(0.8f, 0.8f));
 			getBodyDef().position.set(initialPos);
-			getBodyDef().type = BodyDef.BodyType.KinematicBody;
-			getBodyDef().gravityScale=0;
+			getBodyDef().type = BodyDef.BodyType.StaticBody;
+			getBodyDef().gravityScale = 0;
 
-			FixtureDef underFixtureDef = new FixtureDef();
-			CircleShape underShape = new CircleShape();
-			underShape.setRadius(0.4f);
+			
+			CircleShape c = new CircleShape();
+			c.setRadius(0.3f);
+			c.setPosition(new Vector2(0f,-0.1f));
+			PolygonShape underShape = new PolygonShape();
+			int NUM_EDGES = 4;
+			
+			Vector2[] vertex = new Vector2[NUM_EDGES];
+			float xRadius = size.x / 2.0f;
+			float yRadius = size.y / 8.0f * 3f;
+			float xOff = 0f;
+			float yOff = -0.1f;
+			
+			vertex[0] = new Vector2(xOff-xRadius+0.1f, yOff);
+			vertex[1] = new Vector2(xOff+xRadius-0.1f, yOff);
+			vertex[2] = new Vector2(xOff+xRadius, yOff-yRadius);
+			vertex[3] = new Vector2(xOff-xRadius, yOff-yRadius);
+			
+			underShape.setAsBox(xRadius,yRadius/3f);
 //			underShape.setAsBox(0.4f, 0.4f);
+			FixtureDef underFixtureDef = new FixtureDef();
+			FixtureDef underFixtureDef2 = new FixtureDef();
 			underFixtureDef.density = 100.0f;
-			underFixtureDef.isSensor = true;
-			underFixtureDef.shape = underShape;
-			fixtureDefs[0] = underFixtureDef;
+			underFixtureDef2.density = 100.0f;
+			//underFixtureDef.isSensor = true;
+			underFixtureDef.shape = c;
+			underFixtureDef2.shape = underShape;
 			underFixtureDef.friction = 10;
+			underFixtureDef2.friction = 10;
+			fixtureDefs[0] = underFixtureDef;
+			//fixtureDefs[1] = underFixtureDef2;
+			
 		}
 		isAlive = true;
 		isLoop = (vertices.get(0).epsilonEquals(vertices.get(vertices.size-1),0.01f));
@@ -462,7 +486,7 @@ public class Monster extends GameObject implements Drawable{
 	}
 
 	public boolean isAtGoal(){
-		return this.getBody().getPosition().epsilonEquals(goal, 0.0f);
+		return this.getBody().getPosition().epsilonEquals(goal, 1f);
 	}
 
 	/**
