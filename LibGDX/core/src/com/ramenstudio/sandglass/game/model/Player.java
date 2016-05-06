@@ -35,11 +35,7 @@ public class Player extends GameObject implements Drawable {
 	
 	private boolean isTouchMF;
 	
-	public static int DEDUCT_COOL_TIME = 3;
-	
-	private Color color;
-	
-	private SpriteBatch sb;
+	public int DEDUCT_COOL_TIME = 2;
 
 	public boolean isGrounded;
     
@@ -65,26 +61,28 @@ public class Player extends GameObject implements Drawable {
 
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.3f, 0.35f);
+		shape.setAsBox(0.2f, 0.45f);
 		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.density = 10.0f;
 		fixtureDef.shape = shape;
+		fixtureDef.restitution = 0.2f;
 		fixtureDefs[0] = fixtureDef;
-		fixtureDef.friction = 0;
 
 		CircleShape c = new CircleShape();
 		c.setRadius(0.2f);
 		c.setPosition(new Vector2(0, -0.55f));
 		FixtureDef fixtureDef2 = new FixtureDef();
 		fixtureDef2.shape = c;
+		fixtureDef2.density = 100f;
+		fixtureDef2.friction = 0;
 		fixtureDefs[1] = fixtureDef2;
 
 		CircleShape c2 = new CircleShape();
-		c2.setRadius(0.3f);
-		c2.setPosition(new Vector2(0, 0.35f));
+		c2.setRadius(0.2f);
+		c2.setPosition(new Vector2(0, 0.55f));
 		FixtureDef fixtureDef3 = new FixtureDef();
 		fixtureDef3.shape = c2;
 		fixtureDefs[2] = fixtureDef3;
+		
 		
 //		int NUM_EDGES = 8;
 //		float stepSize = 2*(float)Math.PI / NUM_EDGES;
@@ -119,8 +117,8 @@ public class Player extends GameObject implements Drawable {
 	  }
 	  
 	  /**decrement the number of flips*/
-	  public void subtractFlip(){
-		  flips--;
+	  public void subtractFlip(int n){
+		  flips-=n;
 	  }
 	  
 	  /**@param s the new number of flips*/
@@ -192,9 +190,7 @@ public class Player extends GameObject implements Drawable {
 	@Override
 	public void setBody(Body body) {
 		super.setBody(body);
-
 	}
-
 
 	public Vector2 getImpulse() {
 		return impulse;

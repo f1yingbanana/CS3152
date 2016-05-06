@@ -1,5 +1,6 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -274,6 +275,9 @@ public class GameController extends AbstractController implements ContactListene
 
 		stepPhysics(dt);
 
+		System.out.println("the player velocity is : " +
+				playerController.getPlayer().getBody().getLinearVelocity());
+
 		if (!bound.contains(playerController.getPlayer().getPosition()) || 
 				playerController.getPlayer().getFlips()<0){
 			getGameModel().setGameState(GameState.LOST);
@@ -361,6 +365,7 @@ public class GameController extends AbstractController implements ContactListene
 
 		if ((firstOne instanceof Player && secondOne instanceof Monster) ||
 				(secondOne instanceof Player && firstOne instanceof Monster)) {
+			System.out.println("monsterContact");
 
 			Monster theMonster;
 			Player thePlayer;
@@ -382,9 +387,26 @@ public class GameController extends AbstractController implements ContactListene
 			else if (theMonster.monsterLevel == MonsterLevel.MAKE_FLIP) {
 				playerController.getPlayer().setTouchMF(true);
 			}
-			Vector2 impulse = theMonster.getBody().getLinearVelocity().scl(theMonster.getBody().getMass()).
-					sub(thePlayer.getBody().getLinearVelocity().scl(thePlayer.getBody().getMass()));
-			thePlayer.setImpulse(impulse.cpy().scl(1.2f));
+			
+			
+			System.out.println("original velocity : " + thePlayer.getBody().getLinearVelocity());
+			
+			float angle = (float)(180/Math.PI) *
+					AngleEnum.convertToAngle(playerController.getHeading());
+			System.out.println("angle: "+ angle);
+			
+
+			Vector2 impulse = thePlayer.getBody().getLinearVelocity().x > 0 ? new Vector2(-300f,-100f) :
+				new Vector2(300f,-100f);
+			System.out.println(" the player is rotating at " + playerController.getHeading().toString());
+			Vector2 relativeVel = thePlayer.getBody().getLinearVelocity().
+					cpy().rotate((float)(180/Math.PI) *
+							AngleEnum.convertToAngle(playerController.getHeading()));
+			System.out.println("The relative velocity is : "+ relativeVel);
+			Vector2 relImpulse = impulse.rotate(angle);
+			
+			System.out.println("the impulse is : " + relImpulse);
+			thePlayer.setImpulse(relImpulse);
 			//TODO
 			// apply force when contact
 
@@ -449,6 +471,7 @@ public class GameController extends AbstractController implements ContactListene
 	public void preSolve(Contact contact, Manifold oldManifold) {}
 
 	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {}
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+	}
 
 }

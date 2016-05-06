@@ -38,7 +38,7 @@ public class PlayerController extends AbstractController {
 	private float rayDist = 0.3f;
 
 	/** Maximum move speed in horizontal movement */
-	private float moveSpeed = 3.0f;
+	private float moveSpeed = 3.5f;
 
 	/** Vertical jump velocity when jump is begun. */
 	private float jumpVelocity = 5.125f;
@@ -254,7 +254,7 @@ public class PlayerController extends AbstractController {
 			if (under.isFlippable()) {
 				rotateAngle = 180;
 				float tilePos;
-				float offset = 0.1f + size.y/2;;
+				float offset = 0.05f + size.y/2;;
 				if (AngleEnum.isVertical(heading)) {
 					tilePos = under.getPosition().y;
 					pos.y = heading == AngleEnum.SOUTH ? 
@@ -273,7 +273,7 @@ public class PlayerController extends AbstractController {
 					player.setTouchMF(false);
 				}
 				if(!mustFlip){
-					player.subtractFlip();					
+					player.subtractFlip(1);					
 				}
 			}
 		}
@@ -290,13 +290,15 @@ public class PlayerController extends AbstractController {
 		
 		if (player.isImpulse){
 			player.getBody().applyLinearImpulse(player.getImpulse(), player.getBody().getPosition(), true);
+			System.out.println("GIVING IMPULSE NOW. I SHOULD ONLY APPEAR ONCE");
+//			player.getBody().applyForceToCenter(player.getImpulse().cpy().scl(80.0f), true);
 			player.isImpulse = false;
 		}
 		
 		if (player.isDeductFlip()){
 			tick++;
 			if (tick < player.DEDUCT_COOL_TIME){
-				player.subtractFlip();
+				player.subtractFlip(2);
 			}
 			else{
 				tick = 0;
@@ -310,6 +312,7 @@ public class PlayerController extends AbstractController {
 		
 		// Handle animation
 		handleAnimation();
+		//System.out.println(player.getBody().getLinearVelocity().toString());
 	}
 
 	private void handleAnimation() {
@@ -555,6 +558,10 @@ public class PlayerController extends AbstractController {
 			theUpperRight = new Vector2(playerPos.x + playerSize.y, playerPos.y + playerSize.x);
 		}
 		return theUpperRight;
+	}
+	
+	public AngleEnum getHeading(){
+		return heading;
 	}
 
 	/**
