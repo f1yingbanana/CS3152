@@ -366,7 +366,7 @@ public class GameController extends AbstractController implements ContactListene
 			//System.out.println("monsterContact");
 
 			Monster theMonster;
-			Player thePlayer;
+			Player thePlayer = playerController.getPlayer();
 
 			if (secondOne instanceof Monster) {
 				theMonster = (Monster)secondOne;
@@ -405,9 +405,8 @@ public class GameController extends AbstractController implements ContactListene
 			
 			//System.out.println("the impulse is : " + relImpulse);
 			thePlayer.setImpulse(relImpulse);
-			//TODO
+			//TODOs
 			// apply force when contact
-
 		}
 
 		if (firstOne instanceof Player &&
