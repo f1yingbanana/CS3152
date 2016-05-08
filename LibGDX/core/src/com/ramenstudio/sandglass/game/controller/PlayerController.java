@@ -41,7 +41,7 @@ public class PlayerController extends AbstractController {
 	private float moveSpeed = 3.5f;
 
 	/** Vertical jump velocity when jump is begun. */
-	private float jumpVelocity = 5.125f;
+	private float jumpVelocity = 5.25f;
 	/** Saving an instance of the delegate */
 	private World world;
 
