@@ -346,6 +346,7 @@ public class GameController extends AbstractController implements ContactListene
 				(secondOne instanceof Player && firstOne instanceof Monster)) {
 
 			Monster theMonster;
+			Player thePlayer = playerController.getPlayer();
 
 			if (secondOne instanceof Monster) {
 				theMonster = (Monster)secondOne;
@@ -357,7 +358,7 @@ public class GameController extends AbstractController implements ContactListene
 				getGameModel().setGameState(GameState.LOST);
 			}
 			else if (theMonster.monsterLevel == MonsterLevel.DEDUCTFLIPS) {
-				playerController.getPlayer().subtractFlip();
+				thePlayer.subtractFlip();
 			}
 			else if (theMonster.monsterLevel == MonsterLevel.MAKEFLIP) {
 				playerController.setMustFlip();
@@ -365,7 +366,6 @@ public class GameController extends AbstractController implements ContactListene
 
 			//TODO
 			// apply force when contact
-			
 		}
 
 		if (firstOne instanceof Player &&
