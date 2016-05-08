@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="150">
+ <tileset firstgid="1" source="newTile.tsx"/>
+ <tileset firstgid="73" name="tileset.V3" tilewidth="128" tileheight="128" tilecount="88" columns="11">
+  <image source="tileset.V3.png" width="1408" height="1025"/>
+  <terraintypes>
+   <terrain name="tile3" tile="-1"/>
+  </terraintypes>
+  <tile id="0" terrain=",,,0">
+   <properties>
+    <property name="Collision" value="top_left"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="2" terrain=",,0,0">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="3" terrain=",,0,">
+   <properties>
+    <property name="Collision" value="top_right"/>
+   </properties>
+  </tile>
+  <tile id="11" terrain=",0,,0">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="12" terrain="0,0,0,0"/>
+  <tile id="14">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="25" terrain="0,,0,">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="27">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="30">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="33" terrain=",0,,">
+   <properties>
+    <property name="Collision" value="bottom_left"/>
+   </properties>
+  </tile>
+  <tile id="34" terrain="0,0,,">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="35">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="36" terrain="0,,,">
+   <properties>
+    <property name="Collision" value="bottom_right"/>
+   </properties>
+  </tile>
+  <tile id="38">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="41">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="50">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="51">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="55" terrain=",0,0,0">
+   <properties>
+    <property name="Collision" value="inside_top_left"/>
+   </properties>
+  </tile>
+  <tile id="56" terrain="0,,0,0">
+   <properties>
+    <property name="Collision" value="inside_top_right"/>
+   </properties>
+  </tile>
+  <tile id="66" terrain="0,0,,0">
+   <properties>
+    <property name="Collision" value="inside_bottom_left"/>
+   </properties>
+  </tile>
+  <tile id="67" terrain="0,0,0,">
+   <properties>
+    <property name="Collision" value="inside_bottom_right"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="161" source="tileset.V1.tsx"/>
+ <layer name="Ground" width="32" height="32">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,168,0,168,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,161,163,163,179,163,179,163,163,164,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,172,173,173,173,173,173,173,173,186,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,172,173,173,173,173,173,173,173,217,163,163,163,164,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,168,0,172,173,173,173,173,173,173,173,173,173,173,173,186,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,161,163,179,163,216,173,173,173,173,173,173,173,173,173,173,173,186,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,172,173,173,173,173,173,173,173,173,173,173,173,228,195,212,211,197,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,172,173,173,173,173,173,173,173,173,173,173,173,186,0,223,222,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,194,195,195,211,227,173,173,228,195,211,195,195,197,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,222,172,173,173,186,0,222,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,172,173,173,186,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,172,173,173,186,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,172,173,173,186,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,194,211,195,197,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,222,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer name="Object" width="32" height="32">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,70,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,71,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup name="Monster">
+  <object id="114" name="2" type="UnderMonster" gid="59" x="2688" y="1664" width="128" height="128">
+   <properties>
+    <property name="X" value="2688"/>
+    <property name="Y" value="1664"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="KILL"/>
+    <property name="spcf" value="1.00"/>
+   </properties>
+  </object>
+  <object id="115" name="1" type="UnderMonster" gid="59" x="2048" y="1920" width="128" height="128">
+   <properties>
+    <property name="X" value="2048"/>
+    <property name="Y" value="1920"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="KILL"/>
+    <property name="spcf" value="1.00"/>
+   </properties>
+  </object>
+  <object id="118" name="3" type="OverMonster" gid="69" x="2176" y="1088" width="128" height="128">
+   <properties>
+    <property name="X" value="2176"/>
+    <property name="Y" value="1088"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="MAKE_FLIP"/>
+    <property name="spcf" value="1.00"/>
+   </properties>
+  </object>
+  <object id="123" name="4" gid="1073741893" x="2112" y="2112" width="128" height="128">
+   <properties>
+    <property name="X" value="2112"/>
+    <property name="Y" value="2112"/>
+    <property name="angle" value="SOUTH"/>
+    <property name="level" value="MAKE_FLIP"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="Path">
+  <object id="116" name="2" type="UnderMonster" x="2749.7" y="1596.98">
+   <polyline points="0,0 -256,0 -256,-128 0,-128 0,0"/>
+  </object>
+  <object id="117" name="1" x="2106.87" y="1851.15">
+   <polyline points="0,0 -512,0 -512,-512"/>
+  </object>
+  <object id="145" name="4" x="2176" y="2048">
+   <polyline points="0,0 -384,0 -384,640 -896,640 -896,256"/>
+  </object>
+  <object id="148" name="3" x="2240" y="1024">
+   <polyline points="0,0 -971.552,3.0031 -967.125,507.651"/>
+  </object>
+ </objectgroup>
+ <objectgroup name="Center" visible="0">
+  <object id="126" name="center" x="1792" y="1792" width="128" height="128">
+   <properties>
+    <property name="X" value="14"/>
+    <property name="Y" value="14"/>
+    <property name="longest" value="16"/>
+    <property name="maxFlips" value="20"/>
+   </properties>
+  </object>
+  <object id="128" name="bound" x="256" y="256" width="3328" height="2944"/>
+ </objectgroup>
+</map>

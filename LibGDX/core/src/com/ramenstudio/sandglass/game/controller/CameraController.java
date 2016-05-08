@@ -65,13 +65,16 @@ public class CameraController extends AbstractController {
 	private Vector2 originalSize;
 	
 	/** The current zoom scale factor of the camera */
-	private float zoomScale = 1f;
+	private float zoomScale;
 	
 	/** Used to provide drag to the camera as it is zooming in/out */
 	private final float slowFactor = .05f;
 	
 	/** The maximum zoom of the camera */
-	private final float maxZoom = 2f;
+	private float maxZoom;
+	
+	/** The minimum zoom of the camera */
+	private float minZoom = 1f;
 	
 	/** Used to store whether the camera should be currently zooming in or zooming out */
 	private boolean zoomingOut = true;
@@ -81,9 +84,7 @@ public class CameraController extends AbstractController {
 	 * Creates a viewCamera controller and initializes the game viewCamera.
 	 */
 	public CameraController() {
-		float ratio = (float)Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-		originalSize = new Vector2(9 * ratio, 9);
-		viewCamera = new GameCamera(originalSize);
+		this(new Vector2(0,0), 1f);
 	}
 
 	/**
@@ -92,11 +93,14 @@ public class CameraController extends AbstractController {
 	 * @param initialPosition is the position where the viewCamera is created.
 	 */
 	public CameraController(Vector2 initialPosition, float zoom) {
-		this();
+		float ratio = (float)Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
+		originalSize = new Vector2(9 * ratio, 9);
+		viewCamera = new GameCamera(originalSize);
 		initPos = initialPosition.cpy();
-		viewCamera.getCamera().zoom = zoom + 0.5f;
 		tracking = false;
 		zoomingOut = true;
+		zoomScale = zoom + 0.5f;
+		maxZoom = zoom + 0.5f;
 	}
 
 	/**
@@ -165,10 +169,9 @@ public class CameraController extends AbstractController {
 			zoomScale += slowFactor*(maxZoom - zoomScale)/maxZoom;
 			// Don't track the player
 			tracking = false;
-//			viewCamera.setPosition(initPos);
 		}
 		else {
-			zoomScale -= slowFactor*(zoomScale - 1f)/1f;
+			zoomScale -= slowFactor*(zoomScale - minZoom)/minZoom;
 			tracking = true;
 		}
 		// Apply the zoomScale
@@ -189,19 +192,19 @@ public class CameraController extends AbstractController {
 				viewCamera.setRotation(newAngle);
 			}
 		}
-//		if (tracking) {
-//			Vector2 targPos = target.getPosition();
-//			Vector2 camPos = viewCamera.getPosition();
-//			if (targPos != camPos) {
-//				float x = (targPos.x - camPos.x)*translateTime + camPos.x;
-//				float y = (targPos.y - camPos.y)*translateTime + camPos.y;
-//				Vector2 deltaPos = new Vector2(x,y);
-//				viewCamera.setPosition(deltaPos);
-//			}
-//		} else {
-//			viewCamera.setPosition(initPos);
-//		}
-		
+		Vector2 targPos;
+		if (tracking) {
+			targPos = target.getPosition();
+		} else {
+			targPos = initPos;
+		}
+		Vector2 camPos = viewCamera.getPosition();
+		if (targPos != camPos) {
+			float x = (targPos.x - camPos.x)*translateTime + camPos.x;
+			float y = (targPos.y - camPos.y)*translateTime + camPos.y;
+			Vector2 deltaPos = new Vector2(x,y);
+			viewCamera.setPosition(deltaPos);
+		}
 
 		swapCameraDimensions();
 
@@ -211,12 +214,12 @@ public class CameraController extends AbstractController {
 			count = 0;
 			rotate(90,false);
 		}
-//		
-//		if (InputController.getInstance().didJustPressedZoom()) {
-//			zoomingOut = !zoomingOut;
-//		}
 		
-//		doZoomInOrOut();
+		if (InputController.getInstance().didJustPressedZoom()) {
+			zoomingOut = !zoomingOut;
+		}
+		
+		doZoomInOrOut();
 	}
 
 	@Override

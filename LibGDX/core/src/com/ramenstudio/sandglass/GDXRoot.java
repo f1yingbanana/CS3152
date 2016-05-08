@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.ramenstudio.sandglass.game.GameMode;
-import com.ramenstudio.sandglass.loading.LoadingMode;
 import com.ramenstudio.sandglass.title.TitleMode;
 import com.ramenstudio.sandglass.util.ScreenListener;
 
@@ -21,7 +20,6 @@ public class GDXRoot extends Game implements ScreenListener {
   /** The three game modes */
   private TitleMode titleMode;
   private GameMode gameMode;
-  private LoadingMode loadingMode;
   
   public enum ApplicationMode {
     TITLE, GAME, LOADING
@@ -50,9 +48,6 @@ public class GDXRoot extends Game implements ScreenListener {
       break;
     case GAME:
       setScreen(gameMode);
-      break;
-    case LOADING:
-      setScreen(loadingMode);
       break;
     }
   }

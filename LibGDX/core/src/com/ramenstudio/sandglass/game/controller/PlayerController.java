@@ -1,6 +1,7 @@
 package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -37,18 +38,16 @@ public class PlayerController extends AbstractController {
 	private float rayDist = 0.3f;
 
 	/** Maximum move speed in horizontal movement */
-	private float moveSpeed = 3.0f;
+	private float moveSpeed = 3.5f;
 
 	/** Vertical jump velocity when jump is begun. */
-	private float jumpVelocity = 5.0f;
-
+	private float jumpVelocity = 5.125f;
 	/** Saving an instance of the delegate */
 	private World world;
 
 	// Variables concerned with turning at corners.
 	
 	//number of flips we have left in this level
-	private int flips;
 
 	/** The active corner we are tracking whether we should turn or not. */
 	private TurnTile activeCorner;
@@ -67,25 +66,37 @@ public class PlayerController extends AbstractController {
 	/** The direction the player's head is facing. */
 	private AngleEnum heading = AngleEnum.NORTH;
 	
+	private int tick;
+	
 	// Variables for animation
 	
 	/** Number of rows in the player image filmstrip */
 	private static final int FILMSTRIP_ROWS = 1;
 	/** Number of columns in the player image filmstrip */
-	private static final int FILMSTRIP_COLS = 34;
+	private static final int FILMSTRIP_COLS = 32;
 	/** Number of elements in the player image filmstrip */
-	private static final int FILMSTRIP_SIZE = 34;
+	private static final int FILMSTRIP_SIZE = 32;
 	
 	/** The frame number for neutral stance. */
-    private static final int NEUTRAL_START = 0;
+    private static final int NEUTRAL_START_EAST = 16;
+    /** The frame number for neutral stance. */
+    private static final int NEUTRAL_START_WEST = 0;
     /** The frame number for beginning a jump. */
-    private static final int JUMP_START = 1;
+    private static final int JUMP_START_EAST = 25;
     /** The frame number for ending a jump. */
-    private static final int JUMP_END = 8;
+    private static final int JUMP_END_EAST = 31;
+    /** The frame number for beginning a jump. */
+    private static final int JUMP_START_WEST = 9;
+    /** The frame number for ending a jump. */
+    private static final int JUMP_END_WEST = 15;
     /** The frame number for beginning a walk. */
-    private static final int WALK_START = 9;
+    private static final int WALK_START_EAST = 17;
     /** The frame number for ending a walk. */
-    private static final int WALK_END = 16;
+    private static final int WALK_END_EAST = 24;
+    /** The frame number for beginning a walk. */
+    private static final int WALK_START_WEST = 1;
+    /** The frame number for ending a walk. */
+    private static final int WALK_END_WEST = 8;
 	
     /** The enum for animation states. */
     public enum State {
@@ -99,11 +110,14 @@ public class PlayerController extends AbstractController {
     
     /** The direction the player is facing, relative to the camera. */
     private AngleEnum direction = AngleEnum.EAST;
+    /** The direction the player used to face, relative to the camera. */
+    private AngleEnum prevDirection = AngleEnum.EAST;
 
     private boolean isReset = false;
     
     /** Frame cooldown (frames are too quick) */
-    private static final int COOLDOWN = 3;
+    private static final int WALK_COOLDOWN = 4;
+    private static final int JUMP_COOLDOWN = 7;
     /** Frame counter */
     private int counter = 0;
 
@@ -117,9 +131,9 @@ public class PlayerController extends AbstractController {
 	 */
 	public PlayerController(Player player) {
 		this.player = player;
-		Texture playerTexture = new Texture(Gdx.files.internal("spritesheet_complete.png"));
+		Texture playerTexture = new Texture(Gdx.files.internal("Character_spritesheet.png"));
 		player.setPlayerSprite(new FilmStrip(playerTexture,FILMSTRIP_ROWS,FILMSTRIP_COLS,FILMSTRIP_SIZE));
-		player.setFrame(NEUTRAL_START);
+		player.setFrame(NEUTRAL_START_EAST);
 	}
 
 	@Override
@@ -132,19 +146,19 @@ public class PlayerController extends AbstractController {
 	@Override
 	public void update(float dt) {
 		inputController.update(dt);
-
+		player.isGrounded = isGrounded();
 		// Reset variables
 		rotateAngle = 0f;
 
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.getBody().getLinearVelocity();
-		Vector2 grav = world.getGravity();
 		Vector2 size = player.getSize();
 
 		// Handle movement
 		boolean jump = false;
 		float x = moveSpeed * inputController.getHorizontal();
 		if (x != 0) {
+			prevDirection = direction;
 			direction = (x > 0)? AngleEnum.EAST : AngleEnum.WEST;
 		}
 //		player.direction = inputController.getHorizontal();
@@ -235,12 +249,12 @@ public class PlayerController extends AbstractController {
 		}
 		// Handle flipping
 		else if ((inputController.didPressFlip() || mustFlip) && canFlip() && !jump) {
-			mustFlip = false;
+
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
 				rotateAngle = 180;
 				float tilePos;
-				float offset = 0.1f + size.y/2;;
+				float offset = 0.05f + size.y/2;;
 				if (AngleEnum.isVertical(heading)) {
 					tilePos = under.getPosition().y;
 					pos.y = heading == AngleEnum.SOUTH ? 
@@ -255,9 +269,16 @@ public class PlayerController extends AbstractController {
 				player.setRotation(AngleEnum.convertToAngle(heading));
 				world.setGravity(world.getGravity().rotate(180));
 				isUnder ^= true;
-				player.subtractFlip();
+				if(player.isTouchMF()){
+					player.setTouchMF(false);
+				}
+				if(!mustFlip){
+					player.subtractFlip(1);					
+				}
 			}
 		}
+		
+		mustFlip = false;
 		// Handle goal collision
 		collidedWithGoal();
 		// Handle reset button
@@ -267,41 +288,75 @@ public class PlayerController extends AbstractController {
 		oneFrameRayHandler = null;
 		oneFrameOverlapHandler = null;
 		
+		if (player.isImpulse){
+			player.getBody().applyLinearImpulse(player.getImpulse(), player.getBody().getPosition(), true);
+			System.out.println("GIVING IMPULSE NOW. I SHOULD ONLY APPEAR ONCE");
+//			player.getBody().applyForceToCenter(player.getImpulse().cpy().scl(80.0f), true);
+			player.isImpulse = false;
+		}
+		
+		if (player.isDeductFlip()){
+			tick++;
+			if (tick < player.DEDUCT_COOL_TIME){
+				player.subtractFlip(2);
+			}
+			else{
+				tick = 0;
+				player.setDeductFlip(false);
+			}
+		}
+		
+		if (player.isTouchMF()){
+			mustFlip = true;
+		}
+		
 		// Handle animation
 		handleAnimation();
+		//System.out.println(player.getBody().getLinearVelocity().toString());
 	}
 
 	private void handleAnimation() {
-		int directionOffset = (direction == AngleEnum.WEST) ? 0 : FILMSTRIP_SIZE/2;
+		boolean facingEast = direction == AngleEnum.EAST;
+		boolean facedEast = prevDirection == AngleEnum.EAST;
 		int frame = player.getFrame();
 		switch (next) {
 		case NEUTRAL:
-			player.setFrame(NEUTRAL_START + directionOffset);
+			if (facingEast) player.setFrame(NEUTRAL_START_EAST);
+			else player.setFrame(NEUTRAL_START_WEST);
 			break;
 		case JUMP:
 			if (state == State.JUMP) {
-				int newFrame = frame - directionOffset + 1;
-				if (newFrame > JUMP_END) newFrame = JUMP_END;
+				int offset = (facedEast)? -JUMP_START_EAST : -JUMP_START_WEST;
+				offset += frame + 1;
+				offset = Math.min(offset, JUMP_END_EAST - JUMP_START_EAST);
 				counter++;
-				if (counter > COOLDOWN) {
+				if (counter > JUMP_COOLDOWN) {
 					counter = 0;
-					player.setFrame(newFrame + directionOffset);
+					if (facingEast) player.setFrame(JUMP_START_EAST + offset);
+					else player.setFrame(JUMP_START_WEST + offset);
+				} else {
+					if (facingEast) player.setFrame(JUMP_START_EAST + offset-1);
+					else player.setFrame(JUMP_START_WEST + offset-1);
 				}
 			} else {
-				player.setFrame(JUMP_START + directionOffset);
+				if (facingEast) player.setFrame(JUMP_START_EAST);
+				else player.setFrame(JUMP_START_WEST);
 			}
 			break;
 		case WALK:
 			if (state == State.WALK) {
-				int newFrame = frame - directionOffset + 1;
-				if (newFrame > WALK_END) newFrame = WALK_START;
+				int offset = (facedEast)? -WALK_START_EAST : -WALK_START_WEST;
+				offset += frame + 1;
+				offset = offset%(WALK_END_EAST - WALK_START_EAST);
 				counter++;
-				if (counter > COOLDOWN) {
+				if (counter > WALK_COOLDOWN) {
 					counter = 0;
-					player.setFrame(newFrame + directionOffset);
+					if (facingEast) player.setFrame(WALK_START_EAST + offset);
+					else player.setFrame(WALK_START_WEST + offset);
 				}
 			} else {
-				player.setFrame(WALK_START + directionOffset);
+				if (facingEast) player.setFrame(WALK_START_EAST);
+				else player.setFrame(WALK_START_WEST);
 			}
 			break;
 		}
@@ -396,6 +451,7 @@ public class PlayerController extends AbstractController {
 	 * we decide whether we want to flip or not.
 	 */
 	private void checkCorner() {
+		activeCorner = null;
 		RayCastHandler handler;
 		if (oneFrameRayHandler == null) {
 			//            handler = new OverlapHandler();
@@ -502,6 +558,10 @@ public class PlayerController extends AbstractController {
 			theUpperRight = new Vector2(playerPos.x + playerSize.y, playerPos.y + playerSize.x);
 		}
 		return theUpperRight;
+	}
+	
+	public AngleEnum getHeading(){
+		return heading;
 	}
 
 	/**

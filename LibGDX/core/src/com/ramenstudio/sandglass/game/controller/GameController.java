@@ -1,14 +1,15 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javafx.scene.input.KeyCode;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -86,6 +87,8 @@ public class GameController extends AbstractController implements ContactListene
 
 	private Map<LevelLoader.LayerKey, Array<GameObject>> mapObjects;
 
+	private Rectangle bound;
+
 
 	public GameController(int gameLevel) {
 		getGameModel().setGameLevel(gameLevel);
@@ -93,9 +96,11 @@ public class GameController extends AbstractController implements ContactListene
 		Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
 		player.setFlips(loader.maxFlip);
 		Vector2 cameraCenter = loader.center;
+		bound = loader.bound;
 		//	System.out.println(cameraCenter.toString());
 		playerController = new PlayerController(player);
 		cameraController = new CameraController(cameraCenter,loader.zoom);
+		cameraController.setTarget(player);
 
 		Array<GameObject> mArray = (Array<GameObject>) 
 				mapObjects.get(LevelLoader.LayerKey.MONSTER);
@@ -146,7 +151,7 @@ public class GameController extends AbstractController implements ContactListene
 	private ClickListener pauseButtonCallback = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-		  pauseGame();
+			pauseGame();
 		}
 	};
 
@@ -156,7 +161,7 @@ public class GameController extends AbstractController implements ContactListene
 	private ClickListener resumeButtonCallback = new ClickListener() {
 		@Override
 		public void clicked(InputEvent event, float x, float y) {
-		  resumeGame();
+			resumeGame();
 		}
 	};
 
@@ -207,6 +212,7 @@ public class GameController extends AbstractController implements ContactListene
 
 		for (MonsterController m: monsterController){
 			m.objectSetup(world);
+			m.monster.target = playerController.getPlayer();
 		}
 
 		for (ShipPiece c : getGameModel().getShipPieces()) {
@@ -224,27 +230,29 @@ public class GameController extends AbstractController implements ContactListene
 
 	@Override
 	public void update(float dt) {
+		if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+			if (getGameModel().getGameState() == GameState.PLAYING) {
+				pauseGame();
+			} else if (getGameModel().getGameState() == GameState.PAUSED) {
+				resumeGame();
+			}
+		}
+
+		uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
+		uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
 		uiController.update(dt);
-    
-    if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-      if (getGameModel().getGameState() == GameState.PLAYING) {
-        pauseGame();
-      } else if (getGameModel().getGameState() == GameState.PAUSED) {
-        resumeGame();
-      }
-    }
 
 		switch (getGameModel().getGameState()) {
-		case LOST:
-			uiController.setGameState(UIState.LOST);
-			return;
-		case PAUSED:
-			return;
-		case PLAYING:
-			break;
-		case WON:
-			uiController.setGameState(UIState.WON);
-			return;
+			case LOST:
+				uiController.setGameState(UIState.LOST);
+				return;
+			case PAUSED:
+				return;
+			case PLAYING:
+				break;
+			case WON:
+				uiController.setGameState(UIState.WON);
+				return;
 		}
 
 		cameraController.update(dt);
@@ -255,31 +263,42 @@ public class GameController extends AbstractController implements ContactListene
 
 		playerController.update(dt);
 
-		gameModel.setWorldPosition(!playerController.isUnder());
+		boolean isUnder = playerController.isUnder();
+		gameModel.setWorldPosition(!isUnder);
 
 		for (MonsterController m: monsterController){
-			m.update(dt);
+			m.monster.setUnder(isUnder);
+			m.monster.update(dt);
 		}
 
 
 		stepPhysics(dt);
 
+		//System.out.println("the player velocity is : " + playerController.getPlayer().getBody().getLinearVelocity());
+
+		if (!bound.contains(playerController.getPlayer().getPosition()) || 
+				playerController.getPlayer().getFlips()<0){
+			getGameModel().setGameState(GameState.LOST);
+		}
+
 
 		if (playerController.isReset()){
 			reset();
+
 		}
 	}
 
+
 	private void pauseGame() {
-    uiController.setGameState(UIController.UIState.PAUSED);
-    getGameModel().setGameState(GameState.PAUSED);
+		uiController.setGameState(UIController.UIState.PAUSED);
+		getGameModel().setGameState(GameState.PAUSED);
 	}
-	
+
 	private void resumeGame() {
-    uiController.setGameState(UIController.UIState.PLAYING);
-    getGameModel().setGameState(GameState.PLAYING);
+		uiController.setGameState(UIController.UIState.PLAYING);
+		getGameModel().setGameState(GameState.PLAYING);
 	}
-	
+
 	private void reset() {
 		needsReset = true;
 	}
@@ -344,27 +363,49 @@ public class GameController extends AbstractController implements ContactListene
 
 		if ((firstOne instanceof Player && secondOne instanceof Monster) ||
 				(secondOne instanceof Player && firstOne instanceof Monster)) {
+			//System.out.println("monsterContact");
 
 			Monster theMonster;
 			Player thePlayer = playerController.getPlayer();
 
 			if (secondOne instanceof Monster) {
 				theMonster = (Monster)secondOne;
+				thePlayer = (Player)firstOne;
 			} else {
 				theMonster = (Monster)firstOne;
+				thePlayer = (Player)secondOne;
 			}
 
 			if (theMonster.monsterLevel == MonsterLevel.KILL) {
 				getGameModel().setGameState(GameState.LOST);
 			}
-			else if (theMonster.monsterLevel == MonsterLevel.DEDUCTFLIPS) {
-				thePlayer.subtractFlip();
+			else if (theMonster.monsterLevel == MonsterLevel.DEDUCT_FLIPS) {
+				playerController.getPlayer().setDeductFlip(true);
 			}
-			else if (theMonster.monsterLevel == MonsterLevel.MAKEFLIP) {
-				playerController.setMustFlip();
+			else if (theMonster.monsterLevel == MonsterLevel.MAKE_FLIP) {
+				playerController.getPlayer().setTouchMF(true);
 			}
+			
+			
+			//System.out.println("original velocity : " + thePlayer.getBody().getLinearVelocity());
+			
+			float angle = (float)(180/Math.PI) *
+					AngleEnum.convertToAngle(playerController.getHeading());
+			//System.out.println("angle: "+ angle);
+			
 
-			//TODO
+			Vector2 impulse = thePlayer.getBody().getLinearVelocity().x > 0 ? new Vector2(-900f,-50f) :
+				new Vector2(900f,-50f);
+			//System.out.println(" the player is rotating at " + playerController.getHeading().toString());
+			Vector2 relativeVel = thePlayer.getBody().getLinearVelocity().
+					cpy().rotate((float)(180/Math.PI) *
+							AngleEnum.convertToAngle(playerController.getHeading()));
+			//System.out.println("The relative velocity is : "+ relativeVel);
+			Vector2 relImpulse = impulse.rotate(angle);
+			
+			//System.out.println("the impulse is : " + relImpulse);
+			thePlayer.setImpulse(relImpulse);
+			//TODOs
 			// apply force when contact
 		}
 
@@ -427,6 +468,7 @@ public class GameController extends AbstractController implements ContactListene
 	public void preSolve(Contact contact, Manifold oldManifold) {}
 
 	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {}
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+	}
 
 }

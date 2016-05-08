@@ -22,22 +22,22 @@ public class Gate extends GameObject implements Drawable {
 	//the texture of the gate while open
 	private Texture openTexture;
 	//the current texture of the gate
-	private Texture texture = new Texture(Gdx.files.internal("gate.png"));
+	private Texture texture;
 	
 	private boolean allPiecesCollected;
 	
 	public Gate(Vector2 pos){
 		super();
 		open = false;
-		size.x = 1.0f;
-	    size.y = 1.0f;
+		size.x = 1.5f;
+	    size.y = 1.5f;
 	    getBodyDef().type = BodyDef.BodyType.StaticBody;
 	    getBodyDef().position.set(pos);
 	    fixtureDefs = new FixtureDef[1];
 	    PolygonShape shape = new PolygonShape();
 	    fixtureDefs[0] = new FixtureDef();
 	    fixtureDefs[0].isSensor = true;
-	    shape.setAsBox(size.x*0.5f, size.y*0.5f);
+	    shape.setAsBox(size.x*0.5f - 0.05f, size.y*0.5f - 0.05f);
 	    fixtureDefs[0].shape = shape;
 	}
 	
@@ -45,6 +45,21 @@ public class Gate extends GameObject implements Drawable {
 	public void setOpen(){
 		open = true;
 		//texture = openTexture;
+	}
+	
+	public void setTextureLevel(int gameLevel){
+		if (gameLevel < 5){
+	    	texture = new Texture(Gdx.files.internal("gate.png"));
+	    }
+	    else if (gameLevel < 9){
+	    	texture = new Texture(Gdx.files.internal("gate.v1.png"));
+	    }
+	    else if (gameLevel < 9){
+	    	texture = new Texture(Gdx.files.internal("gate.v3.png"));
+	    }
+	    else {
+	    	texture = new Texture(Gdx.files.internal("gate.v2.png"));
+	    }
 	}
 	
 	/**@return true if the gate is open*/
@@ -69,7 +84,7 @@ public class Gate extends GameObject implements Drawable {
 	@Override
 	public void draw(GameCanvas canvas){
 		if (allPiecesCollected) {
-			canvas.draw(texture, getPosition().sub(0.5f,0.5f), getSize());
+			canvas.draw(texture, getPosition().sub(0.5f*size.x,0.5f*size.y), getSize());
 		}
 	}
 	

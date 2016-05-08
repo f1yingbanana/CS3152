@@ -2,13 +2,17 @@ package com.ramenstudio.sandglass.game.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.model.GameObject;
@@ -25,20 +29,22 @@ import com.ramenstudio.sandglass.game.model.WallTile;
  * Takes a tile map file and parses all the tiles into different layers with
  * collisions.
  * 
- * @author Jiacong Xu
+ * @author Saerom Choi
  */
 public class LevelLoader {
 	public enum LayerKey {
 		PLAYER, GROUND, GATE, RESOURCE, MONSTER, SHIP
 	}
-
+	/** tiledMap to be used*/
 	public TiledMap tiledMap;
-
+	/** center of the map*/
 	public Vector2 center;
-
+	/** max Flip per level*/
 	public int maxFlip;
-
+	/** zoom factor for level*/
 	public float zoom;
+	/** bound for each level*/
+	public Rectangle bound;
 
 	public Map<LayerKey, Array<GameObject>> loadLevel(int level) {
 		return loadLevel("level"+level+".tmx");
@@ -53,8 +59,11 @@ public class LevelLoader {
 		Array<GameObject> Tilearr = parseGround(groundLayer, "Collision");
 		Array<GameObject> playerTile = parseObject(objectLayer, "type", "player");
 		MapLayer centerLayer = (MapLayer) tiledMap.getLayers().get("Center");
-		MapObject center = centerLayer.getObjects().get(0);
-
+		MapObject center = centerLayer.getObjects().get("center");
+		MapObject bound = centerLayer.getObjects().get("bound");
+		
+		// setting fields to pass around
+		this.bound = getBounds(bound);
 		maxFlip = getFlipNumber(center);
 		this.center = getCenter(center);
 		zoom = getZoom(center);
@@ -75,19 +84,27 @@ public class LevelLoader {
 		layerDict.put(LayerKey.GATE, gateTile);
 		return layerDict;
 	}
+	
+	private Rectangle getBounds(MapObject bound){
+		
+		Rectangle rec = ((RectangleMapObject) bound).getRectangle();
+		rec.setSize(Math.round(rec.width/128),Math.round(rec.height/128));
+		rec.setPosition(Math.round(rec.x/128),Math.round(rec.y/128));
+		return rec;
+	}
 
 	/**@return the number of flips allowed for the level indicated by n
 	 * @param filename level file name*/
-	public int getFlipNumber(MapObject center){
+	private int getFlipNumber(MapObject center){
 		return Integer.parseInt((String)center.getProperties().get("maxFlips"));
 	}
 
-	public float getZoom(MapObject center) {
+	private float getZoom(MapObject center) {
 		float longest = Float.parseFloat((String)center.getProperties().get("longest"));
 		return longest/9.0f;
 	}
 
-	public Vector2 getCenter(MapObject center){
+	private Vector2 getCenter(MapObject center){
 		return new Vector2(Float.parseFloat((String)center.getProperties().get("X")),
 				32-Float.parseFloat((String)center.getProperties().get("Y")));
 	}
@@ -220,16 +237,16 @@ public class LevelLoader {
 
 		for (PolylineMapObject p : polys){
 			MapObject monster = monLayer.getObjects().get(p.getName());
-			Vector2 initPos = new Vector2(Float.parseFloat((String)monster.getProperties().get("X"))/128,
-					32-Float.parseFloat((String)monster.getProperties().get("Y"))/128+0.15f);
+			Vector2 initPos = new Vector2(Float.parseFloat((String)monster.getProperties().get("X"))/128+0.5f,
+					32-Float.parseFloat((String)monster.getProperties().get("Y"))/128+0.5f);
 			int id = Integer.parseInt(p.getName());
 			MonsterLevel level = MonsterLevel.valueOf((String) monster.getProperties().get("level"));
 			float spcf = Float.parseFloat((String) monster.getProperties().get("spcf"));
 			Array<Vector2> vertices = new Array<Vector2>();
 			float[] vert = p.getPolyline().getVertices();
 			for (int i = 0 ; i < vert.length-1 ; i = i + 2){
-				Vector2 v = new Vector2((float) Math.round(vert[i]/128)+initPos.x, 
-						(float) Math.round(vert[i+1]/128)+initPos.y);
+				Vector2 v = new Vector2((float) Math.round(vert[i]/64)/2+initPos.x, 
+						(float) Math.round(vert[i+1]/64)/2+initPos.y);
 				//		  		System.out.println(v.toString());
 				vertices.add(v);
 			}

@@ -1,7 +1,9 @@
 package com.ramenstudio.sandglass.game.model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -24,6 +26,18 @@ public class Player extends GameObject implements Drawable {
 	
 	/**the number of flips the player has in this level*/
 	private int flips = 10;
+	
+	private Vector2 impulse;
+
+	public boolean isImpulse;
+	
+	private boolean isDeductFlip;
+	
+	private boolean isTouchMF;
+	
+	public int DEDUCT_COOL_TIME = 2;
+
+	public boolean isGrounded;
     
     /** The direction the player is facing (for drawing)
      *	left is -1, right is 1  
@@ -41,31 +55,55 @@ public class Player extends GameObject implements Drawable {
 		fixtureDefs = new FixtureDef[3];
 
 //		setTexture(player);
-		setSize(new Vector2(0.8f, 1.5f));
+		setSize(new Vector2(1.0f, 1.5f));
 		getBodyDef().position.set(initialPos);
 		getBodyDef().type = BodyDef.BodyType.DynamicBody;
 
-		FixtureDef fixtureDef = new FixtureDef();
+		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.2f, 0.35f);
-		fixtureDef.density = 10.0f;
+		shape.setAsBox(0.2f, 0.45f);
+		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
+		fixtureDef.restitution = 0.2f;
 		fixtureDefs[0] = fixtureDef;
-		fixtureDef.friction = 0;
 
 		CircleShape c = new CircleShape();
-		c.setRadius(0.4f);
-		c.setPosition(new Vector2(0, -0.35f));
+		c.setRadius(0.2f);
+		c.setPosition(new Vector2(0, -0.55f));
 		FixtureDef fixtureDef2 = new FixtureDef();
 		fixtureDef2.shape = c;
+		fixtureDef2.density = 100f;
+		fixtureDef2.friction = 0;
 		fixtureDefs[1] = fixtureDef2;
 
 		CircleShape c2 = new CircleShape();
-		c2.setRadius(0.4f);
-		c2.setPosition(new Vector2(0, 0.35f));
+		c2.setRadius(0.2f);
+		c2.setPosition(new Vector2(0, 0.55f));
 		FixtureDef fixtureDef3 = new FixtureDef();
 		fixtureDef3.shape = c2;
 		fixtureDefs[2] = fixtureDef3;
+		
+		
+//		int NUM_EDGES = 8;
+//		float stepSize = 2*(float)Math.PI / NUM_EDGES;
+//		
+//		float[] vertices = new float[2*NUM_EDGES];
+//		float xRadius = size.x / 2.0f-0.1f;
+//		float yRadius = size.y / 2.0f;
+//		for (int ii = 0; ii < NUM_EDGES; ii++) {
+//			double angle =  stepSize * ii;
+//			vertices[2*ii  ] = (float)Math.cos(angle) * xRadius;
+//			vertices[2*ii+1] = (float)Math.sin(angle) * yRadius;
+//		}
+//		
+//		PolygonShape poly = new PolygonShape();
+//		poly.set(vertices);
+//		FixtureDef fixtureDef4 = new FixtureDef();
+//		fixtureDef4.shape = poly;
+//		fixtureDef4.density = 0.1f;
+//		fixtureDefs[3] = fixtureDef4;
+		
+		
 	}
 
 	/**@return the number of flips we have left in this level**/
@@ -79,8 +117,8 @@ public class Player extends GameObject implements Drawable {
 	  }
 	  
 	  /**decrement the number of flips*/
-	  public void subtractFlip(){
-		  flips--;
+	  public void subtractFlip(int n){
+		  flips-=n;
 	  }
 	  
 	  /**@param s the new number of flips*/
@@ -125,6 +163,11 @@ public class Player extends GameObject implements Drawable {
 	public void setPlayerSprite(FilmStrip playerSprite) {
 		this.playerSprite = playerSprite;
 	}
+	
+	public void setImpulse(Vector2 impulse){
+		this.impulse = impulse;
+		isImpulse = true;
+	}
 
 	@Override
 	public void draw(GameCanvas canvas) {
@@ -132,13 +175,40 @@ public class Player extends GameObject implements Drawable {
 //		if (direction == 1) {
 //			size.x *= -1;
 //		}
-		canvas.draw(playerSprite, getPosition().add(getSize().cpy().scl(-0.5f)), size,
-				new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+		if (isTouchMF && !isGrounded){
+			canvas.draw(playerSprite, Color.RED, getPosition().add(getSize().cpy().scl(-0.5f)), size,
+					new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+		}
+		
+		else{
+			canvas.draw(playerSprite, Color.WHITE, getPosition().add(getSize().cpy().scl(-0.5f)), size,
+					new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+		}
+		
 	}
 
 	@Override
 	public void setBody(Body body) {
 		super.setBody(body);
+	}
 
+	public Vector2 getImpulse() {
+		return impulse;
+	}
+
+	public boolean isDeductFlip() {
+		return isDeductFlip;
+	}
+
+	public void setDeductFlip(boolean isDeductFlip) {
+		this.isDeductFlip = isDeductFlip;
+	}
+
+	public boolean isTouchMF() {
+		return isTouchMF;
+	}
+
+	public void setTouchMF(boolean isTouchMF) {
+		this.isTouchMF = isTouchMF;
 	}
 }

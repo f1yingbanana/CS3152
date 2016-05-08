@@ -1,5 +1,6 @@
 package com.ramenstudio.sandglass.title.controller;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.ramenstudio.sandglass.title.view.ui.LevelPreviewView;
@@ -10,13 +11,16 @@ import com.ramenstudio.sandglass.title.view.ui.LevelPreviewView;
  */
 public class TitleController {
 
+  private static final int totalLevels = 16;
+  
   public Integer levelSelected;
   
   public UIController uiController = new UIController();
   
   public TitleController() {
-    for (int i = 1; i < 10; i++) {
-      LevelPreviewView view = uiController.levelSelectView.levelScrollView.addLevelView(i, "settings-100");
+    for (int i = 1; i <= totalLevels; i++) {
+      String previewPath = "UI/LevelPreviews/level" + i + ".png";
+      LevelPreviewView view = uiController.levelSelectView.levelScrollView.addLevelView(i, previewPath);
       view.levelSelectButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
@@ -24,7 +28,16 @@ public class TitleController {
         }
       });
     }
+    
+    uiController.titleView.quitButton.addListener(quitButtonListener);
   }
+  
+  private ChangeListener quitButtonListener = new ChangeListener() {
+    @Override
+    public void changed(ChangeEvent event, Actor actor) {
+      Gdx.app.exit();
+    }
+  };
   
   public void update(float dt) {
     uiController.update(dt);

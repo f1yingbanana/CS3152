@@ -3,6 +3,7 @@ package com.ramenstudio.sandglass.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -19,121 +20,135 @@ import com.ramenstudio.sandglass.util.AbstractMode;
  * @author Jiacong Xu
  */
 public class GameMode extends AbstractMode implements Screen {
-  // The game play controller that handles the basic logic of the game
-  private GameController gameplayController;
-  
-  // The game canvas.
-  private GameCanvas canvas = new GameCanvas();
 
-  // BG renderer
-  private PolygonSpriteBatch bgBatch = new PolygonSpriteBatch();
-  
+	// The game play controller that handles the basic logic of the game
+	private GameController gameplayController;
 
-  private Texture backgroundImage = new Texture(Gdx.files.internal("Textures/bg1.png"));
-  
-  // A debug renderer
-  Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
-  
-  // Toggle debug
-  private boolean debug = false;
-  // Debug timer
-  private int count = 0;
-  
-  TiledMapRenderer tiledMapRenderer;
-  
-  /**
-   * Initializes an instance of the game with all the controllers, model and
-   * view canvas.
-   */
-  public GameMode(int gameLevel) {
-    gameplayController = new GameController(gameLevel);
-    tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
-  }
+	// The game canvas.
+	private GameCanvas canvas = new GameCanvas();
 
-  @Override
-  public void show() {
-    // UI needs to be shown.
-    gameplayController.uiController.acquireInputProcesser();
-  }
+	// BG renderer
+	private PolygonSpriteBatch bgBatch = new PolygonSpriteBatch();
 
-  @Override
-  public void render(float delta) {
-    // Implements an update-draw loop
-    gameplayController.update(delta);
-    
-    // Now we render all objects that we can render
-    canvas.clear();
-    
-    // Draw bg
-    bgBatch.begin();
-    bgBatch.draw(backgroundImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    bgBatch.end();
-    
-    tiledMapRenderer.setView(gameplayController.getViewCamera());
-    
-    
-    tiledMapRenderer.render();
-    
-    gameplayController.getCameraController().swapCameraDimensions();
-    
-    canvas.begin(gameplayController.world2ScreenMatrix());
-    gameplayController.draw(canvas);
-    canvas.end();
 
-    // DEBUG RENDERS. We can have more render passes later implemented here.
-    
-    if (Gdx.input.isKeyPressed(Input.Keys.D))
-      count++;
-      if (count > 5) {
-    	  debug ^= true;
-    	  count = 0;
-      }
-      if (debug) {
-          debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
-      }
-    
-    // UI RENDER - special case. UI has to be rendered outside loop.
-    gameplayController.uiController.draw(canvas);
-    
-    // If we want to reset, create a new game controller.
-    if (gameplayController.needsReset) {
-      gameplayController = new GameController(gameplayController.getGameModel().getGameLevel());
-      tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
-    }
-    
-    if (gameplayController.needsMenu) {
-      screenListener.transitionToMode(this, 0);
-    }
-  }
+	private Texture backgroundImage;
 
-  @Override
-  public void resize(int width, int height) {
-    // We should not need to resize, ever.
-  }
+	// A debug renderer
+	Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
-  @Override
-  public void pause() {
-    // Called when the game is paused (loss of focus)
-  }
+	// Toggle debug
+	private boolean debug = false;
+	// Debug timer
+	private int count = 0;
 
-  @Override
-  public void resume() {
-    // Called when the game regains focus.
-  }
+	TiledMapRenderer tiledMapRenderer;
 
-  @Override
-  public void hide() {
-    // When the game disposes this mode.
-  }
+	/**
+	 * Initializes an instance of the game with all the controllers, model and
+	 * view canvas.
+	 */
+	public GameMode(int gameLevel) {
+		if (gameLevel < 5){
+			backgroundImage = new Texture(Gdx.files.internal("Textures/bg1.png"));
+		}
+		else if (gameLevel < 9){
+			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V1.png"));
+		}
+		else if (gameLevel < 13){
+			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V2.png"));
+		}
+		else {
+			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V3.png"));
+		}
+		gameplayController = new GameController(gameLevel);
+		tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
+	}
 
-  @Override
-  public void dispose() {
-    // When we should release all resources for this screen.
-  }
+	@Override
+	public void show() {
+		// UI needs to be shown.
+		gameplayController.uiController.acquireInputProcesser();
+	}
 
-  @Override
-  public String[] getResourcePaths() {
-    return null;
-  }
-  
+	@Override
+	public void render(float delta) {
+		// Implements an update-draw loop
+		gameplayController.update(delta);
+		if (!gameplayController.getGameModel().isInOverworld()){
+			bgBatch.setColor(Color.GRAY);
+		}
+		else{
+			bgBatch.setColor(Color.WHITE);
+		}
+		// Now we render all objects that we can render
+		canvas.clear();
+
+		// Draw bg
+		bgBatch.begin();
+		bgBatch.draw(backgroundImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		bgBatch.end();
+
+		tiledMapRenderer.setView(gameplayController.getViewCamera());
+
+
+		tiledMapRenderer.render();
+
+		gameplayController.getCameraController().swapCameraDimensions();
+
+		canvas.begin(gameplayController.world2ScreenMatrix());
+		gameplayController.draw(canvas);
+		canvas.end();
+
+		// DEBUG RENDERS. We can have more render passes later implemented here.
+
+		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+			debug ^= true;
+		}
+		if (debug) {
+			debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
+		}
+
+		// UI RENDER - special case. UI has to be rendered outside loop.
+		gameplayController.uiController.draw(canvas);
+
+		// If we want to reset, create a new game controller.
+		if (gameplayController.needsReset) {
+			gameplayController = new GameController(gameplayController.getGameModel().getGameLevel());
+			tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
+		}
+
+		if (gameplayController.needsMenu) {
+			screenListener.transitionToMode(this, 0);
+		}
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		// We should not need to resize, ever.
+	}
+
+	@Override
+	public void pause() {
+		// Called when the game is paused (loss of focus)
+	}
+
+	@Override
+	public void resume() {
+		// Called when the game regains focus.
+	}
+
+	@Override
+	public void hide() {
+		// When the game disposes this mode.
+	}
+
+	@Override
+	public void dispose() {
+		// When we should release all resources for this screen.
+	}
+
+	@Override
+	public String[] getResourcePaths() {
+		return null;
+	}
 }

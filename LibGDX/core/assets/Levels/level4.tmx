@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="141">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="142">
  <tileset firstgid="1" name="newTile" tilewidth="128" tileheight="128" tilecount="72" columns="9">
   <image source="newTile.png" width="1153" height="1024"/>
   <terraintypes>
@@ -266,5 +266,6 @@
     <property name="maxFlips" value="20"/>
    </properties>
   </object>
+  <object id="141" name="bound" x="512" y="384" width="2688" height="2176"/>
  </objectgroup>
 </map>
