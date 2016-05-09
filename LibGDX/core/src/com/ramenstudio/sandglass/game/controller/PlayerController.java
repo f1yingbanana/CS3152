@@ -120,10 +120,10 @@ public class PlayerController extends AbstractController {
     private static final int JUMP_COOLDOWN = 7;
     
     /**Cooldown for preventing input while camera rotates*/
-    private static final int FREEZE_COOLDOWN = 70;
+    public int FREEZE_COOLDOWN = 60;
     
     /**Counter for flip/rotate cooldown*/
-    private int freeze_counter = FREEZE_COOLDOWN;
+    public int freeze_counter = FREEZE_COOLDOWN;
     
     /** Frame counter */
     private int counter = 0;
