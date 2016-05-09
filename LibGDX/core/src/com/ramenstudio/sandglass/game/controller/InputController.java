@@ -129,12 +129,12 @@ public class InputController extends AbstractController {
 	 */
 	public void readKeyboard() {
 	    int up, left, right, down, jump, flip, reset, zoom;
-	    up    = Input.Keys.UP; 
+//	    up    = Input.Keys.UP; 
 	    down  = Input.Keys.DOWN;
 	    left  = Input.Keys.LEFT; 
 	    right = Input.Keys.RIGHT;
-	    jump  = Input.Keys.SPACE;
-	    flip  = Input.Keys.F;
+	    jump  = Input.Keys.UP;
+	    flip  = Input.Keys.SPACE;
 	    reset = Input.Keys.R;
 	    zoom = Input.Keys.Z;
 			
@@ -143,11 +143,14 @@ public class InputController extends AbstractController {
 	    pressedJump = pressedFlip = false;
 	
 	    // Movement up/down
-		if (Gdx.input.isKeyPressed(up) && !Gdx.input.isKeyPressed(down)) {
-			vertical = 1;
-		} else if (Gdx.input.isKeyPressed(down) && !Gdx.input.isKeyPressed(up)) {
-			vertical = -1;
-		}
+//		if (Gdx.input.isKeyPressed(up) && !Gdx.input.isKeyPressed(down)) {
+//			vertical = 1;
+//		} else if (Gdx.input.isKeyPressed(down) && !Gdx.input.isKeyPressed(up)) {
+//			vertical = -1;
+//		}
+	    if (Gdx.input.isKeyPressed(down)) {
+	    	vertical = -1;
+	    }
 		
 		// Movement left/right
 		if (Gdx.input.isKeyPressed(left) && !Gdx.input.isKeyPressed(right)) {
