@@ -1,6 +1,7 @@
 package com.ramenstudio.sandglass.game.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -37,18 +38,16 @@ public class PlayerController extends AbstractController {
 	private float rayDist = 0.3f;
 
 	/** Maximum move speed in horizontal movement */
-	private float moveSpeed = 3.0f;
+	private float moveSpeed = 3.5f;
 
 	/** Vertical jump velocity when jump is begun. */
 	private float jumpVelocity = 5.125f;
-
 	/** Saving an instance of the delegate */
 	private World world;
 
 	// Variables concerned with turning at corners.
 	
 	//number of flips we have left in this level
-	private int flips;
 
 	/** The active corner we are tracking whether we should turn or not. */
 	private TurnTile activeCorner;
@@ -66,6 +65,8 @@ public class PlayerController extends AbstractController {
 
 	/** The direction the player's head is facing. */
 	private AngleEnum heading = AngleEnum.NORTH;
+	
+	private int tick;
 	
 	// Variables for animation
 	
@@ -152,14 +153,13 @@ public class PlayerController extends AbstractController {
 	@Override
 	public void update(float dt) {
 		inputController.update(dt);
-
+		player.isGrounded = isGrounded();
 		// Reset variables
 		rotateAngle = 0f;
 		freeze_counter++;
 
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.getBody().getLinearVelocity();
-		Vector2 grav = world.getGravity();
 		Vector2 size = player.getSize();
 
 		// Handle movement
@@ -272,7 +272,7 @@ public class PlayerController extends AbstractController {
 			if (under.isFlippable()) {
 				rotateAngle = 180;
 				float tilePos;
-				float offset = 0.1f + size.y/2;;
+				float offset = 0.05f + size.y/2;;
 				if (AngleEnum.isVertical(heading)) {
 					tilePos = under.getPosition().y;
 					pos.y = heading == AngleEnum.SOUTH ? 
@@ -287,9 +287,16 @@ public class PlayerController extends AbstractController {
 				player.setRotation(AngleEnum.convertToAngle(heading));
 				world.setGravity(world.getGravity().rotate(180));
 				isUnder ^= true;
-				player.subtractFlip();
+				if(player.isTouchMF()){
+					player.setTouchMF(false);
+				}
+				if(!mustFlip){
+					player.subtractFlip(1);					
+				}
 			}
 		}
+		
+		mustFlip = false;
 		// Handle goal collision
 		collidedWithGoal();
 		// Handle reset button
@@ -299,10 +306,33 @@ public class PlayerController extends AbstractController {
 		oneFrameRayHandler = null;
 		oneFrameOverlapHandler = null;
 		
+		if (player.isImpulse){
+			player.getBody().applyLinearImpulse(player.getImpulse(), player.getBody().getPosition(), true);
+			System.out.println("GIVING IMPULSE NOW. I SHOULD ONLY APPEAR ONCE");
+//			player.getBody().applyForceToCenter(player.getImpulse().cpy().scl(80.0f), true);
+			player.isImpulse = false;
+		}
+		
+		if (player.isDeductFlip()){
+			tick++;
+			if (tick < player.DEDUCT_COOL_TIME){
+				player.subtractFlip(2);
+			}
+			else{
+				tick = 0;
+				player.setDeductFlip(false);
+			}
+		}
+		
+		if (player.isTouchMF()){
+			mustFlip = true;
+		}
+		
 		// Handle animation
 		if (freeze_counter >= FREEZE_COOLDOWN){
 			handleAnimation();
 		}
+		//System.out.println(player.getBody().getLinearVelocity().toString());
 	}
 
 	private void handleAnimation() {
@@ -548,6 +578,10 @@ public class PlayerController extends AbstractController {
 			theUpperRight = new Vector2(playerPos.x + playerSize.y, playerPos.y + playerSize.x);
 		}
 		return theUpperRight;
+	}
+	
+	public AngleEnum getHeading(){
+		return heading;
 	}
 
 	/**

@@ -1,10 +1,10 @@
 package com.ramenstudio.sandglass.game.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javafx.scene.input.KeyCode;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -212,6 +212,7 @@ public class GameController extends AbstractController implements ContactListene
 
 		for (MonsterController m: monsterController){
 			m.objectSetup(world);
+			m.monster.target = playerController.getPlayer();
 		}
 
 		for (ShipPiece c : getGameModel().getShipPieces()) {
@@ -272,6 +273,8 @@ public class GameController extends AbstractController implements ContactListene
 
 
 		stepPhysics(dt);
+
+		//System.out.println("the player velocity is : " + playerController.getPlayer().getBody().getLinearVelocity());
 
 		if (!bound.contains(playerController.getPlayer().getPosition()) || 
 				playerController.getPlayer().getFlips()<0){
@@ -360,28 +363,50 @@ public class GameController extends AbstractController implements ContactListene
 
 		if ((firstOne instanceof Player && secondOne instanceof Monster) ||
 				(secondOne instanceof Player && firstOne instanceof Monster)) {
+			//System.out.println("monsterContact");
 
 			Monster theMonster;
+			Player thePlayer = playerController.getPlayer();
 
 			if (secondOne instanceof Monster) {
 				theMonster = (Monster)secondOne;
+				thePlayer = (Player)firstOne;
 			} else {
 				theMonster = (Monster)firstOne;
+				thePlayer = (Player)secondOne;
 			}
 
 			if (theMonster.monsterLevel == MonsterLevel.KILL) {
 				getGameModel().setGameState(GameState.LOST);
 			}
 			else if (theMonster.monsterLevel == MonsterLevel.DEDUCT_FLIPS) {
-				playerController.getPlayer().subtractFlip();
+				playerController.getPlayer().setDeductFlip(true);
 			}
 			else if (theMonster.monsterLevel == MonsterLevel.MAKE_FLIP) {
-				playerController.setMustFlip();
+				playerController.getPlayer().setTouchMF(true);
 			}
+			
+			
+			//System.out.println("original velocity : " + thePlayer.getBody().getLinearVelocity());
+			
+			float angle = (float)(180/Math.PI) *
+					AngleEnum.convertToAngle(playerController.getHeading());
+			//System.out.println("angle: "+ angle);
+			
 
-			//TODO
+			Vector2 impulse = thePlayer.getBody().getLinearVelocity().x > 0 ? new Vector2(-900f,-50f) :
+				new Vector2(900f,-50f);
+			//System.out.println(" the player is rotating at " + playerController.getHeading().toString());
+			Vector2 relativeVel = thePlayer.getBody().getLinearVelocity().
+					cpy().rotate((float)(180/Math.PI) *
+							AngleEnum.convertToAngle(playerController.getHeading()));
+			//System.out.println("The relative velocity is : "+ relativeVel);
+			Vector2 relImpulse = impulse.rotate(angle);
+			
+			//System.out.println("the impulse is : " + relImpulse);
+			thePlayer.setImpulse(relImpulse);
+			//TODOs
 			// apply force when contact
-
 		}
 
 		if (firstOne instanceof Player &&
@@ -443,6 +468,7 @@ public class GameController extends AbstractController implements ContactListene
 	public void preSolve(Contact contact, Manifold oldManifold) {}
 
 	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {}
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+	}
 
 }

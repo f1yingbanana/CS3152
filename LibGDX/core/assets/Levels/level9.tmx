@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="212">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="213">
  <tileset firstgid="1" source="newTile.tsx"/>
+ <tileset firstgid="73" source="tileset.V1.tsx"/>
  <layer name="Ground" width="32" height="32">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,14,16,15,16,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,23,20,34,24,21,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,32,24,20,20,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,23,24,20,34,21,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,19,34,25,33,47,16,15,16,11,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,23,24,20,33,34,20,20,24,34,21,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,23,20,20,25,33,20,24,24,24,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,32,24,25,20,33,25,33,34,24,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,28,29,42,43,29,55,25,24,24,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,32,33,20,33,47,15,15,15,16,17,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,23,25,33,20,25,20,20,34,20,26,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,32,33,33,20,33,20,34,33,33,21,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,32,33,20,24,56,42,29,42,29,30,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,32,25,34,33,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,32,34,20,34,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,32,25,20,34,26,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,41,29,43,42,44,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,80,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,73,75,75,91,76,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,84,85,85,85,98,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,99,100,85,85,85,98,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,84,85,85,85,98,80,79,80,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,84,85,85,85,129,91,90,91,75,76,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,84,85,85,85,85,85,85,85,85,114,115,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,99,100,85,85,85,85,85,85,85,85,98,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,84,85,85,85,85,85,85,85,85,114,115,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,106,107,107,107,107,139,85,85,85,98,0,0,0,80,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,84,85,85,85,129,75,75,75,91,76,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,99,100,85,85,85,85,85,85,85,85,98,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,84,85,85,85,85,85,85,85,85,98,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,99,100,85,85,85,140,107,107,107,107,109,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,84,85,85,85,98,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,84,85,85,85,114,115,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,84,85,85,85,98,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,106,107,107,107,109,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -38,13 +39,69 @@
 </data>
  </layer>
  <objectgroup name="Monster">
-  <object id="181" name="4" gid="59" x="2176" y="2176" width="128" height="128"/>
-  <object id="182" name="6" gid="59" x="896" y="1664" width="128" height="128"/>
-  <object id="183" name="5" gid="59" x="1024" y="1024" width="128" height="128"/>
-  <object id="184" name="7" gid="59" x="1408" y="2560" width="128" height="128"/>
-  <object id="203" name="1" gid="69" x="1536" y="1152" width="128" height="128"/>
-  <object id="204" name="2" gid="69" x="512" y="1152" width="128" height="128"/>
-  <object id="205" name="3" gid="69" x="2048" y="1792" width="128" height="128"/>
+  <object id="181" name="4" gid="59" x="2176" y="2176" width="128" height="128">
+   <properties>
+    <property name="X" value="2176"/>
+    <property name="Y" value="2176"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="KILL"/>
+    <property name="spcf" value="1.5"/>
+   </properties>
+  </object>
+  <object id="182" name="6" gid="59" x="896" y="1664" width="128" height="128">
+   <properties>
+    <property name="X" value="896"/>
+    <property name="Y" value="1664"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="KILL"/>
+    <property name="spcf" value="1.5"/>
+   </properties>
+  </object>
+  <object id="183" name="5" gid="59" x="1024" y="1024" width="128" height="128">
+   <properties>
+    <property name="X" value="1024"/>
+    <property name="Y" value="1024"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="KILL"/>
+    <property name="spcf" value="1.5"/>
+   </properties>
+  </object>
+  <object id="184" name="7" gid="59" x="1408" y="2560" width="128" height="128">
+   <properties>
+    <property name="X" value="1408"/>
+    <property name="Y" value="2560"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="KILL"/>
+    <property name="spcf" value="1.5"/>
+   </properties>
+  </object>
+  <object id="203" name="1" gid="69" x="1536" y="1152" width="128" height="128">
+   <properties>
+    <property name="X" value="1536"/>
+    <property name="Y" value="1152"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="DEDUCT_FLIPS"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
+  <object id="204" name="2" gid="69" x="512" y="1152" width="128" height="128">
+   <properties>
+    <property name="X" value="512"/>
+    <property name="Y" value="1152"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="DEDUCT_FLIPS"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
+  <object id="205" name="3" gid="69" x="2048" y="1792" width="128" height="128">
+   <properties>
+    <property name="X" value="2048"/>
+    <property name="Y" value="1792"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="DEDUCT_FLIPS"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="Object" width="32" height="32">
   <data encoding="csv">
@@ -106,13 +163,14 @@
   </object>
  </objectgroup>
  <objectgroup name="Center">
-  <object id="211" x="1472" y="1664" width="128" height="128">
+  <object id="211" name="center" x="1472" y="1664" width="128" height="128">
    <properties>
-    <property name="X" value="1472.00"/>
-    <property name="Y" value="1664.00"/>
+    <property name="X" value="11.5"/>
+    <property name="Y" value="13"/>
     <property name="longest" value="16"/>
     <property name="maxFlips" value="20"/>
    </properties>
   </object>
+  <object id="212" name="bound" x="0" y="0" width="3328" height="3328"/>
  </objectgroup>
 </map>
