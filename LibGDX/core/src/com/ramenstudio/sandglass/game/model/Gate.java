@@ -81,6 +81,10 @@ public class Gate extends GameObject implements Drawable {
 		allPiecesCollected = argCollected;
 	}
 	
+	public boolean getAllPiecesCollected() {
+		return allPiecesCollected;
+	}
+	
 	@Override
 	public void draw(GameCanvas canvas){
 		if (allPiecesCollected) {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.ramenstudio.sandglass.game.GameMode;
 import com.ramenstudio.sandglass.title.TitleMode;
 import com.ramenstudio.sandglass.util.ScreenListener;
+import com.ramenstudio.sandglass.util.controller.SoundController;
 
 /**
  * The platform-independent root class that initializes the base MVC for the
@@ -65,6 +66,7 @@ public class GDXRoot extends Game implements ScreenListener {
     titleMode = new TitleMode();
     titleMode.screenListener = this;
     setApplicationMode(ApplicationMode.TITLE);
+    SoundController.getInstance().preLoadSounds(manager);
   }
 
   /** 
@@ -94,9 +96,11 @@ public class GDXRoot extends Game implements ScreenListener {
     // a level to play on, or when game mode is done, or when loading is done.
     if (modeCode == 0) {
       setApplicationMode(ApplicationMode.TITLE);
+      SoundController.getInstance().stopAll();
     } else {
       if (gameMode != null)
         gameMode.dispose();
+      SoundController.getInstance().stopAll();
       gameMode = new GameMode(modeCode);
       gameMode.screenListener = this;
       setApplicationMode(ApplicationMode.GAME);

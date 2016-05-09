@@ -29,6 +29,7 @@ import com.ramenstudio.sandglass.game.model.ShipPiece;
 import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
+import com.ramenstudio.sandglass.util.controller.SoundController;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Monster;
 import com.ramenstudio.sandglass.game.model.Monster.MonsterLevel;
@@ -93,6 +94,7 @@ public class GameController extends AbstractController implements ContactListene
 	public GameController(int gameLevel) {
 		getGameModel().setGameLevel(gameLevel);
 		mapObjects = loader.loadLevel(gameLevel);
+		SoundController.getInstance().playBGMForLevel(gameLevel);
 		Player player = (Player) mapObjects.get(LayerKey.PLAYER).get(0);
 		player.setFlips(loader.maxFlip);
 		Vector2 cameraCenter = loader.center;
@@ -270,6 +272,8 @@ public class GameController extends AbstractController implements ContactListene
 			m.monster.setUnder(isUnder);
 			m.monster.update(dt);
 		}
+		
+		SoundController.getInstance().update();
 
 
 		stepPhysics(dt);
@@ -426,6 +430,9 @@ public class GameController extends AbstractController implements ContactListene
 		}
 
 		if (getGameModel().allPiecesCollected()) {
+			if (!getGameModel().getGate().getAllPiecesCollected()) {
+				SoundController.getInstance().playDoorOpen();
+			}
 			getGameModel().getGate().setAllPiecesCollected(true);
 		}
 
