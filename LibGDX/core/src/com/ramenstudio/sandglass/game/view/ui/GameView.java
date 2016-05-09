@@ -34,11 +34,11 @@ public class GameView extends Table {
     this.setFillParent(true);
     this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UIOverlay.png")))));
 
-    flipCountLabel = new Label("10", skin, "title");
-    add(flipCountLabel).top().left().pad(85);
+    flipCountLabel = new Label("10", skin);
+    add(flipCountLabel).top().left().padLeft(65).padTop(83);
 
-    shipPieceCountLabel = new Label("10", skin, "title");
-    add(shipPieceCountLabel).top().right().padTop(265).padRight(30);
+    shipPieceCountLabel = new Label("10", skin);
+    add(shipPieceCountLabel).top().right().padTop(262).padRight(5).width(50);
     
     
     row();
@@ -53,7 +53,7 @@ public class GameView extends Table {
   }
   
   public void setShipPieceCount(int shipPiecesLeft, int maxShipPieces) {
-    shipPieceCountLabel.setText("" + shipPiecesLeft + "/" + maxShipPieces);
+    shipPieceCountLabel.setText("" + (maxShipPieces - shipPiecesLeft));
   }
 }
 

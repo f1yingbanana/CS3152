@@ -4,15 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
@@ -22,8 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
  */
 public class TitleView extends Table {
   public final TextButton gameStartButton;
+  public final TextButton levelSelectButton;
   public final TextButton optionsButton;
-  public final TextButton creditsButton;
   public final TextButton quitButton;
   
   public TitleView(Skin skin) {
@@ -38,68 +32,21 @@ public class TitleView extends Table {
     setBackground(new SpriteDrawable(bgSprite));
     
     // Create a play button
-    gameStartButton = new TextButton("Start", skin, "purple");
-    add(gameStartButton).padTop(250).padLeft(420);
-    
-    gameStartButton.addListener(new ClickListener() {
-      @Override
-      public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        gameStartButton.setText("-    START    -");
-      }
-      
-      @Override
-      public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        gameStartButton.setText("START");
-      }
-    });
+    gameStartButton = new TextButton("START", skin, "New Font");
+    add(gameStartButton).padTop(250).minHeight(60);
     
     // Create an image button
     row();
-    optionsButton = new TextButton("Options", skin, "purple");
-    add(optionsButton).padTop(50).padLeft(420);
+    levelSelectButton = new TextButton("LEVELS", skin, "New Font");
+    add(levelSelectButton).padTop(30).minHeight(60);
     
-    optionsButton.addListener(new ClickListener() {
-      @Override
-      public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        optionsButton.setText("-   OPTIONS   -");
-      }
-      
-      @Override
-      public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        optionsButton.setText("OPTIONS");
-      }
-    }); 
-
+    // Create an image button
     row();
-    creditsButton = new TextButton("CREDITS", skin, "purple");
-    add(creditsButton).padTop(50).padLeft(420);
-    
-    creditsButton.addListener(new ClickListener() {
-      @Override
-      public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        creditsButton.setText("-   CREDITS   -");
-      }
-      
-      @Override
-      public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        creditsButton.setText("CREDITS");
-      }
-    });
+    optionsButton = new TextButton("OPTIONS", skin, "New Font");
+    add(optionsButton).padTop(30).minHeight(60);
     
     row();
-    quitButton = new TextButton("QUIT", skin, "purple");
-    add(quitButton).padTop(50).padLeft(420);
-    
-    quitButton.addListener(new ClickListener() {
-      @Override
-      public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        quitButton.setText("-     QUIT     -");
-      }
-      
-      @Override
-      public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        quitButton.setText("QUIT");
-      }
-    });
+    quitButton = new TextButton("QUIT", skin, "New Font");
+    add(quitButton).padTop(30).minHeight(60);
   }
 }
