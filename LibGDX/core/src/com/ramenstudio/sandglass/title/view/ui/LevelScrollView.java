@@ -34,7 +34,7 @@ public class LevelScrollView extends Table {
   public LevelPreviewView addLevelView(int level, String imageStyle) {
     final LevelPreviewView preview = new LevelPreviewView(cachedSkin, level, imageStyle);
     row();
-    add(preview).size(600, 200).pad(40);
+    add(preview).size(600, 200).pad(10);
     preview.levelSelectButton.setSize(600, 200);
     levelPreviewViews.add(level - 1, preview);
     
