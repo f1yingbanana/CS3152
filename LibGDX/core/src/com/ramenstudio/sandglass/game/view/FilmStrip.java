@@ -122,4 +122,8 @@ public class FilmStrip extends TextureRegion {
 		setRegion(x,y,rwidth,rheight);
 	}
 
+	public void dispose() {
+		getTexture().dispose();
+	}
+
 }

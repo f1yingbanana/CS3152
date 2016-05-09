@@ -196,4 +196,10 @@ public class InputController extends AbstractController {
 		readKeyboard();
 		readMouse();
 	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
 }

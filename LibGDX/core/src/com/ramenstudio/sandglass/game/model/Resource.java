@@ -52,4 +52,9 @@ private Texture texture = new Texture(Gdx.files.internal("sandglass.png"));
 			canvas.draw(texture, getPosition().sub(0.5f,0.5f), getSize());
 		}
 	}
+	
+	@Override
+	public void dispose() {
+		texture.dispose();
+	}
 }

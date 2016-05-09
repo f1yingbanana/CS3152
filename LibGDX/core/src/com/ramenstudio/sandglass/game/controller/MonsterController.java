@@ -65,4 +65,10 @@ public class MonsterController extends AbstractController {
 	    delegate = handler;
 		activatePhysics(handler, monster);
 	}
+
+
+	@Override
+	public void dispose() {
+		monster.dispose();
+	}
 }

@@ -143,5 +143,11 @@ public class UIController extends AbstractController {
   public void acquireInputProcesser() {
     Gdx.input.setInputProcessor(stage);
   }
+
+@Override
+public void dispose() {
+	stage.dispose();
+	skin.dispose();
+}
   
 }

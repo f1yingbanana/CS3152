@@ -3,6 +3,7 @@ package com.ramenstudio.sandglass.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
@@ -113,6 +114,8 @@ public class GameMode extends AbstractMode implements Screen {
 
 		// If we want to reset, create a new game controller.
 		if (gameplayController.needsReset) {
+			gameplayController.dispose();
+			System.out.println("???");
 			gameplayController = new GameController(gameplayController.getGameModel().getGameLevel());
 			tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
 		}
@@ -145,6 +148,12 @@ public class GameMode extends AbstractMode implements Screen {
 	@Override
 	public void dispose() {
 		// When we should release all resources for this screen.
+		gameplayController.dispose();
+		bgBatch.dispose();
+		backgroundImage.dispose();
+		canvas.dispose();
+		
+		System.out.println("AAAAAAAAAAAA");
 	}
 
 	@Override

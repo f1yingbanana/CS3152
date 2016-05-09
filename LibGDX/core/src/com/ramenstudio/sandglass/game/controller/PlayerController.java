@@ -667,4 +667,9 @@ public class PlayerController extends AbstractController {
 			return true;
 		}
 	}
+
+	@Override
+	public void dispose() {
+		player.dispose();
+	}
 }

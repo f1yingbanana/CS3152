@@ -160,4 +160,8 @@ public class GameObject implements Drawable{
   public void setFixtureDefs(FixtureDef[] fixtureDefs) {
     this.fixtureDefs = fixtureDefs;
   }
+  
+  public void dispose() {
+	  
+}
 }

@@ -92,4 +92,8 @@ public class Gate extends GameObject implements Drawable {
 		}
 	}
 	
+	@Override
+	public void dispose() {
+		texture.dispose();
+	}
 }

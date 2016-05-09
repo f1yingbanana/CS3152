@@ -80,7 +80,7 @@ public class SoundController {
 	/** The default sound length limit */
 	private static final int DEFAULT_LIMIT = 120;
 	/** The default limit on sounds per frame */
-	private static final int DEFAULT_FRAME = 2;
+	private static final int DEFAULT_FRAME = 5;
 	
 	/** The singleton Sound controller instance */
 	private static SoundController controller;
@@ -105,10 +105,16 @@ public class SoundController {
 	private int current;
 	
 	private static final String BACKGROUND_01 = "Sounds/Odyssey.mp3";
-	public static final String BACKGROUND_01_NAME = "Odyssey";
+	private static final String BACKGROUND_01_NAME = "Odyssey";
 	
-	private static final String DOOR_OPEN_01 = "Sounds/door_open_004.mp3";
-	public static final String DOOR_OPEN_01_NAME = "DoorOpen";
+	private static final String DOOR_OPEN_01 = "Sounds/OPENGate.mp3";
+	private static final String DOOR_OPEN_01_NAME = "DoorOpen";
+	
+	private static final String SHIP_PIECE_COLLECT_01 = "Sounds/vintage_radio_button_006.mp3";
+	private static final String SHIP_PIECE_COLLECT_01_NAME = "ShipPieceCollect";
+	
+	private static final String ITEM_COLLECT_01 = "Sounds/ItemPickUp.mp3";
+	private static final String ITEM_COLLECT_01_NAME = "ItemCollect";
 
 	/** 
 	 * Creates a new SoundController with the default settings.
@@ -141,15 +147,26 @@ public class SoundController {
 	public void preLoadSounds(AssetManager manager) {
 		manager.load(BACKGROUND_01,Sound.class);
 		manager.load(DOOR_OPEN_01,Sound.class);
+		manager.load(SHIP_PIECE_COLLECT_01,Sound.class);
+		manager.load(ITEM_COLLECT_01,Sound.class);
 		
 		manager.finishLoading();
 		
 		Sound background1 = manager.get(BACKGROUND_01,Sound.class);
 		soundbank.put(BACKGROUND_01_NAME,background1);
 		loopers.put(BACKGROUND_01, true);
+		
 		Sound doorOpen1 = manager.get(DOOR_OPEN_01,Sound.class);
 		soundbank.put(DOOR_OPEN_01_NAME, doorOpen1);
 		loopers.put(DOOR_OPEN_01, false);
+		
+		Sound shipPieceCollect1 = manager.get(SHIP_PIECE_COLLECT_01,Sound.class);
+		soundbank.put(SHIP_PIECE_COLLECT_01_NAME, shipPieceCollect1);
+		loopers.put(SHIP_PIECE_COLLECT_01, false);
+		
+		Sound itemCollect1 = manager.get(ITEM_COLLECT_01,Sound.class);
+		soundbank.put(ITEM_COLLECT_01_NAME, itemCollect1);
+		loopers.put(ITEM_COLLECT_01, false);
 	}
 	
 	/// Properties
@@ -428,7 +445,8 @@ public class SoundController {
 
 	public void playBGMForLevel(int gameLevel) {
 		// Have logic based on gameLevel to decide which sound to play, currently playing the same.
-		System.out.println(play(BACKGROUND_01, BACKGROUND_01_NAME,true,true));
+//		System.out.println(play(BACKGROUND_01, BACKGROUND_01_NAME,true,true));
+		play(BACKGROUND_01, BACKGROUND_01_NAME,true,true);
 	}
 
 	public void stopAll() {
@@ -439,7 +457,18 @@ public class SoundController {
 	}
 
 	public void playDoorOpen() {
-		System.out.println(play(DOOR_OPEN_01, DOOR_OPEN_01_NAME, false, false));
+//		System.out.println(play(DOOR_OPEN_01, DOOR_OPEN_01_NAME, false, false));
+		play(DOOR_OPEN_01, DOOR_OPEN_01_NAME, false, false);
+	}
+	
+	/**
+	 * Outdated, not used
+	 */
+	public void playShipCollect() {
+		play(SHIP_PIECE_COLLECT_01, SHIP_PIECE_COLLECT_01_NAME,false,false);
 	}
 
+	public void playItemCollect() {
+		play(ITEM_COLLECT_01, ITEM_COLLECT_01_NAME, false, false);
+	}
 }

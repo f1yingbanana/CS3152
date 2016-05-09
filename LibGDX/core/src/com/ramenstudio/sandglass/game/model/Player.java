@@ -231,4 +231,8 @@ public class Player extends GameObject implements Drawable {
 	public void setTouchMF(boolean isTouchMF) {
 		this.isTouchMF = isTouchMF;
 	}
+	
+	public void dispose() {
+		playerSprite.dispose();
+	}
 }

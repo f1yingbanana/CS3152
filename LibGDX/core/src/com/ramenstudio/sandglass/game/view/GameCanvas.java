@@ -91,4 +91,8 @@ public class GameCanvas {
 		spriteBatch.draw(image, origin.x, origin.y, worldOrigin.x, worldOrigin.y, 
 				size.x, size.y, 1, 1, angle);
 	}
+
+	public void dispose() {
+		spriteBatch.dispose();
+	}
 }

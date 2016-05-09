@@ -54,4 +54,9 @@ public class ShipPiece extends GameObject implements Drawable {
 			canvas.draw(texture, getPosition().sub(0.5f,0.5f), getSize());
 		}
 	}
+	
+	@Override
+	public void dispose() {
+		texture.dispose();
+	}
 }

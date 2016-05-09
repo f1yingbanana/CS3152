@@ -254,4 +254,9 @@ public class CameraController extends AbstractController {
 	public OrthographicCamera getViewCamera() {
 		return viewCamera.getCamera();
 	}
+
+	@Override
+	public void dispose() {
+		viewCamera.dispose();
+	}
 }

@@ -653,4 +653,10 @@ public class Monster extends GameObject implements Drawable{
 	public void setUnder(boolean under) {
 		isUnder  = under;
 	}
+	
+	@Override
+	public void dispose() {
+		monsterSpriteLight.dispose();
+		monsterSpriteDark.dispose();
+	}
 }

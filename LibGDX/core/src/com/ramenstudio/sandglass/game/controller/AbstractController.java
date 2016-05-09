@@ -65,4 +65,6 @@ public abstract class AbstractController {
   public void deactivatePhysics(World world, GameObject gameObject) {
     // TODO
   }
+  
+  public abstract void dispose();
 }

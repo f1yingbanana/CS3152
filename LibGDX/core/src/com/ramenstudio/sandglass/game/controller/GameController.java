@@ -416,6 +416,7 @@ public class GameController extends AbstractController implements ContactListene
 				secondOne instanceof ShipPiece) {
 			ShipPiece secondShipPiece = (ShipPiece) secondOne;
 			if (!secondShipPiece.getIsCollected()) {
+				SoundController.getInstance().playItemCollect();
 				secondShipPiece.setCollected();
 				getGameModel().collectPiece();
 			}
@@ -423,6 +424,7 @@ public class GameController extends AbstractController implements ContactListene
 				secondOne instanceof Player) {
 			ShipPiece firstShipPiece = (ShipPiece) firstOne;
 			if (!firstShipPiece.getIsCollected()) {
+				SoundController.getInstance().playItemCollect();
 				firstShipPiece.setCollected();
 				getGameModel().collectPiece();
 			}
@@ -439,6 +441,7 @@ public class GameController extends AbstractController implements ContactListene
 				secondOne instanceof Resource) {
 			Resource secondResource = (Resource) secondOne;
 			if (!secondResource.getIsCollected()) {
+				SoundController.getInstance().playItemCollect();
 				secondResource.setCollected();
 				playerController.getPlayer().addFlip();
 			}
@@ -446,6 +449,7 @@ public class GameController extends AbstractController implements ContactListene
 				secondOne instanceof Player) {
 			Resource firstResource = (Resource) firstOne;
 			if (!firstResource.getIsCollected()) {
+				SoundController.getInstance().playItemCollect();
 				firstResource.setCollected();
 				playerController.getPlayer().addFlip();
 			}
@@ -475,6 +479,17 @@ public class GameController extends AbstractController implements ContactListene
 
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
+	}
+
+	public void dispose() {
+		world.dispose();
+		gameModel.dispose();
+		for (MonsterController mc: monsterController){
+			mc.dispose();
+		}
+		cameraController.dispose();
+		playerController.dispose();
+		uiController.dispose();
 	}
 
 }
