@@ -40,7 +40,7 @@ public class UIController {
     stage.addActor(levelSelectView);
     
     // Set up callbacks
-    titleView.gameStartButton.addListener(gameStartListener);
+    titleView.levelSelectButton.addListener(levelSelectListener);
     titleView.optionsButton.addListener(optionsListener);
     optionsView.backButton.addListener(backListener);
     levelSelectView.backButton.addListener(backListener);
@@ -49,7 +49,7 @@ public class UIController {
   }
   
   // Button listeners
-  private ChangeListener gameStartListener = new ChangeListener() {
+  private ChangeListener levelSelectListener = new ChangeListener() {
     @Override
     public void changed(ChangeEvent event, Actor actor) {
       setUIState(UIState.LEVEL_SELECT);

@@ -30,7 +30,15 @@ public class TitleController {
     }
     
     uiController.titleView.quitButton.addListener(quitButtonListener);
+    uiController.titleView.gameStartButton.addListener(gameStartListener);
   }
+
+  private ChangeListener gameStartListener = new ChangeListener() {
+    @Override
+    public void changed(ChangeEvent event, Actor actor) {
+      levelSelected = 1;
+    }
+  };
   
   private ChangeListener quitButtonListener = new ChangeListener() {
     @Override

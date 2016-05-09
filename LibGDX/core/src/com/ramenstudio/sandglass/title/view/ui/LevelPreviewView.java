@@ -34,7 +34,7 @@ public class LevelPreviewView extends Table {
     previewSprite = new Image(new Texture(Gdx.files.internal(imagePath)));
     add(previewSprite).pad(20);
     
-    levelNameLabel = new Label("Level " + level, skin, "title");
+    levelNameLabel = new Label("Level " + level, skin);
     add(levelNameLabel).pad(20);
     
     levelSelectButton = new Button(skin);
