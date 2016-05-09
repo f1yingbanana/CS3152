@@ -1,8 +1,10 @@
 package com.ramenstudio.sandglass.util.controller;
 
-import com.badlogic.gdx.assets.*;
-import com.badlogic.gdx.audio.*;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.IdentityMap;
+import com.badlogic.gdx.utils.IdentityMap.Keys;
 
 /**
  * Modified version of the SoundController provided in lab 4. 
@@ -87,6 +89,8 @@ public class SoundController {
 	private IdentityMap<String,Sound> soundbank;
 	/** Keeps track of all of the "active" sounds */
 	private IdentityMap<String,ActiveSound> actives;
+	/** Keeps track of BGM that should loop */
+	private IdentityMap<String,Boolean> loopers;
 	/** Support class for garbage collection */
 	private Array<String> collection;
 	
@@ -99,6 +103,12 @@ public class SoundController {
 	private int frameLimit;
 	/** The number of sounds we have played this animation frame */
 	private int current;
+	
+	private static final String BACKGROUND_01 = "Sounds/Odyssey.mp3";
+	public static final String BACKGROUND_01_NAME = "Odyssey";
+	
+	private static final String DOOR_OPEN_01 = "Sounds/door_open_004.mp3";
+	public static final String DOOR_OPEN_01_NAME = "DoorOpen";
 
 	/** 
 	 * Creates a new SoundController with the default settings.
@@ -106,6 +116,7 @@ public class SoundController {
 	private SoundController() {
 		soundbank = new IdentityMap<String,Sound>();
 		actives = new IdentityMap<String,ActiveSound>();
+		loopers = new IdentityMap<String,Boolean>();
 		collection = new Array<String>();
 		cooldown = DEFAULT_COOL;
 		timeLimit = DEFAULT_LIMIT;
@@ -125,6 +136,20 @@ public class SoundController {
 			controller = new SoundController();
 		}
 		return controller;
+	}
+	
+	public void preLoadSounds(AssetManager manager) {
+		manager.load(BACKGROUND_01,Sound.class);
+		manager.load(DOOR_OPEN_01,Sound.class);
+		
+		manager.finishLoading();
+		
+		Sound background1 = manager.get(BACKGROUND_01,Sound.class);
+		soundbank.put(BACKGROUND_01_NAME,background1);
+		loopers.put(BACKGROUND_01, true);
+		Sound doorOpen1 = manager.get(DOOR_OPEN_01,Sound.class);
+		soundbank.put(DOOR_OPEN_01_NAME, doorOpen1);
+		loopers.put(DOOR_OPEN_01, false);
 	}
 	
 	/// Properties
@@ -252,8 +277,8 @@ public class SoundController {
 	 * 
 	 * @return True if the sound was successfully played
 	 */
-	public boolean play(String key, String filename, boolean loop) {
-		return play(key,filename,loop,1.0f);
+	public boolean play(String key, String filename, boolean loop, boolean isBackground) {
+		return play(key,filename,loop,1.0f,isBackground);
 	}
 
 	/**
@@ -273,39 +298,69 @@ public class SoundController {
 	 * @param filename	The filename of the sound asset
 	 * @param loop		Whether to loop the sound
 	 * @param volume	The sound volume in the range [0,1]
+	 * @param isBackground Whether or not to stop the sound if we want to play it again.
 	 * 
 	 * @return True if the sound was successfully played
 	 */
-	public boolean play(String key, String filename, boolean loop, float volume) {
+	public boolean play(String key, String filename, boolean loop, float volume, boolean isBackground) {
 		// Get the sound for the file
-		if (!soundbank.containsKey(filename) || current >= frameLimit) {
-			return false;
-		}
+		// Original check. Removed frameLimit
+//		if (!soundbank.containsKey(filename) || current >= frameLimit) {
+//			return false;
+//		}
 
-		// If there is a sound for this key, stop it
-		Sound sound = soundbank.get(filename);
-		if (actives.containsKey(key)) {
-			ActiveSound snd = actives.get(key);
-			if (!snd.loop && snd.lifespan > cooldown) {
-				// This is a workaround for the OS X sound bug
-				//snd.sound.stop(snd.id);
-				snd.sound.setVolume(snd.id, 0.0f); 
-			} else {
+		if (!isBackground) {
+			if (!soundbank.containsKey(filename) || current >= frameLimit) {
+				return false;
+			}
+			// If there is a sound for this key, stop it
+			Sound sound = soundbank.get(filename);
+			if (actives.containsKey(key)) {
+				ActiveSound snd = actives.get(key);
+				if (!snd.loop && snd.lifespan > cooldown) {
+					// This is a workaround for the OS X sound bug
+					//snd.sound.stop(snd.id);
+					snd.sound.setVolume(snd.id, 0.0f); 
+				} else {
+					return true;
+				}
+			}
+			
+			// Play the new sound and add it
+			long id = sound.play(volume);
+			if (id == -1) {
+				return false;
+			} else if (loop) {
+				sound.setLooping(id, true);
+			}
+			
+			actives.put(key,new ActiveSound(sound,id,loop));
+			current++;
+			return true;
+		}
+		
+		else {
+			if (!soundbank.containsKey(filename)) {
+				return false;
+			}
+			// If there is a sound for this key, stop it
+			Sound sound = soundbank.get(filename);
+			if (actives.containsKey(key)) {
 				return true;
 			}
+			
+			// Play the new sound and add it
+			long id = sound.play(volume);
+			if (id == -1) {
+				return false;
+			} else if (loop) {
+				sound.setLooping(id, true);
+			}
+			
+			actives.put(key,new ActiveSound(sound,id,loop));
+			current++;
+			return true;
 		}
-		
-		// Play the new sound and add it
-		long id = sound.play(volume);
-		if (id == -1) {
-			return false;
-		} else if (loop) {
-			sound.setLooping(id, true);
-		}
-		
-		actives.put(key,new ActiveSound(sound,id,loop));
-		current++;
-		return true;
 	}
 	
 	/**
@@ -353,6 +408,9 @@ public class SoundController {
 	 */
 	public void update() {
 		for(String key : actives.keys()) {
+			if (loopers.get(key)) {
+				continue;
+			}
 			ActiveSound snd = actives.get(key);
 			snd.lifespan++;
 			if (snd.lifespan > timeLimit) {
@@ -366,6 +424,22 @@ public class SoundController {
 		}
 		collection.clear();
 		current = 0;
+	}
+
+	public void playBGMForLevel(int gameLevel) {
+		// Have logic based on gameLevel to decide which sound to play, currently playing the same.
+		System.out.println(play(BACKGROUND_01, BACKGROUND_01_NAME,true,true));
+	}
+
+	public void stopAll() {
+		Keys<String> activeStringSounds = actives.keys();
+		for (String s : activeStringSounds) {
+			stop(s);
+		}
+	}
+
+	public void playDoorOpen() {
+		System.out.println(play(DOOR_OPEN_01, DOOR_OPEN_01_NAME, false, false));
 	}
 
 }
