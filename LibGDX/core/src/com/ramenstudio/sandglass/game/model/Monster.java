@@ -149,6 +149,7 @@ public class Monster extends GameObject implements Drawable{
 	private int count = 0;
 	private static final int COOLDOWN = 7;
 
+	public boolean isFrozen = false;
 	/**
 	 * Create monster # id at the given position.
 	 *
@@ -524,11 +525,16 @@ public class Monster extends GameObject implements Drawable{
 	 * @param controlCode The movement controlCode (from InputController).
 	 */
 	public void update(float dt) {
-		totalTime += dt;
-		
 		// Animation
 		handleAnimation();
-
+		
+		if (isFrozen){
+			return;
+		}
+		
+		totalTime += dt;
+		
+		
 		if (isLoop) {
 			float periodicTime = totalTime % cycleTime;
 			for (int i = 0; i < timeBetweenVertices.size; i++) {

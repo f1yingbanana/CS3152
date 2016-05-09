@@ -267,6 +267,11 @@ public class GameController extends AbstractController implements ContactListene
 		gameModel.setWorldPosition(!isUnder);
 
 		for (MonsterController m: monsterController){
+			if (playerController.freeze_counter < playerController.FREEZE_COOLDOWN){
+				m.monster.isFrozen = true;
+			} else {
+				m.monster.isFrozen = false;
+			}
 			m.monster.setUnder(isUnder);
 			m.monster.update(dt);
 		}
