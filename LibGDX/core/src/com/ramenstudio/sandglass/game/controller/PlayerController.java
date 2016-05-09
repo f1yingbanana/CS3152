@@ -220,7 +220,12 @@ public class PlayerController extends AbstractController {
 			player.getBody().setLinearVelocity(vel);
 		} else {
 			player.getBody().setLinearVelocity(0,0);
-		}	
+		}
+		
+		// TODO : Epsilon velocity to ensure collisions
+		if (player.getBody().getLinearVelocity().epsilonEquals(0, 0, 0.01f)) {
+			player.getBody().setLinearVelocity(0.01f, 0.01f);
+		}
 		
 		// Handle rotating
 		checkCorner();
@@ -294,6 +299,7 @@ public class PlayerController extends AbstractController {
 				float offset = 0.05f + size.y/2;;
 				if (AngleEnum.isVertical(heading)) {
 					tilePos = under.getPosition().y;
+					//System.out.println(tilePos);
 					pos.y = heading == AngleEnum.SOUTH ? 
 							tilePos + offset : tilePos - offset;
 				} else {
@@ -309,7 +315,7 @@ public class PlayerController extends AbstractController {
 				if(player.isTouchMF()){
 					player.setTouchMF(false);
 				}
-				if(!mustFlip){
+				else{
 					player.subtractFlip(1);					
 				}
 			}

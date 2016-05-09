@@ -80,16 +80,16 @@ public class PauseView extends Table {
     
     row();
     
-    mainMenuButton = new TextButton("MAIN MENU", skin);
+    mainMenuButton = new TextButton("SELECT LEVEL", skin);
     //mainMenuButton.setDisabled(true);
     //mainMenuButton.setTouchable(Touchable.disabled);
     add(mainMenuButton).prefSize(160, 50).pad(20);
     mainMenuButton.addListener(new ClickListener() {
       public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        mainMenuButton.setText("-   MAIN MENU   -");
+        mainMenuButton.setText("-   SELECT LEVEL   -");
       }
       public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        mainMenuButton.setText("MAIN MENU");
+        mainMenuButton.setText("SELECT LEVEL");
       }
     });
   }
