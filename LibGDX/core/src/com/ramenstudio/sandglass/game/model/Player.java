@@ -38,6 +38,17 @@ public class Player extends GameObject implements Drawable {
 	public int DEDUCT_COOL_TIME = 2;
 
 	public boolean isGrounded;
+
+	public boolean isFlashing;
+	
+	/** Private field to keep track of whether or not to show the player image. */
+	private boolean flash = true;
+	
+	/** Cooldown for flashing image. */
+	private static final int FLASH_COOLDOWN = 5;
+	
+	/** Flashing counter. */
+	private int flashCounter = 0;
     
     /** The direction the player is facing (for drawing)
      *	left is -1, right is 1  
@@ -171,16 +182,25 @@ public class Player extends GameObject implements Drawable {
 
 	@Override
 	public void draw(GameCanvas canvas) {
-		Vector2 size = getSize();
-//		if (direction == 1) {
-//			size.x *= -1;
+//		Vector2 size = getSize();
+////		if (direction == 1) {
+////			size.x *= -1;
+////		}
+//		if (isTouchMF && !isGrounded) {
+//			canvas.draw(playerSprite, Color.RED, getPosition().add(getSize().cpy().scl(-0.5f)), size,
+//					new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 //		}
-		if (isTouchMF && !isGrounded){
-			canvas.draw(playerSprite, Color.RED, getPosition().add(getSize().cpy().scl(-0.5f)), size,
-					new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
-		}
-		
-		else{
+
+		if (isFlashing) {
+			if (flash && flashCounter < FLASH_COOLDOWN) {
+				flashCounter++;
+				canvas.draw(playerSprite, Color.WHITE, getPosition().add(getSize().cpy().scl(-0.5f)), size,
+						new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+			} else {
+				flash = (flashCounter == 0) ? true : false;
+				flashCounter--;
+			}
+		} else {
 			canvas.draw(playerSprite, Color.WHITE, getPosition().add(getSize().cpy().scl(-0.5f)), size,
 					new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 		}

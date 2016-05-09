@@ -38,10 +38,10 @@ public class PlayerController extends AbstractController {
 	private float rayDist = 0.3f;
 
 	/** Maximum move speed in horizontal movement */
-	private float moveSpeed = 3.5f;
+	private float moveSpeed = 4f;
 
 	/** Vertical jump velocity when jump is begun. */
-	private float jumpVelocity = 5.125f;
+	private float jumpVelocity = 5.25f;
 	/** Saving an instance of the delegate */
 	private World world;
 
@@ -119,11 +119,14 @@ public class PlayerController extends AbstractController {
     private static final int WALK_COOLDOWN = 4;
     private static final int JUMP_COOLDOWN = 7;
     
-    /**Cooldown for preventing input while camera rotates*/
-    public int FREEZE_COOLDOWN = 60;
+//    /**Cooldown for preventing input while camera rotates*/
+//    public static final int FREEZE_COOLDOWN = 60;
+//    
+//    /**Counter for flip/rotate cooldown*/
+//    public int freeze_counter = FREEZE_COOLDOWN;
     
-    /**Counter for flip/rotate cooldown*/
-    public int freeze_counter = FREEZE_COOLDOWN;
+    /** Freeze flag */
+    private boolean frozen = false;
     
     /** Frame counter */
     private int counter = 0;
@@ -132,6 +135,15 @@ public class PlayerController extends AbstractController {
 
     /** Boolean for if the player must flip, after hitting a monster or something */
 	private boolean mustFlip;
+	
+	/** How long the player has before they are vulnerable again. */
+	private static final int HIT_COOLDOWN = 100;
+	
+	/** The hit counter. */
+	private int hitCounter = 0;
+	
+	/** The rotate counter. */
+	private int rotateCounter = 0;
     
 	/**
 	 * Default constructor for player object.
@@ -156,58 +168,60 @@ public class PlayerController extends AbstractController {
 		player.isGrounded = isGrounded();
 		// Reset variables
 		rotateAngle = 0f;
-		freeze_counter++;
+//		freeze_counter++;
 
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.getBody().getLinearVelocity();
 		Vector2 size = player.getSize();
 
-		// Handle movement
+		if (player.isTouchMF()){
+			mustFlip = true;
+		}
 		boolean jump = false;
-		float x = moveSpeed * inputController.getHorizontal();
-		if (x != 0) {
-			prevDirection = direction;
-			direction = (x > 0)? AngleEnum.EAST : AngleEnum.WEST;
-		}
-//		player.direction = inputController.getHorizontal();
-		float y = AngleEnum.isVertical(heading) ? vel.y: vel.x;
-		if (inputController.didPressJump() && isGrounded() && 
-				freeze_counter >= FREEZE_COOLDOWN) {
-			y = jumpVelocity;
-			jump = true;
-		}
-		if (heading == AngleEnum.NORTH) {
-			vel.x = x;
-			vel.y = y; 
-		} else if (heading == AngleEnum.EAST) {
-			vel.x = y;
-			vel.y = -x;
-		} else if (heading == AngleEnum.SOUTH) {
-			vel.x = -x;
-			vel.y = jump? -y : y;
-		} else {
-			vel.x = jump? -y : y;
-			vel.y = x;
-		}
-		if (x != 0 && isGrounded()) {
-			next = State.WALK;
-		} else if (x == 0 && isGrounded()) {
-			next = State.NEUTRAL;
-		} else {
-			next = State.JUMP;
-		}
-		if (freeze_counter >= FREEZE_COOLDOWN){
-			player.getBody().setLinearVelocity(vel);
-		} else {
-			vel.x = 0;
-			vel.y = 0;
-			player.getBody().setLinearVelocity(vel);
-		}
+		
+		// Handle movement
+		if (!frozen) {
+			float x = moveSpeed * inputController.getHorizontal();
+			if (x != 0) {
+				prevDirection = direction;
+				direction = (x > 0)? AngleEnum.EAST : AngleEnum.WEST;
+			}
 
+			float y = AngleEnum.isVertical(heading) ? vel.y: vel.x;
+			if (inputController.didPressJump() && isGrounded()) {
+				y = jumpVelocity;
+				jump = true;
+			}
+			if (heading == AngleEnum.NORTH) {
+				vel.x = x;
+				vel.y = y; 
+			} else if (heading == AngleEnum.EAST) {
+				vel.x = y;
+				vel.y = -x;
+			} else if (heading == AngleEnum.SOUTH) {
+				vel.x = -x;
+				vel.y = jump? -y : y;
+			} else {
+				vel.x = jump? -y : y;
+				vel.y = x;
+			}
+			if (x != 0 && isGrounded()) {
+				next = State.WALK;
+			} else if (x == 0 && isGrounded()) {
+				next = State.NEUTRAL;
+			} else {
+				next = State.JUMP;
+			}
+			player.getBody().setLinearVelocity(vel);
+		} else {
+			player.getBody().setLinearVelocity(0,0);
+		}	
+		
 		// Handle rotating
 		checkCorner();
-		if (activeCorner != null && isGrounded() && !jump && isUnder) {
-			freeze_counter = 0;
+		// TODO: finalize design (press down on rotate or counter)
+		if (activeCorner != null && !jump && isUnder && inputController.getVertical() == -1) {
+			
 			Vector2 cornerPos = activeCorner.getPosition();
 			float diff = (AngleEnum.isVertical(heading))?
 					pos.x - cornerPos.x : pos.y - cornerPos.y;
@@ -256,18 +270,17 @@ public class PlayerController extends AbstractController {
 				}
 				heading = AngleEnum.flipClockWise(heading);
 			}
-//			newX = Math.round(newX*1000.0f)/1000.0f;
-//			newY = Math.round(newY*1000.0f)/1000.0f;
+//						newX = Math.round(newX*1000.0f)/1000.0f;
+//						newY = Math.round(newY*1000.0f)/1000.0f;
 			player.setPosition(new Vector2(newX, newY));
 			player.getBody().setLinearVelocity(0,0);
 			player.setRotation(AngleEnum.convertToAngle(heading));
 			activeCorner = null;
 		}
+		
 		// Handle flipping
-		else if ((inputController.didPressFlip() || mustFlip) && canFlip() && !jump
-				&& freeze_counter >= FREEZE_COOLDOWN) {
+		else if ((inputController.didPressFlip() || mustFlip) && canFlip() && !jump) {
 			mustFlip = false;
-			freeze_counter = 0;
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
 				rotateAngle = 180;
@@ -296,9 +309,9 @@ public class PlayerController extends AbstractController {
 			}
 		}
 		
-		mustFlip = false;
 		// Handle goal collision
 		collidedWithGoal();
+		
 		// Handle reset button
 		if (inputController.didPressReset()) {
 			isReset = true;
@@ -306,11 +319,19 @@ public class PlayerController extends AbstractController {
 		oneFrameRayHandler = null;
 		oneFrameOverlapHandler = null;
 		
-		if (player.isImpulse){
-			player.getBody().applyLinearImpulse(player.getImpulse(), player.getBody().getPosition(), true);
-			System.out.println("GIVING IMPULSE NOW. I SHOULD ONLY APPEAR ONCE");
-//			player.getBody().applyForceToCenter(player.getImpulse().cpy().scl(80.0f), true);
-			player.isImpulse = false;
+//		if (player.isImpulse){
+//			player.getBody().applyLinearImpulse(player.getImpulse(), player.getBody().getPosition(), true);
+////			System.out.println("GIVING IMPULSE NOW. I SHOULD ONLY APPEAR ONCE");
+////			player.getBody().applyForceToCenter(player.getImpulse().cpy().scl(80.0f), true);
+//			player.isImpulse = false;
+//		}
+		
+		// Handle Collisions
+		if (player.isFlashing && hitCounter >= HIT_COOLDOWN) {
+			hitCounter = 0;
+			player.isFlashing = false;
+		} else if (player.isFlashing) {
+			hitCounter++;
 		}
 		
 		if (player.isDeductFlip()){
@@ -324,15 +345,10 @@ public class PlayerController extends AbstractController {
 			}
 		}
 		
-		if (player.isTouchMF()){
-			mustFlip = true;
-		}
-		
 		// Handle animation
-		if (freeze_counter >= FREEZE_COOLDOWN){
+		if (!frozen) {
 			handleAnimation();
 		}
-		//System.out.println(player.getBody().getLinearVelocity().toString());
 	}
 
 	private void handleAnimation() {
@@ -379,6 +395,8 @@ public class PlayerController extends AbstractController {
 				else player.setFrame(WALK_START_WEST);
 			}
 			break;
+		case FLIP:
+			// TODO: add flipping animation here!
 		}
 		state = next;
 	}
@@ -440,6 +458,10 @@ public class PlayerController extends AbstractController {
 
 	public Player getPlayer() {
 		return player;
+	}
+	
+	public void setFrozen(boolean bool) {
+		frozen = bool;
 	}
 
 	/**

@@ -239,6 +239,11 @@ public class GameController extends AbstractController implements ContactListene
 				resumeGame();
 			}
 		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+			if (getGameModel().getGameState() == GameState.LOST) {
+				reset();
+			}
+		}
 
 		uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
 		uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
@@ -262,18 +267,15 @@ public class GameController extends AbstractController implements ContactListene
 		if (playerController.getRotateAngle() != 0f) {
 			cameraController.rotate(playerController.getRotateAngle());
 		}
-
+		boolean frozen = !cameraController.doneRotating;
+		playerController.setFrozen(frozen);
 		playerController.update(dt);
 
 		boolean isUnder = playerController.isUnder();
 		gameModel.setWorldPosition(!isUnder);
 
 		for (MonsterController m: monsterController){
-			if (playerController.freeze_counter < playerController.FREEZE_COOLDOWN){
-				m.monster.isFrozen = true;
-			} else {
-				m.monster.isFrozen = false;
-			}
+			m.monster.isFrozen = frozen;
 			m.monster.setUnder(isUnder);
 			m.monster.update(dt);
 		}
@@ -372,10 +374,8 @@ public class GameController extends AbstractController implements ContactListene
 
 		if ((firstOne instanceof Player && secondOne instanceof Monster) ||
 				(secondOne instanceof Player && firstOne instanceof Monster)) {
-			//System.out.println("monsterContact");
-
 			Monster theMonster;
-			Player thePlayer = playerController.getPlayer();
+			Player thePlayer;
 
 			if (secondOne instanceof Monster) {
 				theMonster = (Monster)secondOne;
@@ -384,38 +384,32 @@ public class GameController extends AbstractController implements ContactListene
 				theMonster = (Monster)firstOne;
 				thePlayer = (Player)secondOne;
 			}
+			
+			if (!thePlayer.isFlashing) {
+				if (theMonster.monsterLevel == MonsterLevel.KILL) {
+					getGameModel().setGameState(GameState.LOST);
+				} else if (theMonster.monsterLevel == MonsterLevel.DEDUCT_FLIPS) {
+					thePlayer.setDeductFlip(true);
+				} else if (theMonster.monsterLevel == MonsterLevel.MAKE_FLIP) {
+					thePlayer.setTouchMF(true);
+				}
+				
+//				float angle = (float)(180/Math.PI) *
+//						AngleEnum.convertToAngle(playerController.getHeading());
+//
+//				Vector2 impulse = thePlayer.getBody().getLinearVelocity().x > 0 ? new Vector2(-900f,-50f) :
+//					new Vector2(900f,-50f);
+//				Vector2 relativeVel = thePlayer.getBody().getLinearVelocity().
+//						cpy().rotate((float)(180/Math.PI) *
+//								AngleEnum.convertToAngle(playerController.getHeading()));
+//				Vector2 relImpulse = impulse.rotate(angle);
+//				
+//				thePlayer.setImpulse(relImpulse);
+				
+				thePlayer.isFlashing = true;
+			}
 
-			if (theMonster.monsterLevel == MonsterLevel.KILL) {
-				getGameModel().setGameState(GameState.LOST);
-			}
-			else if (theMonster.monsterLevel == MonsterLevel.DEDUCT_FLIPS) {
-				playerController.getPlayer().setDeductFlip(true);
-			}
-			else if (theMonster.monsterLevel == MonsterLevel.MAKE_FLIP) {
-				playerController.getPlayer().setTouchMF(true);
-			}
 			
-			
-			//System.out.println("original velocity : " + thePlayer.getBody().getLinearVelocity());
-			
-			float angle = (float)(180/Math.PI) *
-					AngleEnum.convertToAngle(playerController.getHeading());
-			//System.out.println("angle: "+ angle);
-			
-
-			Vector2 impulse = thePlayer.getBody().getLinearVelocity().x > 0 ? new Vector2(-900f,-50f) :
-				new Vector2(900f,-50f);
-			//System.out.println(" the player is rotating at " + playerController.getHeading().toString());
-			Vector2 relativeVel = thePlayer.getBody().getLinearVelocity().
-					cpy().rotate((float)(180/Math.PI) *
-							AngleEnum.convertToAngle(playerController.getHeading()));
-			//System.out.println("The relative velocity is : "+ relativeVel);
-			Vector2 relImpulse = impulse.rotate(angle);
-			
-			//System.out.println("the impulse is : " + relImpulse);
-			thePlayer.setImpulse(relImpulse);
-			//TODOs
-			// apply force when contact
 		}
 
 		if (firstOne instanceof Player &&

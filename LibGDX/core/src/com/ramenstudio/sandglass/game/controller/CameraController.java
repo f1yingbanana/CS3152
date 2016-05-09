@@ -48,7 +48,7 @@ public class CameraController extends AbstractController {
 	 * 	1 means instant movement.
 	 */
 	private static final float TRANSLATING_FACTOR = 0.05f;
-	private static final float ROTATING_FACTOR = 0.05f;
+	private static final float ROTATING_FACTOR = 0.08f;
 
 	/** The standard for viewCamera speed. */
 	private static final float FRAME_TIME = 1f/60f;
@@ -79,6 +79,8 @@ public class CameraController extends AbstractController {
 	/** Used to store whether the camera should be currently zooming in or zooming out */
 	private boolean zoomingOut = true;
 	
+	/** Flag to signal the end of rotation. */
+	public boolean doneRotating = true;
 
 	/**
 	 * Creates a viewCamera controller and initializes the game viewCamera.
@@ -184,14 +186,27 @@ public class CameraController extends AbstractController {
 		float rotateTime = (dt/FRAME_TIME) * ROTATING_FACTOR;
 
 		float camAngle = viewCamera.getRotation();
-		if (goal != camAngle) {
+		float diff = Math.abs(goal - camAngle);
+		if (diff > 10f) {
+			doneRotating = false;
 			if (instant) {
 				viewCamera.setRotation(goal);
 			} else {
 				float newAngle = (goal - camAngle)*rotateTime + camAngle;
 				viewCamera.setRotation(newAngle);
 			}
+		} else if (diff > 0.3f) {
+			doneRotating = true;
+			if (instant) {
+				viewCamera.setRotation(goal);
+			} else {
+				float newAngle = (goal - camAngle)*rotateTime + camAngle;
+				viewCamera.setRotation(newAngle);
+			}
+		} else {
+			viewCamera.setRotation(goal);
 		}
+		
 		Vector2 targPos;
 		if (tracking) {
 			targPos = target.getPosition();

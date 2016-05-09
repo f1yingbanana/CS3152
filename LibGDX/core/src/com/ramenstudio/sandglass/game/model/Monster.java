@@ -193,7 +193,7 @@ public class Monster extends GameObject implements Drawable{
 //			shape.setPosition(new Vector2(0.0f,0.2f));
 			fixtureDef.density = 100.0f;
 			fixtureDef.shape = shape;
-			//fixtureDef.isSensor =true;
+			fixtureDef.isSensor = true;
 			fixtureDefs[0] = fixtureDef;
 			fixtureDef.friction = 0.0f;
 			
@@ -232,7 +232,7 @@ public class Monster extends GameObject implements Drawable{
 //			underShape.setAsBox(0.4f, 0.4f);
 			underFixtureDef.density = 100.0f;
 			underFixtureDef.shape = underShape;
-			//underFixtureDef.isSensor = true;
+			underFixtureDef.isSensor = true;
 			fixtureDefs[0] = underFixtureDef;
 			underFixtureDef.friction = 10;
 		}
@@ -274,7 +274,7 @@ public class Monster extends GameObject implements Drawable{
 			FixtureDef underFixtureDef2 = new FixtureDef();
 			underFixtureDef.density = 100.0f;
 			underFixtureDef2.density = 100.0f;
-			//underFixtureDef.isSensor = true;
+			underFixtureDef.isSensor = true;
 			underFixtureDef.shape = c;
 			underFixtureDef2.shape = underShape;
 			underFixtureDef.friction = 10;
@@ -529,6 +529,7 @@ public class Monster extends GameObject implements Drawable{
 		handleAnimation();
 		
 		if (isFrozen){
+			setRotation(target.getRotation());
 			return;
 		}
 		
