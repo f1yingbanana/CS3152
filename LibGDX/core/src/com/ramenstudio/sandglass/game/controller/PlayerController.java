@@ -100,7 +100,7 @@ public class PlayerController extends AbstractController {
 	
     /** The enum for animation states. */
     public enum State {
-    	NEUTRAL, JUMP, WALK 
+    	NEUTRAL, JUMP, WALK, FLIP 
     }
     
     /** The current animation state. */
@@ -118,6 +118,13 @@ public class PlayerController extends AbstractController {
     /** Frame cooldown (frames are too quick) */
     private static final int WALK_COOLDOWN = 4;
     private static final int JUMP_COOLDOWN = 7;
+    
+    /**Cooldown for preventing input while camera rotates*/
+    public int FREEZE_COOLDOWN = 60;
+    
+    /**Counter for flip/rotate cooldown*/
+    public int freeze_counter = FREEZE_COOLDOWN;
+    
     /** Frame counter */
     private int counter = 0;
 
@@ -149,6 +156,7 @@ public class PlayerController extends AbstractController {
 		player.isGrounded = isGrounded();
 		// Reset variables
 		rotateAngle = 0f;
+		freeze_counter++;
 
 		Vector2 pos = player.getPosition();
 		Vector2 vel = player.getBody().getLinearVelocity();
@@ -163,7 +171,8 @@ public class PlayerController extends AbstractController {
 		}
 //		player.direction = inputController.getHorizontal();
 		float y = AngleEnum.isVertical(heading) ? vel.y: vel.x;
-		if (inputController.didPressJump() && isGrounded()) {
+		if (inputController.didPressJump() && isGrounded() && 
+				freeze_counter >= FREEZE_COOLDOWN) {
 			y = jumpVelocity;
 			jump = true;
 		}
@@ -187,11 +196,18 @@ public class PlayerController extends AbstractController {
 		} else {
 			next = State.JUMP;
 		}
-		player.getBody().setLinearVelocity(vel);
+		if (freeze_counter >= FREEZE_COOLDOWN){
+			player.getBody().setLinearVelocity(vel);
+		} else {
+			vel.x = 0;
+			vel.y = 0;
+			player.getBody().setLinearVelocity(vel);
+		}
 
 		// Handle rotating
 		checkCorner();
 		if (activeCorner != null && isGrounded() && !jump && isUnder) {
+			freeze_counter = 0;
 			Vector2 cornerPos = activeCorner.getPosition();
 			float diff = (AngleEnum.isVertical(heading))?
 					pos.x - cornerPos.x : pos.y - cornerPos.y;
@@ -248,8 +264,10 @@ public class PlayerController extends AbstractController {
 			activeCorner = null;
 		}
 		// Handle flipping
-		else if ((inputController.didPressFlip() || mustFlip) && canFlip() && !jump) {
-
+		else if ((inputController.didPressFlip() || mustFlip) && canFlip() && !jump
+				&& freeze_counter >= FREEZE_COOLDOWN) {
+			mustFlip = false;
+			freeze_counter = 0;
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
 				rotateAngle = 180;
@@ -311,7 +329,9 @@ public class PlayerController extends AbstractController {
 		}
 		
 		// Handle animation
-		handleAnimation();
+		if (freeze_counter >= FREEZE_COOLDOWN){
+			handleAnimation();
+		}
 		//System.out.println(player.getBody().getLinearVelocity().toString());
 	}
 
