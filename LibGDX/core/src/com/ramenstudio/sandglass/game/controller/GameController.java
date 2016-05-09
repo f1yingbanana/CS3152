@@ -386,6 +386,7 @@ public class GameController extends AbstractController implements ContactListene
 			}
 			
 			if (!thePlayer.isFlashing) {
+				SoundController.getInstance().playMonsterHit();
 				if (theMonster.monsterLevel == MonsterLevel.KILL) {
 					getGameModel().setGameState(GameState.LOST);
 				} else if (theMonster.monsterLevel == MonsterLevel.DEDUCT_FLIPS) {
@@ -458,6 +459,7 @@ public class GameController extends AbstractController implements ContactListene
 		if ((firstOne instanceof Player && secondOne instanceof Gate) ||
 				(firstOne instanceof Gate && secondOne instanceof Player)) {
 			if (getGameModel().allPiecesCollected()) {
+				SoundController.getInstance().playLevelComplete();
 				// We won!
 				getGameModel().setGameState(GameState.WON);
 			}

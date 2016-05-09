@@ -115,6 +115,15 @@ public class SoundController {
 	
 	private static final String ITEM_COLLECT_01 = "Sounds/ItemPickUp.mp3";
 	private static final String ITEM_COLLECT_01_NAME = "ItemCollect";
+	
+	private static final String LEVEL_COMPLETE_01 = "Sounds/LevelComplete.mp3";
+	private static final String LEVEL_COMPLETE_01_NAME = "LevelComplete";
+	
+//	private static final String LEVEL_FAILED_01 = ;
+//	private static final String LEVEL_FAILED_01_NAME = ;
+	
+	private static final String MONSTER_HIT_01 = "Sounds/MonsterCollision.mp3";
+	private static final String MONSTER_HIT_01_NAME = "MonsterCollision";
 
 	/** 
 	 * Creates a new SoundController with the default settings.
@@ -149,6 +158,9 @@ public class SoundController {
 		manager.load(DOOR_OPEN_01,Sound.class);
 		manager.load(SHIP_PIECE_COLLECT_01,Sound.class);
 		manager.load(ITEM_COLLECT_01,Sound.class);
+		manager.load(LEVEL_COMPLETE_01,Sound.class);
+//		manager.load(LEVEL_FAILED_01, Sound.class);
+		manager.load(MONSTER_HIT_01, Sound.class);
 		
 		manager.finishLoading();
 		
@@ -167,6 +179,18 @@ public class SoundController {
 		Sound itemCollect1 = manager.get(ITEM_COLLECT_01,Sound.class);
 		soundbank.put(ITEM_COLLECT_01_NAME, itemCollect1);
 		loopers.put(ITEM_COLLECT_01, false);
+		
+		Sound levelComplete1 = manager.get(LEVEL_COMPLETE_01,Sound.class);
+		soundbank.put(LEVEL_COMPLETE_01_NAME, levelComplete1);
+		loopers.put(LEVEL_COMPLETE_01, false);
+		
+//		Sound levelFailed1 = manager.get(LEVEL_FAILED_01,Sound.class);
+//		soundbank.put(LEVEL_FAILED_01_NAME, levelFailed1);
+//		loopers.put(LEVEL_FAILED_01, false);
+		
+		Sound monsterHit1 = manager.get(MONSTER_HIT_01,Sound.class);
+		soundbank.put(MONSTER_HIT_01_NAME, monsterHit1);
+		loopers.put(MONSTER_HIT_01,false);
 	}
 	
 	/// Properties
@@ -471,4 +495,16 @@ public class SoundController {
 	public void playItemCollect() {
 		play(ITEM_COLLECT_01, ITEM_COLLECT_01_NAME, false, false);
 	}
+	
+	public void playLevelComplete() {
+		play(LEVEL_COMPLETE_01, LEVEL_COMPLETE_01_NAME, false, false);
+	}
+	
+	public void playMonsterHit() {
+		play(MONSTER_HIT_01, MONSTER_HIT_01_NAME, false, false);
+	}
+	
+//	public void playLevelFail() {
+//		play(LEVEL_FAILED_01, LEVEL_FAILED_01_NAME, false, false);
+//	}
 }
