@@ -73,9 +73,9 @@ public class PlayerController extends AbstractController {
 	/** Number of rows in the player image filmstrip */
 	private static final int FILMSTRIP_ROWS = 1;
 	/** Number of columns in the player image filmstrip */
-	private static final int FILMSTRIP_COLS = 32;
+	private static final int FILMSTRIP_COLS = 52;
 	/** Number of elements in the player image filmstrip */
-	private static final int FILMSTRIP_SIZE = 32;
+	private static final int FILMSTRIP_SIZE = 52;
 	
 	/** The frame number for neutral stance. */
     private static final int NEUTRAL_START_EAST = 16;
@@ -97,6 +97,10 @@ public class PlayerController extends AbstractController {
     private static final int WALK_START_WEST = 1;
     /** The frame number for ending a walk. */
     private static final int WALK_END_WEST = 8;
+    
+    private static final int FLIP_START = 32;
+    
+    private static final int FLIP_END = 51;
 	
     /** The enum for animation states. */
     public enum State {
@@ -118,6 +122,7 @@ public class PlayerController extends AbstractController {
     /** Frame cooldown (frames are too quick) */
     private static final int WALK_COOLDOWN = 4;
     private static final int JUMP_COOLDOWN = 7;
+    private static final int FLIP_COOLDOWN = 4;
     
 //    /**Cooldown for preventing input while camera rotates*/
 //    public static final int FREEZE_COOLDOWN = 60;
@@ -150,7 +155,7 @@ public class PlayerController extends AbstractController {
 	 */
 	public PlayerController(Player player) {
 		this.player = player;
-		Texture playerTexture = new Texture(Gdx.files.internal("Character_spritesheet.png"));
+		Texture playerTexture = new Texture(Gdx.files.internal("CHARACTER.png"));
 		player.setPlayerSprite(new FilmStrip(playerTexture,FILMSTRIP_ROWS,FILMSTRIP_COLS,FILMSTRIP_SIZE));
 		player.setFrame(NEUTRAL_START_EAST);
 	}
@@ -283,6 +288,7 @@ public class PlayerController extends AbstractController {
 			mustFlip = false;
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
+				next = State.FLIP;
 				rotateAngle = 180;
 				float tilePos;
 				float offset = 0.05f + size.y/2;;
@@ -396,6 +402,16 @@ public class PlayerController extends AbstractController {
 			}
 			break;
 		case FLIP:
+			if (state == State.FLIP){
+				int offset = FLIP_START;
+				offset = Math.min(offset, FLIP_END - FLIP_START);
+				counter++;
+				if (counter > FLIP_COOLDOWN) {
+					counter = 0;
+					player.setFrame(FLIP_START + offset);
+				}
+				offset += frame + 1;
+			}
 			// TODO: add flipping animation here!
 		}
 		state = next;

@@ -218,7 +218,7 @@
     <property name="X" value="1920"/>
     <property name="Y" value="1536"/>
     <property name="angle" value="NORTH"/>
-    <property name="level" value="MAKE_FLIP"/>
+    <property name="level" value="DEDUCT_FLIPS"/>
     <property name="spcf" value="1.4"/>
    </properties>
   </object>
@@ -227,7 +227,7 @@
     <property name="X" value="640"/>
     <property name="Y" value="1536"/>
     <property name="angle" value="NORTH"/>
-    <property name="level" value="MAKE_FLIP"/>
+    <property name="level" value="DEDUCT_FLIPS"/>
     <property name="spcf" value="1.4"/>
    </properties>
   </object>

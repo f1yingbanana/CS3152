@@ -14,7 +14,7 @@ import com.ramenstudio.sandglass.util.Drawable;
  * @author Nathaniel Hunter*/
 public class ShipPiece extends GameObject implements Drawable {
 	//the texture of this piece
-	private Texture texture = new Texture(Gdx.files.internal("ship.png"));
+	private Texture texture = new Texture(Gdx.files.internal("FinalShip.png"));
 	
 	private boolean isCollected;
 	

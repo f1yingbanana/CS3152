@@ -109,16 +109,16 @@ public class Monster extends GameObject implements Drawable{
 	/** Number of rows in the monster image filmstrip */
 	private static final int FILMSTRIP_ROWS_KILL_LIGHT = 1;
 	/** Number of columns in the monster image filmstrip */
-	private static final int FILMSTRIP_COLS_KILL_LIGHT = 4;
+	private static final int FILMSTRIP_COLS_KILL_LIGHT = 9;
 	/** Number of elements in the monster image filmstrip */
-	private static final int FILMSTRIP_SIZE_KILL_LIGHT = 4;
+	private static final int FILMSTRIP_SIZE_KILL_LIGHT = 9;
 
 	/** Number of rows in the monster image filmstrip */
 	private static final int FILMSTRIP_ROWS_KILL_DARK = 1;
 	/** Number of columns in the monster image filmstrip */
-	private static final int FILMSTRIP_COLS_KILL_DARK = 12;
+	private static final int FILMSTRIP_COLS_KILL_DARK = 10;
 	/** Number of elements in the monster image filmstrip */
-	private static final int FILMSTRIP_SIZE_KILL_DARK = 12;
+	private static final int FILMSTRIP_SIZE_KILL_DARK = 10;
 
 	/** Number of rows in the monster image filmstrip */
 	private static final int FILMSTRIP_ROWS_MAKE_FLIP_LIGHT = 1;
@@ -169,7 +169,7 @@ public class Monster extends GameObject implements Drawable{
 		if (level == MonsterLevel.DEDUCT_FLIPS) {
 			//			setTexture(new Texture(Gdx.app.getFiles().internal("overmonster.png")));
 
-			Texture monsterTextureLight = new Texture(Gdx.files.internal("deduct_spritesheet_light.png"));
+			Texture monsterTextureLight = new Texture(Gdx.files.internal("DEDUCTFLIP.png"));
 			Texture monsterTextureDark = new Texture(Gdx.files.internal("deduct_spritesheet_dark.png"));
 
 			monsterSpriteLight = new FilmStrip(monsterTextureLight,
@@ -208,8 +208,8 @@ public class Monster extends GameObject implements Drawable{
 //			fixtureDef1.friction = 0.0f;
 		} else if (level == MonsterLevel.KILL){
 
-			Texture monsterTextureLight = new Texture(Gdx.files.internal("kill_spritesheet_light.png"));
-			Texture monsterTextureDark = new Texture(Gdx.files.internal("kill_spritesheet_dark.png"));
+			Texture monsterTextureLight = new Texture(Gdx.files.internal("KILL.png"));
+			Texture monsterTextureDark = new Texture(Gdx.files.internal("DARK_KILL.png"));
 
 			monsterSpriteLight = new FilmStrip(monsterTextureLight,
 					FILMSTRIP_ROWS_KILL_LIGHT,

@@ -12,7 +12,7 @@ import com.ramenstudio.sandglass.util.Drawable;
 
 /**a resource that provides the player with extra flips*/
 public class Resource extends GameObject implements Drawable {
-private Texture texture = new Texture(Gdx.files.internal("sandglass.png"));
+private Texture texture = new Texture(Gdx.files.internal("FinalSand.png"));
 	
 	private boolean isCollected;
 	
