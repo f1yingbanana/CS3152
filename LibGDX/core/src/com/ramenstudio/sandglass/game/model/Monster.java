@@ -228,7 +228,7 @@ public class Monster extends GameObject implements Drawable{
 
 			FixtureDef underFixtureDef = new FixtureDef();
 			CircleShape underShape = new CircleShape();
-			underShape.setRadius(0.4f);
+			underShape.setRadius(0.3f);
 //			underShape.setAsBox(0.4f, 0.4f);
 			underFixtureDef.density = 100.0f;
 			underFixtureDef.shape = underShape;

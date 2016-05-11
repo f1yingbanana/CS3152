@@ -138,6 +138,7 @@ public class CameraController extends AbstractController {
 	 * @param angle is the amount to rotate in degrees.
 	 */
 	public void rotate(float angle) {
+		doneRotating = false;
 		goal = goal + angle;
 		instant = false;
 		if (Math.abs(Math.abs(angle) - 90) < 1f) {

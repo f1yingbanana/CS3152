@@ -97,9 +97,11 @@ public class PlayerController extends AbstractController {
     private static final int WALK_START_WEST = 1;
     /** The frame number for ending a walk. */
     private static final int WALK_END_WEST = 8;
-    
+    /** The frame number for starting a flip. */
     private static final int FLIP_START = 32;
-    
+    /** The frame number for middle of a flip. */
+    private static final int FLIP_MID = 44;
+    /** The frame number for ending a flip. */
     private static final int FLIP_END = 51;
 	
     /** The enum for animation states. */
@@ -122,7 +124,7 @@ public class PlayerController extends AbstractController {
     /** Frame cooldown (frames are too quick) */
     private static final int WALK_COOLDOWN = 4;
     private static final int JUMP_COOLDOWN = 7;
-    private static final int FLIP_COOLDOWN = 4;
+    private static final int FLIP_COOLDOWN = 1;
     
 //    /**Cooldown for preventing input while camera rotates*/
 //    public static final int FREEZE_COOLDOWN = 60;
@@ -149,6 +151,9 @@ public class PlayerController extends AbstractController {
 	
 	/** The rotate counter. */
 	private int rotateCounter = 0;
+	
+	/** The position vector to be used halfway through flipping. */
+	private Vector2 position;
     
 	/**
 	 * Default constructor for player object.
@@ -183,6 +188,10 @@ public class PlayerController extends AbstractController {
 			mustFlip = true;
 		}
 		boolean jump = false;
+		
+
+		System.out.println("NEXT before: " + next);
+		System.out.println(frozen);
 		
 		// Handle movement
 		if (!frozen) {
@@ -219,10 +228,14 @@ public class PlayerController extends AbstractController {
 			}
 			player.getBody().setLinearVelocity(vel);
 		} else {
+			if (state == State.FLIP) {
+				System.out.println("HELLOOOOOOOOOOO");
+				next = State.FLIP;
+			}
 			player.getBody().setLinearVelocity(0,0);
 		}
 		
-		// TODO : Epsilon velocity to ensure collisions
+		// Epsilon velocity to ensure collisions
 		if (player.getBody().getLinearVelocity().epsilonEquals(0, 0, 0.01f)) {
 			player.getBody().setLinearVelocity(0.01f, 0.01f);
 		}
@@ -296,10 +309,9 @@ public class PlayerController extends AbstractController {
 				next = State.FLIP;
 				rotateAngle = 180;
 				float tilePos;
-				float offset = 0.05f + size.y/2;;
+				float offset = 0.05f + size.y/2;
 				if (AngleEnum.isVertical(heading)) {
 					tilePos = under.getPosition().y;
-					//System.out.println(tilePos);
 					pos.y = heading == AngleEnum.SOUTH ? 
 							tilePos + offset : tilePos - offset;
 				} else {
@@ -308,8 +320,9 @@ public class PlayerController extends AbstractController {
 							tilePos + offset : tilePos - offset;
 				}
 				heading = AngleEnum.flipEnum(heading);
-				player.setPosition(pos);
-				player.setRotation(AngleEnum.convertToAngle(heading));
+//				player.setPosition(pos);
+				position = pos;
+//				player.setRotation(AngleEnum.convertToAngle(heading));
 				world.setGravity(world.getGravity().rotate(180));
 				isUnder ^= true;
 				if(player.isTouchMF()){
@@ -320,6 +333,7 @@ public class PlayerController extends AbstractController {
 				}
 			}
 		}
+		player.heading = heading;
 		
 		// Handle goal collision
 		collidedWithGoal();
@@ -350,23 +364,26 @@ public class PlayerController extends AbstractController {
 			tick++;
 			if (tick < player.DEDUCT_COOL_TIME){
 				player.subtractFlip(2);
-			}
-			else{
+			} else{
 				tick = 0;
 				player.setDeductFlip(false);
 			}
 		}
-		
+		System.out.println("NEXT after: " + next);
 		// Handle animation
-		if (!frozen) {
-			handleAnimation();
-		}
+		handleAnimation();
 	}
 
 	private void handleAnimation() {
 		boolean facingEast = direction == AngleEnum.EAST;
 		boolean facedEast = prevDirection == AngleEnum.EAST;
 		int frame = player.getFrame();
+		if (frozen && next != State.FLIP) {
+			System.out.println("HERE");
+			if (facingEast) player.setFrame(NEUTRAL_START_EAST);
+			else player.setFrame(NEUTRAL_START_WEST);
+			return;
+		}
 		switch (next) {
 		case NEUTRAL:
 			if (facingEast) player.setFrame(NEUTRAL_START_EAST);
@@ -409,16 +426,23 @@ public class PlayerController extends AbstractController {
 			break;
 		case FLIP:
 			if (state == State.FLIP){
-				int offset = FLIP_START;
-				offset = Math.min(offset, FLIP_END - FLIP_START);
 				counter++;
 				if (counter > FLIP_COOLDOWN) {
 					counter = 0;
-					player.setFrame(FLIP_START + offset);
+					int newFrame = frame + 1;
+					newFrame = Math.min(frame + 1, FLIP_END);
+					if (newFrame > FLIP_MID) {
+						player.setPosition(position);
+						player.setRotation(AngleEnum.convertToAngle(heading));
+//						world.setGravity(world.getGravity().rotate(180));
+					}
+					player.setFrame(newFrame);
 				}
-				offset += frame + 1;
+			} else {
+				player.flipping = true;
+				player.setFrame(FLIP_START);
 			}
-			// TODO: add flipping animation here!
+			break;
 		}
 		state = next;
 	}
