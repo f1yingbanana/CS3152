@@ -1,12 +1,17 @@
 package com.ramenstudio.sandglass.util.view.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 /**
  * Defines the UI used for the option screen.
@@ -25,7 +30,11 @@ public class OptionsView extends Table {
     super();
     
     setFillParent(true);
-    setBackground(skin.newDrawable("white", new Color(0, 0, 0, 1)));
+    
+    Texture bgTexture = new Texture(Gdx.files.internal("Textures/Background1.png"));
+    bgTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+    Sprite bgSprite = new Sprite(bgTexture);
+    setBackground(new SpriteDrawable(bgSprite));
     
     backButton = new TextButton("BACK", skin);
     add(backButton).prefSize(160, 50).expand().bottom().pad(20);

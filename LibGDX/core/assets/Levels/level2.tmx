@@ -264,7 +264,7 @@
     <property name="X" value="14.5"/>
     <property name="Y" value="9.5"/>
     <property name="longest" value="16"/>
-    <property name="maxFlips" value="20"/>
+    <property name="maxFlips" value="3"/>
    </properties>
   </object>
   <object id="133" name="bound" x="512" y="128" width="2688" height="2176">

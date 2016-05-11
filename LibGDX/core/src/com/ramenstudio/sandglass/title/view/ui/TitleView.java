@@ -33,20 +33,20 @@ public class TitleView extends Table {
     
     // Create a play button
     gameStartButton = new TextButton("START", skin, "New Font");
-    add(gameStartButton).padTop(250).minHeight(60);
+    add(gameStartButton).padTop(220).minHeight(60);
     
     // Create an image button
     row();
     levelSelectButton = new TextButton("LEVELS", skin, "New Font");
-    add(levelSelectButton).padTop(30).minHeight(60);
+    add(levelSelectButton).padTop(15).minHeight(60);
     
     // Create an image button
     row();
     optionsButton = new TextButton("OPTIONS", skin, "New Font");
-    add(optionsButton).padTop(30).minHeight(60);
+    add(optionsButton).padTop(15).minHeight(60);
     
     row();
     quitButton = new TextButton("QUIT", skin, "New Font");
-    add(quitButton).padTop(30).minHeight(60);
+    add(quitButton).padTop(15).minHeight(60);
   }
 }
