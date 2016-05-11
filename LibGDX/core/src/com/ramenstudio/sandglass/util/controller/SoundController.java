@@ -482,26 +482,26 @@ public class SoundController {
 
 	public void playDoorOpen() {
 //		System.out.println(play(DOOR_OPEN_01, DOOR_OPEN_01_NAME, false, false));
-		play(DOOR_OPEN_01, DOOR_OPEN_01_NAME, false, false);
+		play(DOOR_OPEN_01, DOOR_OPEN_01_NAME, false, 0.2f, false);
 	}
 	
 	/**
 	 * Outdated, not used
 	 */
 	public void playShipCollect() {
-		play(SHIP_PIECE_COLLECT_01, SHIP_PIECE_COLLECT_01_NAME,false,false);
+		play(SHIP_PIECE_COLLECT_01, SHIP_PIECE_COLLECT_01_NAME,false, 0.2f, false);
 	}
 
 	public void playItemCollect() {
-		play(ITEM_COLLECT_01, ITEM_COLLECT_01_NAME, false, false);
+		play(ITEM_COLLECT_01, ITEM_COLLECT_01_NAME, false, 0.2f, false);
 	}
 	
 	public void playLevelComplete() {
-		play(LEVEL_COMPLETE_01, LEVEL_COMPLETE_01_NAME, false, false);
+		play(LEVEL_COMPLETE_01, LEVEL_COMPLETE_01_NAME, false, 0.2f, false);
 	}
 	
 	public void playMonsterHit() {
-		play(MONSTER_HIT_01, MONSTER_HIT_01_NAME, false, false);
+		play(MONSTER_HIT_01, MONSTER_HIT_01_NAME, false, 0.2f, false);
 	}
 	
 //	public void playLevelFail() {

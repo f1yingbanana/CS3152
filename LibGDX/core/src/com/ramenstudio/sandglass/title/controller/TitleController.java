@@ -11,7 +11,7 @@ import com.ramenstudio.sandglass.title.view.ui.LevelPreviewView;
  */
 public class TitleController {
 
-  private static final int totalLevels = 16;
+  private static final int totalLevels = 18;
   
   public Integer levelSelected;
   
