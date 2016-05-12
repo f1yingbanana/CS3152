@@ -79,7 +79,7 @@ public class Player extends GameObject implements Drawable {
 
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.2f, 0.45f);
+		shape.setAsBox(0.2f, 0.55f);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.restitution = 0.2f;
