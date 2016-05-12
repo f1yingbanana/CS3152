@@ -310,6 +310,6 @@
     <property name="maxFlips" value="20"/>
    </properties>
   </object>
-  <object id="184" name="bound" x="-640" y="-512" width="5248" height="3968"/>
+  <object id="184" name="bound" x="-480.207" y="-467.352" width="5248" height="3968"/>
  </objectgroup>
 </map>

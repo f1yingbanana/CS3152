@@ -265,12 +265,12 @@
    <polyline points="0,0 184.514,-1.50518 184.514,-385.505"/>
   </object>
  </objectgroup>
- <objectgroup name="Center" visible="0">
+ <objectgroup name="Center">
   <object id="126" name="center" x="2048" y="1664" width="128" height="128">
    <properties>
-    <property name="X" value="15"/>
+    <property name="X" value="16"/>
     <property name="Y" value="13"/>
-    <property name="longest" value="13"/>
+    <property name="longest" value="12"/>
     <property name="maxFlips" value="20"/>
    </properties>
   </object>

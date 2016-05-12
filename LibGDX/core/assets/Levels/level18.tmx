@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="20">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="40">
  <tileset firstgid="1" source="newTile.tsx"/>
  <tileset firstgid="73" source="tileset.V2.tsx"/>
  <layer name="Ground" width="32" height="32">
@@ -74,7 +74,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="Center">
+ <objectgroup name="Center" visible="0">
   <object id="11" name="bound" x="0" y="0" width="3840" height="3328"/>
   <object id="12" name="center" x="1856" y="1664" width="128" height="128">
    <properties>
@@ -95,5 +95,24 @@
   <object id="17" gid="158" x="2048" y="768" width="128" height="128"/>
   <object id="18" gid="155" x="1024" y="1984" width="128" height="128" rotation="180"/>
  </objectgroup>
- <objectgroup name="Path"/>
+ <objectgroup name="Path">
+  <object id="28" x="2112" y="704">
+   <polyline points="0,0 0,128 384,128 384,2048 512,2048 512,0 0,0"/>
+  </object>
+  <object id="29" x="2240" y="1728">
+   <polyline points="0,0 0,896 0,-640"/>
+  </object>
+  <object id="30" x="1792" y="2048">
+   <polyline points="0,0 0,-512 0,640"/>
+  </object>
+  <object id="31" x="1088" y="1344">
+   <polyline points="0,0 0,128 640,128 640,0 0,0"/>
+  </object>
+  <object id="37" x="962.003" y="2051.39">
+   <polyline points="0,0 -322.003,-3.39468 -322.003,252.605 4.39271,254.777"/>
+  </object>
+  <object id="39" x="960" y="1856">
+   <polyline points="0,0 -256,0 384,0"/>
+  </object>
+ </objectgroup>
 </map>

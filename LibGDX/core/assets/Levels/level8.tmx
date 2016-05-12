@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="185">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="192">
  <tileset firstgid="1" source="newTile.tsx"/>
  <tileset firstgid="73" name="tileset.V3" tilewidth="128" tileheight="128" tilecount="88" columns="11">
   <image source="tileset.V3.png" width="1408" height="1025"/>
@@ -183,23 +183,29 @@
     <property name="spcf" value="1.5"/>
    </properties>
   </object>
-  <object id="166" name="2" x="2112" y="1216">
-   <polyline points="0,0 0,384"/>
-  </object>
-  <object id="167" name="3" gid="69" x="2048" y="1024" width="128" height="128">
+  <object id="167" name="3" gid="69" x="1408" y="1344" width="128" height="128">
    <properties>
-    <property name="X" value="2048"/>
-    <property name="Y" value="1088"/>
+    <property name="X" value="1408"/>
+    <property name="Y" value="1344"/>
     <property name="angle" value="NORTH"/>
     <property name="level" value="MAKE_FLIP"/>
     <property name="spcf" value="1.2"/>
    </properties>
   </object>
-  <object id="171" name="4" gid="69" x="1152" y="1536" width="128" height="128">
+  <object id="171" name="4" gid="69" x="1216" y="1536" width="128" height="128">
    <properties>
     <property name="X" value="1216"/>
     <property name="Y" value="1472"/>
     <property name="angle" value="WEST"/>
+    <property name="level" value="MAKE_FLIP"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
+  <object id="191" name="5" gid="155" x="1152" y="2368" width="128" height="128">
+   <properties>
+    <property name="X" value="1152"/>
+    <property name="Y" value="2368"/>
+    <property name="angle" value="NORTH"/>
     <property name="level" value="MAKE_FLIP"/>
     <property name="spcf" value="1.2"/>
    </properties>
@@ -245,11 +251,17 @@
   <object id="164" name="1" x="1472" y="1472">
    <polyline points="0,0 0,640"/>
   </object>
-  <object id="182" name="3" x="2176" y="1024">
-   <polyline points="0,0 -193.479,1.75897 -193.479,273.148"/>
-  </object>
   <object id="183" name="4" x="1280" y="1408">
    <polyline points="0,0 0,384"/>
+  </object>
+  <object id="185" name="3" x="1472" y="1280">
+   <polyline points="0,0 452.549,-1.09827 448.936,-131.156"/>
+  </object>
+  <object id="187" name="2" x="2112" y="1216">
+   <polyline points="0,0 0,384"/>
+  </object>
+  <object id="190" name="5" x="1216" y="2304">
+   <polyline points="0,0 768,0"/>
   </object>
  </objectgroup>
  <objectgroup name="Center" visible="0">
