@@ -33,9 +33,9 @@ public class GameView extends Table {
     
     this.setFillParent(true);
     
-    if (level < 5){
+    if (level < 9){
     	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type1.png")))));
-    } else if (level < 9) {
+    } else if (level < 18) {
     	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type2.png")))));
     } else {
     	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type3.png")))));
