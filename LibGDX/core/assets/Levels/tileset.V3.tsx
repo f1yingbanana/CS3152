@@ -4,9 +4,9 @@
  <terraintypes>
   <terrain name="tile3" tile="-1"/>
  </terraintypes>
- <tile id="0" terrain=",,,0">
+ <tile id="0">
   <properties>
-   <property name="Collision" value="top"/>
+   <property name="Collision" value="top_left"/>
   </properties>
  </tile>
  <tile id="1">
@@ -14,55 +14,66 @@
    <property name="Collision" value="top"/>
   </properties>
  </tile>
- <tile id="2" terrain=",,0,0">
+ <tile id="2">
   <properties>
    <property name="Collision" value="top"/>
   </properties>
  </tile>
- <tile id="3" terrain=",,0,"/>
- <tile id="11" terrain=",0,,0">
+ <tile id="3">
+  <properties>
+   <property name="Collision" value="top_right"/>
+  </properties>
+ </tile>
+ <tile id="11">
   <properties>
    <property name="Collision" value="left"/>
   </properties>
  </tile>
- <tile id="12" terrain="0,0,0,0"/>
  <tile id="14">
   <properties>
    <property name="Collision" value="right"/>
   </properties>
  </tile>
- <tile id="17">
+ <tile id="16" terrain=",,,0"/>
+ <tile id="17" terrain=",,0,0">
   <properties>
    <property name="Collision" value="top"/>
   </properties>
  </tile>
- <tile id="18">
+ <tile id="18" terrain=",,0,0">
   <properties>
    <property name="Collision" value="top"/>
   </properties>
  </tile>
+ <tile id="19" terrain=",,0,"/>
  <tile id="22">
   <properties>
    <property name="Collision" value="left"/>
   </properties>
  </tile>
- <tile id="25" terrain="0,,0,">
+ <tile id="25">
   <properties>
    <property name="Collision" value="right"/>
   </properties>
  </tile>
- <tile id="27">
+ <tile id="27" terrain=",0,,0">
   <properties>
    <property name="Collision" value="left"/>
   </properties>
  </tile>
- <tile id="30">
+ <tile id="28" terrain="0,0,0,0"/>
+ <tile id="29" terrain="0,0,0,0"/>
+ <tile id="30" terrain="0,,0,">
   <properties>
    <property name="Collision" value="right"/>
   </properties>
  </tile>
- <tile id="33" terrain=",0,,"/>
- <tile id="34" terrain="0,0,,">
+ <tile id="33">
+  <properties>
+   <property name="Collision" value="bottom_left"/>
+  </properties>
+ </tile>
+ <tile id="34">
   <properties>
    <property name="Collision" value="bottom"/>
   </properties>
@@ -72,27 +83,35 @@
    <property name="Collision" value="bottom"/>
   </properties>
  </tile>
- <tile id="36" terrain="0,,,"/>
- <tile id="38">
+ <tile id="36">
+  <properties>
+   <property name="Collision" value="bottom_right"/>
+  </properties>
+ </tile>
+ <tile id="38" terrain=",0,,0">
   <properties>
    <property name="Collision" value="left"/>
   </properties>
  </tile>
- <tile id="41">
+ <tile id="39" terrain="0,0,0,0"/>
+ <tile id="40" terrain="0,0,0,0"/>
+ <tile id="41" terrain="0,,0,">
   <properties>
    <property name="Collision" value="right"/>
   </properties>
  </tile>
- <tile id="50">
+ <tile id="49" terrain=",0,,"/>
+ <tile id="50" terrain="0,0,,">
   <properties>
    <property name="Collision" value="bottom"/>
   </properties>
  </tile>
- <tile id="51">
+ <tile id="51" terrain="0,0,,">
   <properties>
    <property name="Collision" value="bottom"/>
   </properties>
  </tile>
+ <tile id="52" terrain="0,,,"/>
  <tile id="55" terrain=",0,0,0">
   <properties>
    <property name="Collision" value="inside_top_left"/>
