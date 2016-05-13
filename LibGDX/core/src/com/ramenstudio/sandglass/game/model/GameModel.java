@@ -34,7 +34,7 @@ public class GameModel implements Drawable {
 	private int gameLevel;
 
 	// Max game levels. Minimum level is 1.
-	private static final int MAX_LEVEL = 18;
+	private static final int MAX_LEVEL = 23;
 
 	/**
 	 * Initializer.

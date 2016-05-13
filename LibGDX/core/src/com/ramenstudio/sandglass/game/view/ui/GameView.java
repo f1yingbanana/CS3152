@@ -28,11 +28,18 @@ public class GameView extends Table {
    * Default constructor. Uses the given skin to set up the pause screen UI.
    * @param skin is the style-sheet for the widgets.
    */
-  public GameView(Skin skin) {
+  public GameView(Skin skin, int level) {
     super();
     
     this.setFillParent(true);
-    this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UIOverlay.png")))));
+    
+    if (level < 9){
+    	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type1.png")))));
+    } else if (level < 18) {
+    	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type2.png")))));
+    } else {
+    	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type3.png")))));
+    }
 
     flipCountLabel = new Label("10", skin);
     add(flipCountLabel).top().left().padLeft(65).padTop(83);
