@@ -80,7 +80,7 @@ public class GameController extends AbstractController implements ContactListene
 
 	// The UI controller for the game - special case. Do not draw UI inside game
 	// controller.
-	public UIController uiController = new UIController();
+	public UIController uiController;
 
 	private Array<MonsterController> monsterController = new Array<MonsterController>();
 
@@ -92,6 +92,7 @@ public class GameController extends AbstractController implements ContactListene
 
 
 	public GameController(int gameLevel) {
+		uiController = new UIController(gameLevel);
 		getGameModel().setGameLevel(gameLevel);
 		mapObjects = loader.loadLevel(gameLevel);
 		SoundController.getInstance().playBGMForLevel(gameLevel);

@@ -32,7 +32,7 @@ public class UIController extends AbstractController {
   /**
    * The main game UI view.
    */
-  public GameView gameView = new GameView(skin);
+  public GameView gameView;
   
   /**
    * The paused UI view.
@@ -54,8 +54,10 @@ public class UIController extends AbstractController {
    */
   public LevelCompleteView levelFailedView = new LevelCompleteView(skin, false);
   
-  public UIController() {
+  public UIController(int gameLevel) {
     stage = new Stage(new ScreenViewport());
+    
+    gameView = new GameView(skin, gameLevel);
     Gdx.input.setInputProcessor(stage);
     
     // Add playing UI.
