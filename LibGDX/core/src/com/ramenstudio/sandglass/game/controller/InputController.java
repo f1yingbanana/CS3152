@@ -160,12 +160,13 @@ public class InputController extends AbstractController {
 		}
 
 		// Jumping
-		pressedJump = Gdx.input.isKeyPressed(jump) && !prevJump;	// Might be able to use isKeyJustPressed()
-		prevJump = Gdx.input.isKeyPressed(jump);
+		pressedJump = Gdx.input.isKeyJustPressed(jump) && vertical == 0;
+//		prevJump = Gdx.input.isKeyPressed(jump);
     
 		// Flipping
-		pressedFlip = Gdx.input.isKeyPressed(flip) && ! prevFlip;	// Might be able to use isKeyJustPressed()
-		prevFlip = Gdx.input.isKeyPressed(flip);
+		pressedFlip = Gdx.input.isKeyJustPressed(flip);
+//		pressedFlip = Gdx.input.isKeyPressed(flip) && ! prevFlip;	// Might be able to use isKeyJustPressed()
+//		prevFlip = Gdx.input.isKeyPressed(flip);
 		
 		pressedReset = Gdx.input.isKeyPressed(reset);
 		

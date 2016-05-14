@@ -131,7 +131,7 @@ public class LevelLoader {
 					WallTile.WallType type;
 					TurnTile tt= new TurnTile();
 					
-					float boxSize = .15f;
+					float boxSize = .0f;
 
 					switch (propval) {
 					case "top_left": 
@@ -161,21 +161,25 @@ public class LevelLoader {
 					case "inside_top_left":
 						type = WallTile.WallType.BOTRIGHT;
 						tt.getBodyDef().position.set(new Vector2(i+0.5f+boxSize,j+0.5f-boxSize));
+						tt.setIndex(2);
 						tArr.add(tt);
 						break;
 					case "inside_top_right":
 						type = WallTile.WallType.BOTLEFT;
 						tt.getBodyDef().position.set(new Vector2(i+0.5f-boxSize,j+0.5f-boxSize));
+						tt.setIndex(3);
 						tArr.add(tt);
 						break;
 					case "inside_bottom_left":
 						type = WallTile.WallType.TOPRIGHT;
 						tt.getBodyDef().position.set(new Vector2(i+0.5f+boxSize,j+0.5f+boxSize));
+						tt.setIndex(1);
 						tArr.add(tt);
 						break;
 					case "inside_bottom_right":
 						type = WallTile.WallType.TOPLEFT;
 						tt.getBodyDef().position.set(new Vector2(i+0.5f-boxSize,j+0.5f+boxSize));
+						tt.setIndex(0);
 						tArr.add(tt);
 						break;
 					default:
