@@ -40,10 +40,10 @@ public class LevelSelectView extends Table {
    */
   public LevelSelectView(Skin skin) {
     super();
-    
+ 
     setFillParent(true);
     
-    Texture bgTexture = new Texture(Gdx.files.internal("Textures/bglevels.png"));
+    Texture bgTexture = new Texture(Gdx.files.internal("Textures/LevelSelect_Page.png"));
     bgTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
     Sprite bgSprite = new Sprite(bgTexture);
     setBackground(new SpriteDrawable(bgSprite));
