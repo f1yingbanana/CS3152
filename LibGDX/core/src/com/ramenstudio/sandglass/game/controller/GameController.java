@@ -233,24 +233,35 @@ public class GameController extends AbstractController implements ContactListene
 
 	@Override
 	public void update(float dt) {
-		if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-			if (getGameModel().getGameState() == GameState.PLAYING) {
-				pauseGame();
-			} else if (getGameModel().getGameState() == GameState.PAUSED) {
-				resumeGame();
-			}
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-			if (getGameModel().getGameState() == GameState.LOST) {
-				reset();
-			}
-		}
 
-		uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
-		uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
-		uiController.update(dt);
+    uiController.update(dt);
+    
+    if (getGameModel().getGameState() != GameState.TUTORIAL) {
+  		if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+  			if (getGameModel().getGameState() == GameState.PLAYING) {
+  				pauseGame();
+  			} else if (getGameModel().getGameState() == GameState.PAUSED) {
+  				resumeGame();
+  			}
+  		}
+  		
+  		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+  			if (getGameModel().getGameState() == GameState.LOST) {
+  				reset();
+  			}
+  		}
+    }
 
 		switch (getGameModel().getGameState()) {
+		case TUTORIAL:
+		  if (uiController.tutorialView.isDismissed) {
+		    getGameModel().setGameState(GameState.PLAYING);
+	      uiController.setGameState(UIState.PLAYING);
+		  } else {
+	      uiController.setGameState(UIState.TUTORIAL);
+		  }
+		  
+		  return;
 			case LOST:
 				uiController.setGameState(UIState.LOST);
 				return;
@@ -263,6 +274,9 @@ public class GameController extends AbstractController implements ContactListene
 				return;
 		}
 
+    uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
+    uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
+    
 		cameraController.update(dt);
 		// Order matters. Must call update BEFORE rotate on cameraController.
 		if (playerController.getRotateAngle() != 0f) {

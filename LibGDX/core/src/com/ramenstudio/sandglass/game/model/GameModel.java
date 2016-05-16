@@ -28,7 +28,7 @@ public class GameModel implements Drawable {
 	private List<Resource> resources = new ArrayList<Resource>();
 
 	// Game state
-	private GameState gameState = GameState.PLAYING;
+	private GameState gameState = GameState.TUTORIAL;
 
 	// Current level
 	private int gameLevel;
