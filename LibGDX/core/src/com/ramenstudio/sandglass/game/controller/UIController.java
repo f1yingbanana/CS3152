@@ -10,6 +10,7 @@ import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.view.ui.GameView;
 import com.ramenstudio.sandglass.game.view.ui.LevelCompleteView;
 import com.ramenstudio.sandglass.game.view.ui.PauseView;
+import com.ramenstudio.sandglass.game.view.ui.TutorialView;
 import com.ramenstudio.sandglass.util.view.ui.OptionsView;
 
 /**
@@ -23,11 +24,16 @@ public class UIController extends AbstractController {
   private Skin skin = new Skin(Gdx.files.internal("UI/Skin/uiskin.json"));
   
   public enum UIState {
-    PLAYING, PAUSED, OPTIONS, LOST, WON
+    TUTORIAL, PLAYING, PAUSED, OPTIONS, LOST, WON
   }
   
   // For caching purposes.
   private UIState uiState;
+  
+  /**
+   * The tutorial UI view that is shown at the beginning of a level.
+   */
+  public TutorialView tutorialView;
   
   /**
    * The main game UI view.
@@ -56,12 +62,17 @@ public class UIController extends AbstractController {
   
   public UIController(int gameLevel) {
     stage = new Stage(new ScreenViewport());
+    Gdx.input.setInputProcessor(stage);
+    
+    tutorialView = new TutorialView(skin, gameLevel);
     
     gameView = new GameView(skin, gameLevel);
-    Gdx.input.setInputProcessor(stage);
     
     // Add playing UI.
     stage.addActor(gameView);
+
+    // Add tutorial UI.
+    stage.addActor(tutorialView);
     
     // Add paused UI.
     stage.addActor(pauseView);
@@ -103,6 +114,7 @@ public class UIController extends AbstractController {
     }
     
     // Hide all tables
+    tutorialView.setVisible(false);
     gameView.setVisible(false);
     pauseView.setVisible(false);
     optionsView.setVisible(false);
@@ -110,6 +122,8 @@ public class UIController extends AbstractController {
     levelFailedView.setVisible(false);
     
     switch (state) {
+    case TUTORIAL:
+      tutorialView.setVisible(true);
     case PLAYING:
       gameView.setVisible(true);
       break;

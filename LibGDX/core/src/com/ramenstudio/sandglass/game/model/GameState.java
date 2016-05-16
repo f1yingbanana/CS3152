@@ -6,5 +6,5 @@ package com.ramenstudio.sandglass.game.model;
  * @author Jiacong Xu
  */
 public enum GameState {
-  PLAYING, PAUSED, WON, LOST
+  TUTORIAL, PLAYING, PAUSED, WON, LOST
 }
