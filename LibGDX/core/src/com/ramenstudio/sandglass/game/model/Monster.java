@@ -245,7 +245,7 @@ public class Monster extends GameObject implements Drawable{
 			monsterSpriteDark = new FilmStrip(monsterTextureDark,1,1,1);
 
 			fixtureDefs = new FixtureDef[1];
-			setSize(new Vector2(0.8f, 0.8f));
+			setSize(new Vector2(0.8f, 0.85f));
 			getBodyDef().position.set(initialPos);
 			getBodyDef().type = BodyDef.BodyType.StaticBody;
 			getBodyDef().gravityScale = 0;
@@ -646,8 +646,15 @@ public class Monster extends GameObject implements Drawable{
 		//		        getSize(), new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 		FilmStrip monsterSprite = (isUnder)? monsterSpriteDark : monsterSpriteLight;
 		monsterSprite.setFrame(frame);
-		canvas.draw(monsterSprite, getBody().getPosition().add(getSize().cpy().scl(-0.5f)), 
+		Vector2 monflipOffset = (new Vector2(0,-0.08f)).rotateRad(getRotation());
+		if (monsterLevel==MonsterLevel.MAKE_FLIP){
+			canvas.draw(monsterSprite, getBody().getPosition().cpy().add(getSize().cpy().scl(-0.5f)).add(monflipOffset), 
+					getSize(), new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+		}
+		else{
+		canvas.draw(monsterSprite, getBody().getPosition().cpy().add(getSize().cpy().scl(-0.5f)), 
 				getSize(), new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+		}
 	}
 
 	public void setUnder(boolean under) {
