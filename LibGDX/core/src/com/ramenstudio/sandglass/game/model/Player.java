@@ -198,7 +198,7 @@ public class Player extends GameObject implements Drawable {
 //					new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 //		}
 
-		if (isFlashing) {
+		if (isFlashing && !isDeductFlip) {
 			if (flash && flashCounter < FLASH_COOLDOWN) {
 				flashCounter++;
 				canvas.draw(playerSprite, Color.WHITE, getPosition().add(getSize().cpy().scl(-0.5f)), size,

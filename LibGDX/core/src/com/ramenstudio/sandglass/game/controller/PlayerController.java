@@ -73,40 +73,48 @@ public class PlayerController extends AbstractController {
 	/** Number of rows in the player image filmstrip */
 	private static final int FILMSTRIP_ROWS = 1;
 	/** Number of columns in the player image filmstrip */
-	private static final int FILMSTRIP_COLS = 52;
+	private static final int FILMSTRIP_COLS = 51;
 	/** Number of elements in the player image filmstrip */
-	private static final int FILMSTRIP_SIZE = 52;
+	private static final int FILMSTRIP_SIZE = 51;
 	
 	/** The frame number for neutral stance. */
-    private static final int NEUTRAL_START_EAST = 16;
+    private static final int NEUTRAL_START_EAST = 15;
     /** The frame number for neutral stance. */
     private static final int NEUTRAL_START_WEST = 0;
     /** The frame number for beginning a jump. */
-    private static final int JUMP_START_EAST = 25;
+    private static final int JUMP_START_EAST = 24;
     /** The frame number for ending a jump. */
-    private static final int JUMP_END_EAST = 31;
+    private static final int JUMP_END_EAST = 29;
     /** The frame number for beginning a jump. */
     private static final int JUMP_START_WEST = 9;
     /** The frame number for ending a jump. */
-    private static final int JUMP_END_WEST = 15;
+    private static final int JUMP_END_WEST = 14;
     /** The frame number for beginning a walk. */
-    private static final int WALK_START_EAST = 17;
+    private static final int WALK_START_EAST = 16;
     /** The frame number for ending a walk. */
-    private static final int WALK_END_EAST = 24;
+    private static final int WALK_END_EAST = 23;
     /** The frame number for beginning a walk. */
     private static final int WALK_START_WEST = 1;
     /** The frame number for ending a walk. */
     private static final int WALK_END_WEST = 8;
     /** The frame number for starting a flip. */
-    private static final int FLIP_START = 32;
+    private static final int FLIP_START = 30;
     /** The frame number for middle of a flip. */
-    private static final int FLIP_MID = 31;	// TODO: fix with animation
+    private static final int FLIP_MID = 36;
     /** The frame number for ending a flip. */
-    private static final int FLIP_END = 51;
+    private static final int FLIP_END = 40;
+    /** The frame number for getting hit. */
+    private static final int HIT_START_WEST = 41;
+    /** The frame number for ending hit. */
+    private static final int HIT_END_WEST = 45;
+    /** The frame number for getting hit. */
+    private static final int HIT_START_EAST = 46;
+    /** The frame number for ending hit. */
+    private static final int HIT_END_EAST = 50;
 	
     /** The enum for animation states. */
     public enum State {
-    	NEUTRAL, JUMP, WALK, FLIP 
+    	NEUTRAL, JUMP, WALK, FLIP, HIT
     }
     
     /** The current animation state. */
@@ -122,9 +130,10 @@ public class PlayerController extends AbstractController {
     private boolean isReset = false;
     
     /** Frame cooldown (frames are too quick) */
-    private static final int WALK_COOLDOWN = 4;
-    private static final int JUMP_COOLDOWN = 7;
-    private static final int FLIP_COOLDOWN = 2;
+    private static final int WALK_FRAME_COOLDOWN = 4;
+    private static final int JUMP_FRAME_COOLDOWN = 10;
+    private static final int FLIP_FRAME_COOLDOWN = 5;
+    private static final int HIT_FRAME_COOLDOWN = 7;
     
 //    /**Cooldown for preventing input while camera rotates*/
 //    public static final int FREEZE_COOLDOWN = 60;
@@ -160,7 +169,7 @@ public class PlayerController extends AbstractController {
 	 */
 	public PlayerController(Player player) {
 		this.player = player;
-		Texture playerTexture = new Texture(Gdx.files.internal("CHARACTER.png"));
+		Texture playerTexture = new Texture(Gdx.files.internal("Final_Spritesheet.png"));
 		player.setPlayerSprite(new FilmStrip(playerTexture,FILMSTRIP_ROWS,FILMSTRIP_COLS,FILMSTRIP_SIZE));
 		player.setFrame(NEUTRAL_START_EAST);
 	}
@@ -298,7 +307,8 @@ public class PlayerController extends AbstractController {
 		}
 		
 		// Handle flipping
-		else if ((inputController.didPressFlip() || mustFlip) && canFlip() && !jump && !frozen) {
+		else if ((inputController.didPressFlip() || mustFlip) && canFlip() 
+				&& !jump && !frozen && !player.isFlashing) {
 			mustFlip = false;
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
@@ -352,19 +362,29 @@ public class PlayerController extends AbstractController {
 		if (player.isFlashing && hitCounter >= HIT_COOLDOWN) {
 			hitCounter = 0;
 			player.isFlashing = false;
+			player.setDeductFlip(false);
+			tick = 0;
 		} else if (player.isFlashing) {
 			hitCounter++;
-		}
-		
-		if (player.isDeductFlip()){
-			tick++;
-			if (tick < player.DEDUCT_COOL_TIME){
-				player.subtractFlip(2);
-			} else{
-				tick = 0;
-				player.setDeductFlip(false);
+			if (player.isDeductFlip()) {
+				next = State.HIT;
+				tick++;
+				if (tick < player.DEDUCT_COOL_TIME){
+					player.subtractFlip(2);
+				}
 			}
 		}
+		
+//		if (player.isDeductFlip()){
+//			next = State.HIT;
+//			tick++;
+//			if (tick < player.DEDUCT_COOL_TIME){
+//				player.subtractFlip(2);
+//			} else{
+//				tick = 0;
+//				player.setDeductFlip(false);
+//			}
+//		}
 		
 		// Handle animation
 		handleAnimation();
@@ -390,13 +410,14 @@ public class PlayerController extends AbstractController {
 				offset += frame + 1;
 				offset = Math.min(offset, JUMP_END_EAST - JUMP_START_EAST);
 				counter++;
-				if (counter > JUMP_COOLDOWN) {
+				if (counter > JUMP_FRAME_COOLDOWN) {
 					counter = 0;
 					if (facingEast) player.setFrame(JUMP_START_EAST + offset);
 					else player.setFrame(JUMP_START_WEST + offset);
 				} else {
-					if (facingEast) player.setFrame(JUMP_START_EAST + offset-1);
-					else player.setFrame(JUMP_START_WEST + offset-1);
+					if (offset != JUMP_END_EAST - JUMP_START_EAST) offset--;
+					if (facingEast) player.setFrame(JUMP_START_EAST + offset);
+					else player.setFrame(JUMP_START_WEST + offset);
 				}
 			} else {
 				if (facingEast) player.setFrame(JUMP_START_EAST);
@@ -409,10 +430,14 @@ public class PlayerController extends AbstractController {
 				offset += frame + 1;
 				offset = offset%(WALK_END_EAST - WALK_START_EAST);
 				counter++;
-				if (counter > WALK_COOLDOWN) {
+				if (counter > WALK_FRAME_COOLDOWN) {
 					counter = 0;
 					if (facingEast) player.setFrame(WALK_START_EAST + offset);
 					else player.setFrame(WALK_START_WEST + offset);
+				} else {
+					if (offset == 0) offset = WALK_END_EAST - WALK_START_EAST;
+					if (facingEast) player.setFrame(WALK_START_EAST + --offset);
+					else player.setFrame(WALK_START_WEST + --offset);
 				}
 			} else {
 				if (facingEast) player.setFrame(WALK_START_EAST);
@@ -422,7 +447,7 @@ public class PlayerController extends AbstractController {
 		case FLIP:
 			if (state == State.FLIP){
 				counter++;
-				if (counter > FLIP_COOLDOWN) {
+				if (counter > FLIP_FRAME_COOLDOWN) {
 					counter = 0;
 					int newFrame = frame + 1;
 					newFrame = Math.min(frame + 1, FLIP_END);
@@ -436,6 +461,26 @@ public class PlayerController extends AbstractController {
 			} else {
 				player.flipping = true;
 				player.setFrame(FLIP_START);
+			}
+			break;
+		case HIT:
+			if (state == State.HIT) {
+				int offset = (facedEast)? -HIT_START_EAST : -HIT_START_WEST;
+				offset += frame + 1;
+				offset = offset%(HIT_END_EAST - HIT_START_EAST);
+				counter++;
+				if (counter > HIT_FRAME_COOLDOWN) {
+					counter = 0;
+					if (facingEast) player.setFrame(HIT_START_EAST + offset);
+					else player.setFrame(HIT_START_WEST + offset);
+				} else {
+					if (offset == 0) offset = HIT_END_EAST - HIT_START_EAST;
+					if (facingEast) player.setFrame(HIT_START_EAST + --offset);
+					else player.setFrame(HIT_START_WEST + --offset);
+				}
+			} else {
+				if (facingEast) player.setFrame(HIT_START_EAST);
+				else player.setFrame(HIT_START_WEST);
 			}
 			break;
 		}
