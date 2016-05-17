@@ -139,6 +139,11 @@
    <property name="type" value="undermonster"/>
   </properties>
  </tile>
+ <tile id="66">
+  <properties>
+   <property name="type" value="resource"/>
+  </properties>
+ </tile>
  <tile id="67">
   <properties>
    <property name="type" value="ship"/>
