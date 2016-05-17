@@ -422,7 +422,7 @@
     <property name="X" value="12.5"/>
     <property name="Y" value="12.5"/>
     <property name="longest" value="19"/>
-    <property name="maxFlips" value="20"/>
+    <property name="maxFlips" value="10"/>
    </properties>
   </object>
  </objectgroup>

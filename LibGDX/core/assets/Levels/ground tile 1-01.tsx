@@ -128,6 +128,11 @@
    <property name="Collision" value="bottom_right"/>
   </properties>
  </tile>
+ <tile id="54">
+  <properties>
+   <property name="type" value="ship"/>
+  </properties>
+ </tile>
  <tile id="55" terrain=",0,0,0">
   <properties>
    <property name="Collision" value="inside_top_left"/>
@@ -138,6 +143,11 @@
    <property name="Collision" value="inside_top_right"/>
   </properties>
  </tile>
+ <tile id="65">
+  <properties>
+   <property name="type" value="resource"/>
+  </properties>
+ </tile>
  <tile id="66" terrain="0,0,,0">
   <properties>
    <property name="Collision" value="inside_bottom_left"/>
@@ -146,6 +156,16 @@
  <tile id="67" terrain="0,0,0,">
   <properties>
    <property name="Collision" value="inside_bottom_right"/>
+  </properties>
+ </tile>
+ <tile id="82">
+  <properties>
+   <property name="type" value="player"/>
+  </properties>
+ </tile>
+ <tile id="86">
+  <properties>
+   <property name="type" value="gate"/>
   </properties>
  </tile>
 </tileset>

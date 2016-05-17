@@ -75,7 +75,7 @@ public class TutorialView extends Table {
       
       break;
     case Standby:
-      if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+      if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
         state = UIState.Dismissing;
       }
       break;

@@ -75,14 +75,14 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="Center" visible="0">
+ <objectgroup name="Center">
   <object id="11" name="bound" x="0" y="0" width="3840" height="3328"/>
   <object id="12" name="center" x="1856" y="1664" width="128" height="128">
    <properties>
     <property name="X" value="14.5"/>
     <property name="Y" value="13"/>
     <property name="longest" value="21"/>
-    <property name="maxFlips" value="20"/>
+    <property name="maxFlips" value="10"/>
    </properties>
   </object>
  </objectgroup>
