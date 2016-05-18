@@ -1,24 +1,21 @@
 package com.ramenstudio.sandglass.game.view.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.ramenstudio.sandglass.util.view.ui.KeyboardControlButton;
 
 /**
  * Displays a completed level screen, showing stats, buttons for restart, next
  * and back to menu.
  */
 public class LevelCompleteView extends Table {
-  public final TextButton restartButton;
+  public final KeyboardControlButton restartButton;
   
-  public final TextButton nextLevelButton;
+  public final KeyboardControlButton nextLevelButton;
   
-  public final TextButton mainMenuButton;
+  public final KeyboardControlButton mainMenuButton;
   
   // private final Label scoreLabel;
   
@@ -41,55 +38,37 @@ public class LevelCompleteView extends Table {
     if (!didWin) {
       titleLabel.setText("Level Failed");
     }
+    
+    float w = 250f;
+    float h = 60f;
 
-    nextLevelButton = new TextButton("NEXT LEVEL", skin);
+    nextLevelButton = new KeyboardControlButton("NEXT LEVEL", skin, "white");
+    restartButton = new KeyboardControlButton("RESTART", skin, "white");
+    mainMenuButton = new KeyboardControlButton("MAIN MENU", skin, "white");
     
     if (didWin) {
       row();
       
-      add(nextLevelButton).prefSize(160, 50).pad(20);
-      nextLevelButton.addListener(new ClickListener() {
-        @Override
-        public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-          nextLevelButton.setText("-   NEXT LEVEL   -");
-        }
-        
-        @Override
-        public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-          nextLevelButton.setText("NEXT LEVEL");
-        }
-      });
+      add(nextLevelButton).prefSize(w, h).pad(20);
+
+      restartButton.setArrowUp(nextLevelButton);
+      mainMenuButton.setArrowDown(nextLevelButton);
+    } else {
+      restartButton.setArrowUp(mainMenuButton);
+      mainMenuButton.setArrowDown(restartButton);
     }
+    
+    nextLevelButton.setArrowDown(restartButton);
+    nextLevelButton.setArrowUp(mainMenuButton);
+    restartButton.setArrowDown(mainMenuButton);
+    mainMenuButton.setArrowUp(restartButton);
     
     row();
     
-    restartButton = new TextButton("RESTART", skin);
-    add(restartButton).prefSize(160, 50).pad(20);
-    restartButton.addListener(new ClickListener() {
-      @Override
-      public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        restartButton.setText("-    RESTART    -");
-      }
-      
-      @Override
-      public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        restartButton.setText("RESTART");
-      }
-    });
+    add(restartButton).prefSize(w, h).pad(20);
 
     row();
     
-    mainMenuButton = new TextButton("SELECT LEVEL", skin);
-    //mainMenuButton.setDisabled(true);
-    //mainMenuButton.setTouchable(Touchable.disabled);
-    add(mainMenuButton).prefSize(160, 50).pad(20);
-    mainMenuButton.addListener(new ClickListener() {
-      public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-        mainMenuButton.setText("-   SELECT LEVEL   -");
-      }
-      public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-        mainMenuButton.setText("SELECT LEVEL");
-      }
-    });
+    add(mainMenuButton).prefSize(w, h).pad(20);
   }
 }
