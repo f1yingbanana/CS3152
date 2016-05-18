@@ -1,6 +1,7 @@
 package com.ramenstudio.sandglass;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.ramenstudio.sandglass.game.GameMode;
