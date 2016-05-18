@@ -585,7 +585,7 @@
    <polyline points="0,0 768,0"/>
   </object>
  </objectgroup>
- <objectgroup name="Center" visible="0">
+ <objectgroup name="Center">
   <object id="174" name="center" x="1664" y="1728" width="128" height="128">
    <properties>
     <property name="X" value="13.5"/>
