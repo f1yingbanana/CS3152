@@ -2,11 +2,11 @@ package com.ramenstudio.sandglass.title.view.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.ramenstudio.sandglass.util.view.ui.KeyboardControlButton;
 
 public class LevelPreviewView extends Table {
   public final int level;
@@ -15,7 +15,7 @@ public class LevelPreviewView extends Table {
   
   public final Label levelNameLabel;
   
-  public final Button levelSelectButton;
+  public final KeyboardControlButton levelSelectButton;
   
   /**
    * Constructor: creates a new level preview view with the given skin, level
@@ -31,13 +31,17 @@ public class LevelPreviewView extends Table {
     this.level = level;
     
     // Add preview sprite.
+    levelSelectButton = new KeyboardControlButton("", skin, "white");
+    addActor(levelSelectButton);
+    
+    // For identifying which level we are selecting
+    levelSelectButton.setTag(level);
+    
     previewSprite = new Image(new Texture(Gdx.files.internal(imagePath)));
     add(previewSprite).pad(20);
     
     levelNameLabel = new Label("Level " + level, skin);
     add(levelNameLabel).pad(20);
     
-    levelSelectButton = new Button(skin);
-    addActor(levelSelectButton);
   }
 }

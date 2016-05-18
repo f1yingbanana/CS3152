@@ -48,7 +48,7 @@ public class CameraController extends AbstractController {
 	 * 	1 means instant movement.
 	 */
 	private static final float TRANSLATING_FACTOR = 0.05f;
-	private static final float ROTATING_FACTOR = 0.08f;
+	private static final float ROTATING_FACTOR = 0.045f;
 
 	/** The standard for viewCamera speed. */
 	private static final float FRAME_TIME = 1f/60f;
@@ -101,7 +101,7 @@ public class CameraController extends AbstractController {
 		initPos = initialPosition.cpy();
 		tracking = false;
 		zoomingOut = true;
-		zoomScale = zoom + 0.5f;
+		zoomScale = 1f;
 		maxZoom = zoom + 0.5f;
 	}
 
@@ -138,6 +138,7 @@ public class CameraController extends AbstractController {
 	 * @param angle is the amount to rotate in degrees.
 	 */
 	public void rotate(float angle) {
+		doneRotating = false;
 		goal = goal + angle;
 		instant = false;
 		if (Math.abs(Math.abs(angle) - 90) < 1f) {
@@ -224,11 +225,11 @@ public class CameraController extends AbstractController {
 		swapCameraDimensions();
 
 		// TESTING
-		count++;
-		if (Gdx.input.isKeyPressed(Input.Keys.L) && count > 10) {
-			count = 0;
-			rotate(90,false);
-		}
+//		count++;
+//		if (Gdx.input.isKeyPressed(Input.Keys.L) && count > 10) {
+//			count = 0;
+//			rotate(90,false);
+//		}
 		
 		if (InputController.getInstance().didJustPressedZoom()) {
 			zoomingOut = !zoomingOut;

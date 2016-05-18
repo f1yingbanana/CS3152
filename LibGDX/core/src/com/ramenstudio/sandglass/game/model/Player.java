@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.ramenstudio.sandglass.game.controller.AngleEnum;
 import com.ramenstudio.sandglass.game.view.*;
 import com.ramenstudio.sandglass.util.Drawable;
 
@@ -49,6 +50,12 @@ public class Player extends GameObject implements Drawable {
 	
 	/** Flashing counter. */
 	private int flashCounter = 0;
+	
+	/** Flipping flag. */
+	public boolean flipping = false;
+	
+	/** Heading. */
+	public AngleEnum heading;
     
     /** The direction the player is facing (for drawing)
      *	left is -1, right is 1  
@@ -72,7 +79,7 @@ public class Player extends GameObject implements Drawable {
 
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.2f, 0.45f);
+		shape.setAsBox(0.2f, 0.55f);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.restitution = 0.2f;
@@ -191,7 +198,7 @@ public class Player extends GameObject implements Drawable {
 //					new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
 //		}
 
-		if (isFlashing) {
+		if (isFlashing && !isDeductFlip) {
 			if (flash && flashCounter < FLASH_COOLDOWN) {
 				flashCounter++;
 				canvas.draw(playerSprite, Color.WHITE, getPosition().add(getSize().cpy().scl(-0.5f)), size,
@@ -201,8 +208,23 @@ public class Player extends GameObject implements Drawable {
 				flashCounter--;
 			}
 		} else {
-			canvas.draw(playerSprite, Color.WHITE, getPosition().add(getSize().cpy().scl(-0.5f)), size,
-					new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180/Math.PI));
+			Vector2 drawSize = new Vector2(size.x, size.y);
+			Vector2 pos = getPosition().add(getSize().cpy().scl(-0.5f));
+//			float offset = 0.05f + size.y/2;
+//			if (flipping) {
+//				if (AngleEnum.isVertical(heading)) {
+//					drawSize.y = -drawSize.y;
+//					pos.y = heading == AngleEnum.SOUTH ? 
+//							pos.y + offset : pos.y - offset;
+//				} else {
+//					drawSize.x = -drawSize.x;
+//					pos.x = heading == AngleEnum.WEST ? 
+//							pos.x + offset : pos.x - offset;
+//				}
+//			}
+			canvas.draw(playerSprite, Color.WHITE, pos, drawSize,
+					new Vector2(getSize()).scl(.5f), (float)(getRotation() * 180f/Math.PI));
+			
 		}
 		
 	}

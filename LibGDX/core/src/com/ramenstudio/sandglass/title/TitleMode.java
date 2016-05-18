@@ -23,6 +23,7 @@ public class TitleMode extends AbstractMode implements Screen {
   public void show() {
     // UI needs to be shown.
     titleController.uiController.acquireInputProcesser();
+    Gdx.input.setCursorCatched(true);
   }
 
   @Override

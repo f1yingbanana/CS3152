@@ -1,10 +1,9 @@
 package com.ramenstudio.sandglass.game.controller;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javafx.scene.input.KeyCode;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -16,8 +15,6 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.controller.UIController.UIState;
 import com.ramenstudio.sandglass.game.model.GameModel;
@@ -30,6 +27,7 @@ import com.ramenstudio.sandglass.game.util.LevelLoader;
 import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.controller.SoundController;
+import com.ramenstudio.sandglass.util.view.ui.KeyboardUIListener;
 import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.Monster;
 import com.ramenstudio.sandglass.game.model.Monster.MonsterLevel;
@@ -80,7 +78,7 @@ public class GameController extends AbstractController implements ContactListene
 
 	// The UI controller for the game - special case. Do not draw UI inside game
 	// controller.
-	public UIController uiController = new UIController();
+	public UIController uiController;
 
 	private Array<MonsterController> monsterController = new Array<MonsterController>();
 
@@ -92,6 +90,7 @@ public class GameController extends AbstractController implements ContactListene
 
 
 	public GameController(int gameLevel) {
+		uiController = new UIController(gameLevel);
 		getGameModel().setGameLevel(gameLevel);
 		mapObjects = loader.loadLevel(gameLevel);
 		SoundController.getInstance().playBGMForLevel(gameLevel);
@@ -132,7 +131,6 @@ public class GameController extends AbstractController implements ContactListene
 		objectSetup(world);
 
 		// Set up UI callbacks
-		uiController.gameView.pauseButton.addListener(pauseButtonCallback);
 		uiController.pauseView.resumeButton.addListener(resumeButtonCallback);
 		uiController.pauseView.restartButton.addListener(restartButtonCallback);
 		uiController.pauseView.mainMenuButton.addListener(mainMenuButtonCallback);
@@ -148,21 +146,11 @@ public class GameController extends AbstractController implements ContactListene
 	 */
 
 	/**
-	 * Called when pause button from the main playing screen is clicked.
-	 */
-	private ClickListener pauseButtonCallback = new ClickListener() {
-		@Override
-		public void clicked(InputEvent event, float x, float y) {
-			pauseGame();
-		}
-	};
-
-	/**
 	 * Called when resume button from the paused screen is clicked.
 	 */
-	private ClickListener resumeButtonCallback = new ClickListener() {
+	private KeyboardUIListener resumeButtonCallback = new KeyboardUIListener() {
 		@Override
-		public void clicked(InputEvent event, float x, float y) {
+		public void interacted() {
 			resumeGame();
 		}
 	};
@@ -170,9 +158,9 @@ public class GameController extends AbstractController implements ContactListene
 	/**
 	 * Called when restart button from the paused screen is clicked.
 	 */
-	private ClickListener restartButtonCallback = new ClickListener() {
-		@Override
-		public void clicked(InputEvent event, float x, float y) {
+	private KeyboardUIListener restartButtonCallback = new KeyboardUIListener() {
+    @Override
+    public void interacted() {
 			reset();
 			uiController.setGameState(UIController.UIState.PLAYING);
 		}
@@ -181,8 +169,9 @@ public class GameController extends AbstractController implements ContactListene
 	/**
 	 * Called when main menu button from the paused screen is clicked.
 	 */
-	private ClickListener mainMenuButtonCallback = new ClickListener() {
-		public void clicked(InputEvent event, float x, float y) {
+	private KeyboardUIListener mainMenuButtonCallback = new KeyboardUIListener() {
+    @Override
+    public void interacted() {
 			needsMenu = true;
 		}
 	};
@@ -190,8 +179,9 @@ public class GameController extends AbstractController implements ContactListene
 	/**
 	 * Called when player finished a level and wants to go to next level.
 	 */
-	private ClickListener nextLevelButtonCallback = new ClickListener() {
-		public void clicked(InputEvent event, float x, float y) {
+	private KeyboardUIListener nextLevelButtonCallback = new KeyboardUIListener() {
+    @Override
+    public void interacted() {
 			if (gameModel.setGameLevel(gameModel.getGameLevel() + 1)) {
 				reset();
 			} else {
@@ -232,24 +222,35 @@ public class GameController extends AbstractController implements ContactListene
 
 	@Override
 	public void update(float dt) {
-		if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-			if (getGameModel().getGameState() == GameState.PLAYING) {
-				pauseGame();
-			} else if (getGameModel().getGameState() == GameState.PAUSED) {
-				resumeGame();
-			}
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-			if (getGameModel().getGameState() == GameState.LOST) {
-				reset();
-			}
-		}
 
-		uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
-		uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
-		uiController.update(dt);
+    uiController.update(dt);
+    
+    if (getGameModel().getGameState() != GameState.TUTORIAL) {
+  		if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+  			if (getGameModel().getGameState() == GameState.PLAYING) {
+  				pauseGame();
+  			} else if (getGameModel().getGameState() == GameState.PAUSED) {
+  				resumeGame();
+  			}
+  		}
+  		
+  		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+  			if (getGameModel().getGameState() == GameState.LOST) {
+  				reset();
+  			}
+  		}
+    }
 
 		switch (getGameModel().getGameState()) {
+		case TUTORIAL:
+		  if (uiController.tutorialView.isDismissed) {
+		    getGameModel().setGameState(GameState.PLAYING);
+	      uiController.setGameState(UIState.PLAYING);
+		  } else {
+	      uiController.setGameState(UIState.TUTORIAL);
+		  }
+		  
+		  return;
 			case LOST:
 				uiController.setGameState(UIState.LOST);
 				return;
@@ -262,6 +263,9 @@ public class GameController extends AbstractController implements ContactListene
 				return;
 		}
 
+    uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
+    uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
+    
 		cameraController.update(dt);
 		// Order matters. Must call update BEFORE rotate on cameraController.
 		if (playerController.getRotateAngle() != 0f) {

@@ -28,13 +28,13 @@ public class GameModel implements Drawable {
 	private List<Resource> resources = new ArrayList<Resource>();
 
 	// Game state
-	private GameState gameState = GameState.PLAYING;
+	private GameState gameState = GameState.TUTORIAL;
 
 	// Current level
 	private int gameLevel;
 
 	// Max game levels. Minimum level is 1.
-	private static final int MAX_LEVEL = 16;
+	private static final int MAX_LEVEL = 23;
 
 	/**
 	 * Initializer.

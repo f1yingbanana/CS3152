@@ -1,13 +1,13 @@
 package com.ramenstudio.sandglass.title.controller;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ramenstudio.sandglass.title.view.ui.*;
-import com.ramenstudio.sandglass.util.view.ui.OptionsView;
+import com.ramenstudio.sandglass.util.controller.KeyboardUIController;
+import com.ramenstudio.sandglass.util.view.ui.CreditsView;
+import com.ramenstudio.sandglass.util.view.ui.KeyboardUIListener;
 
 /**
  * This is the root controller for the title screen, which consists of mainly
@@ -28,9 +28,11 @@ public class UIController {
   
   public TitleView titleView = new TitleView(skin);
   
-  public OptionsView optionsView = new OptionsView(skin);
+  public CreditsView optionsView = new CreditsView(skin);
   
   public LevelSelectView levelSelectView = new LevelSelectView(skin);
+  
+  private KeyboardUIController keyboardControl = new KeyboardUIController();
   
   public UIController() {
     stage = new Stage(new ScreenViewport());
@@ -41,31 +43,33 @@ public class UIController {
     
     // Set up callbacks
     titleView.levelSelectButton.addListener(levelSelectListener);
-    titleView.optionsButton.addListener(optionsListener);
+    titleView.creditsButton.addListener(optionsListener);
     optionsView.backButton.addListener(backListener);
     levelSelectView.backButton.addListener(backListener);
     
     setUIState(UIState.TITLE);
+    
+    
   }
   
   // Button listeners
-  private ChangeListener levelSelectListener = new ChangeListener() {
+  private KeyboardUIListener levelSelectListener = new KeyboardUIListener() {
     @Override
-    public void changed(ChangeEvent event, Actor actor) {
+    public void interacted() {
       setUIState(UIState.LEVEL_SELECT);
     }
   };
 
-  private ChangeListener backListener = new ChangeListener() {
+  private KeyboardUIListener backListener = new KeyboardUIListener() {
     @Override
-    public void changed(ChangeEvent event, Actor actor) {
+    public void interacted() {
       setUIState(UIState.TITLE);
     }
   };
 
-  private ChangeListener optionsListener = new ChangeListener() {
+  private KeyboardUIListener optionsListener = new KeyboardUIListener() {
     @Override
-    public void changed(ChangeEvent event, Actor actor) {
+    public void interacted() {
       setUIState(UIState.OPTIONS);
     }
   };
@@ -85,18 +89,33 @@ public class UIController {
     switch (state) {
     case LEVEL_SELECT:
       levelSelectView.setVisible(true);
+      keyboardControl.setFocusedUI(levelSelectView.levelScrollView.levelPreviewViews.get(0).levelSelectButton);
       break;
     case OPTIONS:
       optionsView.setVisible(true);
+      keyboardControl.setFocusedUI(optionsView.backButton);
       break;
     case TITLE:
       titleView.setVisible(true);
+      keyboardControl.setFocusedUI(titleView.gameStartButton);
       break;
     }
   }
   
   
   public void update(float dt) {
+    keyboardControl.update(dt);
+    
+    // Tells the level scroll view to scroll the selection
+    if (state == UIState.LEVEL_SELECT) {
+      int tag = keyboardControl.getFocusedUI().tag();
+      
+      if (tag != 0) {
+        levelSelectView.backButton.setArrowRight(levelSelectView.levelScrollView.levelPreviewViews.get(tag - 1).levelSelectButton);
+        levelSelectView.scrollTo = tag;
+      }
+    }
+    
     stage.act(dt);
   }
   
