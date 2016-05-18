@@ -31,7 +31,7 @@ public class OptionsView extends Table {
     
     setFillParent(true);
     
-    Texture bgTexture = new Texture(Gdx.files.internal("Textures/Background1.png"));
+    Texture bgTexture = new Texture(Gdx.files.internal("Textures/Controls.png"));
     bgTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
     Sprite bgSprite = new Sprite(bgTexture);
     setBackground(new SpriteDrawable(bgSprite));
