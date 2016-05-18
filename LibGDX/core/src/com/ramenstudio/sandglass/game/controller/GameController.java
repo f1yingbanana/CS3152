@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -87,9 +88,26 @@ public class GameController extends AbstractController implements ContactListene
 	private Map<LevelLoader.LayerKey, Array<GameObject>> mapObjects;
 
 	private Rectangle bound;
+	
+	//For handling High Scores + Time
+	private static Preferences prefs;
+	private String prefFile = "sandglass_scores";
+	private int level;
+	private int currentTime = 0;
+	private float timeCount = 0;
+	private int highScore;
 
 
 	public GameController(int gameLevel) {
+		//Load/set high score
+		prefs = Gdx.app.getPreferences(prefFile);
+		// Provide default high score of 0
+		if (!prefs.contains("highScore" + gameLevel)) {
+		   prefs.putInteger("highScore" + gameLevel, 0);
+		}
+		level = gameLevel;
+		highScore = getHighScore();
+		
 		uiController = new UIController(gameLevel);
 		getGameModel().setGameLevel(gameLevel);
 		mapObjects = loader.loadLevel(gameLevel);
@@ -262,9 +280,11 @@ public class GameController extends AbstractController implements ContactListene
 				uiController.setGameState(UIState.WON);
 				return;
 		}
+		
+		updateTime(dt);
 
-    uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
-    uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
+		uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
+		uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
     
 		cameraController.update(dt);
 		// Order matters. Must call update BEFORE rotate on cameraController.
@@ -466,6 +486,9 @@ public class GameController extends AbstractController implements ContactListene
 				SoundController.getInstance().playLevelComplete();
 				// We won!
 				getGameModel().setGameState(GameState.WON);
+				if (currentTime < highScore){
+					setHighScore(currentTime);
+				}
 			}
 		}
 	}
@@ -496,6 +519,23 @@ public class GameController extends AbstractController implements ContactListene
 		cameraController.dispose();
 		playerController.dispose();
 		uiController.dispose();
+	}
+	
+	public void updateTime(float dt){
+		timeCount += dt;
+		if (timeCount >= 1){
+			currentTime++;
+			timeCount = 0;
+		}
+	}
+	
+	public int getHighScore(){
+		return prefs.getInteger("highScore"+level);
+	}
+	
+	public void setHighScore(int i){
+		prefs.putInteger("highScore"+level, i);
+		prefs.flush();
 	}
 
 }
