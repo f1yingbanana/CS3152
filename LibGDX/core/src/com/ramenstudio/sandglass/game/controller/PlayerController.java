@@ -14,6 +14,7 @@ import com.ramenstudio.sandglass.game.model.GoalTile;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.TurnTile;
 import com.ramenstudio.sandglass.game.view.*;
+import com.ramenstudio.sandglass.util.controller.SoundController;
 import com.ramenstudio.sandglass.game.controller.AngleEnum;
 
 /**
@@ -226,7 +227,7 @@ public class PlayerController extends AbstractController {
 		checkCorner();
 		// TODO: finalize design (press down on rotate or counter)
 		if (activeCorner != null && !jump && isUnder && inputController.getVertical() == -1) {
-			
+			SoundController.getInstance().playRotation();
 			Vector2 cornerPos = activeCorner.getPosition();
 			float diff = (AngleEnum.isVertical(heading))?
 					pos.x - cornerPos.x : pos.y - cornerPos.y;
@@ -288,6 +289,7 @@ public class PlayerController extends AbstractController {
 			mustFlip = false;
 			AbstractTile under = oneFrameRayHandler.tileUnderneath;
 			if (under.isFlippable()) {
+				SoundController.getInstance().playRotation();
 				next = State.FLIP;
 				rotateAngle = 180;
 				float tilePos;

@@ -442,7 +442,7 @@ public class GameController extends AbstractController implements ContactListene
 				secondOne instanceof Resource) {
 			Resource secondResource = (Resource) secondOne;
 			if (!secondResource.getIsCollected()) {
-				SoundController.getInstance().playItemCollect();
+				SoundController.getInstance().playSandglassCollect();
 				secondResource.setCollected();
 				playerController.getPlayer().addFlip();
 			}
@@ -450,7 +450,7 @@ public class GameController extends AbstractController implements ContactListene
 				secondOne instanceof Player) {
 			Resource firstResource = (Resource) firstOne;
 			if (!firstResource.getIsCollected()) {
-				SoundController.getInstance().playItemCollect();
+				SoundController.getInstance().playSandglassCollect();
 				firstResource.setCollected();
 				playerController.getPlayer().addFlip();
 			}

@@ -122,8 +122,14 @@ public class SoundController {
 //	private static final String LEVEL_FAILED_01 = ;
 //	private static final String LEVEL_FAILED_01_NAME = ;
 	
-	private static final String MONSTER_HIT_01 = "Sounds/MonsterCollision.mp3";
+	private static final String MONSTER_HIT_01 = "Sounds/HitMonster.mp3";
 	private static final String MONSTER_HIT_01_NAME = "MonsterCollision";
+	
+	private static final String SANDGLASS_COLLECT_01 = "Sounds/SandglassIcon.mp3";
+	private static final String SANDGLASS_COLLECT_01_NAME = "SandglassIcon";
+	
+	private static final String ROTATION_01 = "Sounds/rotation.mp3";
+	private static final String ROTATION_01_NAME = "Rotation";
 
 	/** 
 	 * Creates a new SoundController with the default settings.
@@ -154,6 +160,7 @@ public class SoundController {
 	}
 	
 	public void preLoadSounds(AssetManager manager) {
+		System.out.println("Only loading sounds once");
 		manager.load(BACKGROUND_01,Sound.class);
 		manager.load(DOOR_OPEN_01,Sound.class);
 		manager.load(SHIP_PIECE_COLLECT_01,Sound.class);
@@ -161,6 +168,8 @@ public class SoundController {
 		manager.load(LEVEL_COMPLETE_01,Sound.class);
 //		manager.load(LEVEL_FAILED_01, Sound.class);
 		manager.load(MONSTER_HIT_01, Sound.class);
+		manager.load(SANDGLASS_COLLECT_01,Sound.class);
+		manager.load(ROTATION_01,Sound.class);
 		
 		manager.finishLoading();
 		
@@ -191,6 +200,14 @@ public class SoundController {
 		Sound monsterHit1 = manager.get(MONSTER_HIT_01,Sound.class);
 		soundbank.put(MONSTER_HIT_01_NAME, monsterHit1);
 		loopers.put(MONSTER_HIT_01,false);
+		
+		Sound sandglassCollect1 = manager.get(SANDGLASS_COLLECT_01,Sound.class);
+		soundbank.put(SANDGLASS_COLLECT_01_NAME,sandglassCollect1);
+		loopers.put(SANDGLASS_COLLECT_01, false);
+		
+		Sound rotation1 = manager.get(ROTATION_01,Sound.class);
+		soundbank.put(ROTATION_01_NAME, rotation1);
+		loopers.put(ROTATION_01, false);
 	}
 	
 	/// Properties
@@ -470,7 +487,7 @@ public class SoundController {
 	public void playBGMForLevel(int gameLevel) {
 		// Have logic based on gameLevel to decide which sound to play, currently playing the same.
 //		System.out.println(play(BACKGROUND_01, BACKGROUND_01_NAME,true,true));
-		play(BACKGROUND_01, BACKGROUND_01_NAME,true,true);
+		play(BACKGROUND_01, BACKGROUND_01_NAME,true,.15f, true);
 	}
 
 	public void stopAll() {
@@ -493,7 +510,11 @@ public class SoundController {
 	}
 
 	public void playItemCollect() {
-		play(ITEM_COLLECT_01, ITEM_COLLECT_01_NAME, false, false);
+		play(ITEM_COLLECT_01, ITEM_COLLECT_01_NAME, false, .15f, false);
+	}
+	
+	public void playSandglassCollect() {
+		play(SANDGLASS_COLLECT_01, SANDGLASS_COLLECT_01_NAME,false, false);
 	}
 	
 	public void playLevelComplete() {
@@ -502,6 +523,10 @@ public class SoundController {
 	
 	public void playMonsterHit() {
 		play(MONSTER_HIT_01, MONSTER_HIT_01_NAME, false, false);
+	}
+	
+	public void playRotation() {
+		play(ROTATION_01, ROTATION_01_NAME, false, false);
 	}
 	
 //	public void playLevelFail() {
