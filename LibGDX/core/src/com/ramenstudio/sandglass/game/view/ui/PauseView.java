@@ -43,7 +43,7 @@ public class PauseView extends Table {
     
     row();
     
-    creditsButton = new KeyboardControlButton("CREDITS", skin, "white");
+    creditsButton = new KeyboardControlButton("HELP", skin, "white");
     add(creditsButton).prefSize(160, 50).pad(20);
     
     row();
