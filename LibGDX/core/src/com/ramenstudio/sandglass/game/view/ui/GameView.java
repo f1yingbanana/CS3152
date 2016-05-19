@@ -18,6 +18,10 @@ public class GameView extends Table {
   
   public final Label shipPieceCountLabel;
   
+  public final Label currentTimeLabel;
+  
+  public final Label bestTimeLabel;
+  
   /**
    * Default constructor. Uses the given skin to set up the pause screen UI.
    * @param skin is the style-sheet for the widgets.
@@ -40,6 +44,12 @@ public class GameView extends Table {
 
     shipPieceCountLabel = new Label("10", skin);
     add(shipPieceCountLabel).top().right().padTop(262).padRight(5).width(50);
+    
+    currentTimeLabel = new Label("10", skin);
+    add(currentTimeLabel).bottom().left().padLeft(65).padBottom(20);
+    
+    bestTimeLabel = new Label("10", skin);
+    add(bestTimeLabel).bottom().left().padLeft(65).padBottom(10);
   }
   
   public void setFlipCount(int flipsLeft) {
@@ -48,6 +58,14 @@ public class GameView extends Table {
   
   public void setShipPieceCount(int shipPiecesLeft, int maxShipPieces) {
     shipPieceCountLabel.setText("" + (maxShipPieces - shipPiecesLeft));
+  }
+  
+  public void setCurrentTime(int currentTime) {
+	  currentTimeLabel.setText("YOUR TIME - " + currentTime/60 + ":" + currentTime%60);
+  }
+  
+  public void setBestTime(int bestTime) {
+	  bestTimeLabel.setText("BEST TIME - " + bestTime/60 + ":" + bestTime%60);
   }
 }
 

@@ -157,6 +157,8 @@ public class GameController extends AbstractController implements ContactListene
 		uiController.levelFailedView.restartButton.addListener(restartButtonCallback);
 		uiController.levelFailedView.mainMenuButton.addListener(mainMenuButtonCallback);
 		uiController.levelCompleteView.nextLevelButton.addListener(nextLevelButtonCallback);
+		
+		uiController.gameView.setBestTime(highScore);
 	}
 
 	/**
@@ -282,7 +284,8 @@ public class GameController extends AbstractController implements ContactListene
 		}
 		
 		updateTime(dt);
-
+		
+		uiController.gameView.setCurrentTime(currentTime);
 		uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
 		uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
     
