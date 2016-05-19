@@ -108,7 +108,7 @@
   <object id="7" name="7" gid="155" x="2368" y="1088" width="128" height="128">
    <properties>
     <property name="X" value="2368"/>
-    <property name="Y" value="1856"/>
+    <property name="Y" value="1088"/>
     <property name="angle" value="EAST"/>
     <property name="level" value="MAKE_FLIP"/>
     <property name="spcf" value="1.4"/>
@@ -125,7 +125,7 @@
   </object>
   <object id="14" name="4" gid="155" x="1728" y="1600" width="128" height="128">
    <properties>
-    <property name="X" value="1856"/>
+    <property name="X" value="1728"/>
     <property name="Y" value="1600"/>
     <property name="angle" value="WEST"/>
     <property name="level" value="MAKE_FLIP"/>

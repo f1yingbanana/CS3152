@@ -29,13 +29,13 @@ public class KeyboardUIController {
     // Parse user input
     
     if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-      System.out.println("UP");
+      //System..out.println("UP");
       if (focusedUI.getArrowUp() != null) {
         setFocusedUI(getFocusedUI().getArrowUp());
       }
     } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-      System.out.println("DOWN");
-      System.out.println(getFocusedUI().getArrowDown());
+      //System..out.println("DOWN");
+      //System..out.println(getFocusedUI().getArrowDown());
       if (getFocusedUI().getArrowDown() != null) {
         setFocusedUI(getFocusedUI().getArrowDown());
       }
@@ -66,12 +66,12 @@ public class KeyboardUIController {
    */
   public void setFocusedUI(KeyboardControlUI focusedUI) {
     if (this.focusedUI != null) {
-      System.out.println(this.focusedUI);
+      //System..out.println(this.focusedUI);
       this.focusedUI.focusChanged(false);
     }
     
     this.focusedUI = focusedUI;
     this.focusedUI.focusChanged(true);
-    System.out.println(focusedUI);
+    //System..out.println(focusedUI);
   }
 }

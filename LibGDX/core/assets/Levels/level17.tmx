@@ -300,7 +300,7 @@
     <property name="X" value="12"/>
     <property name="Y" value="10.5"/>
     <property name="longest" value="16"/>
-    <property name="maxFlips" value="15"/>
+    <property name="maxFlips" value="10"/>
    </properties>
   </object>
   <object id="154" name="bound" x="0" y="0" width="3200" height="2560"/>
