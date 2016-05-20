@@ -26,6 +26,8 @@ public class LevelSelectView extends Table {
 
   public int scrollTo = 1;
   
+  private int lastFocus = -1;
+  
   /**
    * Default constructor. Initializes all the UI components with the given skin.
    */
@@ -33,6 +35,7 @@ public class LevelSelectView extends Table {
     super();
  
     setFillParent(true);
+    setClip(false);
     
     Texture bgTexture = new Texture(Gdx.files.internal("Textures/LevelSelect_Page.png"));
     bgTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -52,9 +55,10 @@ public class LevelSelectView extends Table {
     add(tbTable).fill();
     
     levelScrollView = new LevelScrollView(skin);
+    levelScrollView.setClip(false);
     
     levelScrollPane = new ScrollPane(levelScrollView, skin);
-    add(levelScrollPane);
+    add(levelScrollPane).expand().right();
   }
   
   @Override
@@ -65,6 +69,12 @@ public class LevelSelectView extends Table {
       levelScrollPane.setScrollPercentY(levelScrollPane.getScrollPercentY() + scroll * scrollSpeed);
     }*/
     
-    levelScrollPane.setScrollY(scrollTo * (200 + 10) - Gdx.graphics.getHeight() / 2f);
+    if (lastFocus != scrollTo) {
+      levelScrollPane.setScrollY((scrollTo - 1) * 300);
+      levelScrollView.levelPreviewViews.get(scrollTo - 1).setFocus(true);
+      if (lastFocus != -1)
+        levelScrollView.levelPreviewViews.get(lastFocus - 1).setFocus(false);
+      lastFocus = scrollTo;
+    }
   }
 }
