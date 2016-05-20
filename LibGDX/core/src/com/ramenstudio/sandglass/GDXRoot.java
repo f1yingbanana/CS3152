@@ -116,8 +116,6 @@ public class GDXRoot extends Game implements ScreenListener {
 			setApplicationMode(ApplicationMode.TITLE);
 
 		} else {
-			if (gameMode != null)
-				gameMode.dispose();
 			SoundController.getInstance().stopAll();
 			gameMode = new GameMode(modeCode);
 			gameMode.screenListener = this;
