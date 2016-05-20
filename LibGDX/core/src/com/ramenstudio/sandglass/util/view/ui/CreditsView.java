@@ -26,7 +26,7 @@ public class CreditsView extends Table {
     
     setFillParent(true);
     
-    Texture bgTexture = new Texture(Gdx.files.internal("Textures/Controls.png"));
+    Texture bgTexture = new Texture(Gdx.files.internal("Textures/Credits.png"));
     bgTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
     Sprite bgSprite = new Sprite(bgTexture);
     setBackground(new SpriteDrawable(bgSprite));

@@ -537,13 +537,13 @@
    <polyline points="256,0 0,0 0,768 256,768"/>
   </object>
  </objectgroup>
- <objectgroup name="Center" visible="0">
+ <objectgroup name="Center">
   <object id="164" name="center" x="1728" y="1408" width="128" height="128">
    <properties>
     <property name="X" value="13.5"/>
     <property name="Y" value="11"/>
     <property name="longest" value="10"/>
-    <property name="maxFlips" value="20"/>
+    <property name="maxFlips" value="10"/>
    </properties>
   </object>
   <object id="167" name="bound" x="384" y="128" width="2816" height="2688"/>
