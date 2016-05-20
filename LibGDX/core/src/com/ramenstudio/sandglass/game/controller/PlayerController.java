@@ -74,9 +74,9 @@ public class PlayerController extends AbstractController {
 	/** Number of rows in the player image filmstrip */
 	private static final int FILMSTRIP_ROWS = 1;
 	/** Number of columns in the player image filmstrip */
-	private static final int FILMSTRIP_COLS = 51;
+	private static final int FILMSTRIP_COLS = 71;
 	/** Number of elements in the player image filmstrip */
-	private static final int FILMSTRIP_SIZE = 51;
+	private static final int FILMSTRIP_SIZE = 71;
 	
 	/** The frame number for neutral stance. */
     private static final int NEUTRAL_START_EAST = 15;
@@ -103,16 +103,28 @@ public class PlayerController extends AbstractController {
     /** The frame number for middle of a flip. */
     private static final int FLIP_MID = 36;
     /** The frame number for ending a flip. */
-    private static final int FLIP_END = 40;
+    private static final int FLIP_END = 38;
     /** The frame number for getting hit. */
-    private static final int HIT_START_WEST = 41;
+    private static final int HIT_START_WEST = 39;
     /** The frame number for ending hit. */
-    private static final int HIT_END_WEST = 45;
+    private static final int HIT_END_WEST = 43;
     /** The frame number for getting hit. */
-    private static final int HIT_START_EAST = 46;
+    private static final int HIT_START_EAST = 44;
     /** The frame number for ending hit. */
-    private static final int HIT_END_EAST = 50;
+    private static final int HIT_END_EAST = 48;
+    /** The frame offset for animation while pressing down. */
+    private static final int DOWN_WEST_OFFSET = 50;
+    private static final int DOWN_EAST_OFFSET = 44;
+    /** The frame number for getting hit by a non-deduct flip monster. */
+    private static final int OTHER_HIT_START_WEST = 67;
+    private static final int OTHER_HIT_END_WEST = 68;
+    private static final int OTHER_HIT_START_EAST = 69;
+    private static final int OTHER_HIT_END_EAST = 70;
 	
+    private boolean pressingDown;
+    private boolean pressedDown;
+    private boolean otherHit;
+    
     /** The enum for animation states. */
     public enum State {
     	NEUTRAL, JUMP, WALK, FLIP, HIT
@@ -247,10 +259,11 @@ public class PlayerController extends AbstractController {
 		
 		// Handle rotating
 		checkCorner();
-		// TODO: finalize design (press down on rotate or counter)
+		pressedDown = pressingDown;
+		pressingDown = inputController.getVertical() == -1;
 		if (activeCorner != null) {
 			if (!jump && isUnder && activeCorner.validTurn(vel, heading) &&
-					inputController.getVertical() == -1 && isGrounded()) {
+					pressingDown && isGrounded()) {
 				Vector2 cornerPos = activeCorner.getPosition();
 				float diff = (AngleEnum.isVertical(heading))?
 						pos.x - cornerPos.x : pos.y - cornerPos.y;
@@ -371,10 +384,14 @@ public class PlayerController extends AbstractController {
 			hitCounter++;
 			if (player.isDeductFlip()) {
 				next = State.HIT;
+				otherHit = false;
 				tick++;
 				if (tick < player.DEDUCT_COOL_TIME){
 					player.subtractFlip(2);
 				}
+			} else {
+				next = State.HIT;
+				otherHit = true;
 			}
 		}
 		
@@ -404,8 +421,12 @@ public class PlayerController extends AbstractController {
 		}
 		switch (next) {
 		case NEUTRAL:
-			if (facingEast) player.setFrame(NEUTRAL_START_EAST);
-			else player.setFrame(NEUTRAL_START_WEST);
+			frame = (facingEast) ? NEUTRAL_START_EAST : NEUTRAL_START_WEST;
+			if (pressingDown) {
+				frame = (facingEast) ? frame + DOWN_EAST_OFFSET : frame + DOWN_WEST_OFFSET;
+				frame--;
+			}
+			player.setFrame(frame);
 			break;
 		case JUMP:
 			if (state == State.JUMP) {
@@ -430,21 +451,37 @@ public class PlayerController extends AbstractController {
 		case WALK:
 			if (state == State.WALK) {
 				int offset = (facedEast)? -WALK_START_EAST : -WALK_START_WEST;
+				if (pressedDown) {
+					offset = (facedEast)? offset - DOWN_EAST_OFFSET : offset - DOWN_WEST_OFFSET;
+				}
 				offset += frame + 1;
 				offset = offset%(WALK_END_EAST - WALK_START_EAST);
+				if (pressingDown) {
+					offset = (facingEast) ? offset + DOWN_EAST_OFFSET : offset + DOWN_WEST_OFFSET;
+				}
 				counter++;
 				if (counter > WALK_FRAME_COOLDOWN) {
 					counter = 0;
 					if (facingEast) player.setFrame(WALK_START_EAST + offset);
 					else player.setFrame(WALK_START_WEST + offset);
 				} else {
-					if (offset == 0) offset = WALK_END_EAST - WALK_START_EAST;
+					if (offset == 0) {
+						offset = WALK_END_EAST - WALK_START_EAST;
+						if (pressingDown) {
+							offset = (facingEast) ? offset + DOWN_EAST_OFFSET :
+								offset + DOWN_WEST_OFFSET;
+						}
+					}
 					if (facingEast) player.setFrame(WALK_START_EAST + --offset);
 					else player.setFrame(WALK_START_WEST + --offset);
 				}
 			} else {
-				if (facingEast) player.setFrame(WALK_START_EAST);
-				else player.setFrame(WALK_START_WEST);
+				frame = (facingEast) ? WALK_START_EAST : WALK_START_WEST;
+				if (pressingDown) {
+					frame = (facingEast) ? frame + DOWN_EAST_OFFSET : 
+						frame + DOWN_WEST_OFFSET;
+				}
+				player.setFrame(frame);
 			}
 			break;
 		case FLIP:
@@ -457,7 +494,6 @@ public class PlayerController extends AbstractController {
 					if (newFrame > FLIP_MID) {
 						player.setPosition(position);
 						player.setRotation(AngleEnum.convertToAngle(heading));
-//						world.setGravity(world.getGravity().rotate(180));
 					}
 					player.setFrame(newFrame);
 				}
@@ -467,23 +503,44 @@ public class PlayerController extends AbstractController {
 			}
 			break;
 		case HIT:
-			if (state == State.HIT) {
-				int offset = (facedEast)? -HIT_START_EAST : -HIT_START_WEST;
-				offset += frame + 1;
-				offset = offset%(HIT_END_EAST - HIT_START_EAST);
-				counter++;
-				if (counter > HIT_FRAME_COOLDOWN) {
-					counter = 0;
-					if (facingEast) player.setFrame(HIT_START_EAST + offset);
-					else player.setFrame(HIT_START_WEST + offset);
+			if (otherHit) {
+				if (state == State.HIT) {
+					int offset = (facedEast)? -OTHER_HIT_START_EAST : -OTHER_HIT_START_WEST;
+					offset += frame + 1;
+					offset = offset%(OTHER_HIT_END_EAST - OTHER_HIT_START_EAST);
+					counter++;
+					if (counter > HIT_FRAME_COOLDOWN/2) {
+						counter = 0;
+						if (facingEast) player.setFrame(OTHER_HIT_START_EAST + offset);
+						else player.setFrame(OTHER_HIT_START_WEST + offset);
+					} else {
+						if (offset == 0) offset = OTHER_HIT_END_EAST - OTHER_HIT_START_EAST;
+						if (facingEast) player.setFrame(OTHER_HIT_START_EAST + --offset);
+						else player.setFrame(OTHER_HIT_START_WEST + --offset);
+					}
 				} else {
-					if (offset == 0) offset = HIT_END_EAST - HIT_START_EAST;
-					if (facingEast) player.setFrame(HIT_START_EAST + --offset);
-					else player.setFrame(HIT_START_WEST + --offset);
+					if (facingEast) player.setFrame(OTHER_HIT_START_EAST);
+					else player.setFrame(OTHER_HIT_START_WEST);
 				}
 			} else {
-				if (facingEast) player.setFrame(HIT_START_EAST);
-				else player.setFrame(HIT_START_WEST);
+				if (state == State.HIT) {
+					int offset = (facedEast)? -HIT_START_EAST : -HIT_START_WEST;
+					offset += frame + 1;
+					offset = offset%(HIT_END_EAST - HIT_START_EAST);
+					counter++;
+					if (counter > HIT_FRAME_COOLDOWN) {
+						counter = 0;
+						if (facingEast) player.setFrame(HIT_START_EAST + offset);
+						else player.setFrame(HIT_START_WEST + offset);
+					} else {
+						if (offset == 0) offset = HIT_END_EAST - HIT_START_EAST;
+						if (facingEast) player.setFrame(HIT_START_EAST + --offset);
+						else player.setFrame(HIT_START_WEST + --offset);
+					}
+				} else {
+					if (facingEast) player.setFrame(HIT_START_EAST);
+					else player.setFrame(HIT_START_WEST);
+				}
 			}
 			break;
 		}
