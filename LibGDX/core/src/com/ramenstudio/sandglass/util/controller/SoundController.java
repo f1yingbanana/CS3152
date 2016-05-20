@@ -188,8 +188,9 @@ public class SoundController {
 		manager.load(MONSTER_HIT_01, Sound.class);
 		manager.load(SANDGLASS_COLLECT_01,Sound.class);
 		manager.load(ROTATION_01,Sound.class);
-		
-		manager.finishLoading();
+	}
+	
+	public void loadSounds(AssetManager manager){
 		
 		Sound easy1 = manager.get(EASY_01,Sound.class);
 		soundbank.put(EASY_01_NAME,easy1);
@@ -433,7 +434,7 @@ public class SoundController {
 		
 		else {
 			if (!soundbank.containsKey(filename)) {
-				System.out.println("No key called " + filename);
+				//System.out.println("No key called " + filename);
 				return false;
 			}
 			// If there is a sound for this key, stop it

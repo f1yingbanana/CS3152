@@ -33,7 +33,7 @@ public class GameMode extends AbstractMode implements Screen {
 
 
 	private Texture backgroundImage;
-	
+	/** reference to game level*/
 	private int gameLevel;
 
 	// A debug renderer

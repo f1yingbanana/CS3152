@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.ramenstudio.sandglass.game.GameMode;
+import com.ramenstudio.sandglass.title.LoadingMode;
 import com.ramenstudio.sandglass.title.TitleMode;
 import com.ramenstudio.sandglass.title.controller.UIController;
 import com.ramenstudio.sandglass.util.ScreenListener;
@@ -21,6 +22,7 @@ public class GDXRoot extends Game implements ScreenListener {
 	private AssetManager manager;
 
 	/** The three game modes */
+	private LoadingMode loadingMode;
 	private TitleMode titleMode;
 	private GameMode gameMode;
 
@@ -46,7 +48,11 @@ public class GDXRoot extends Game implements ScreenListener {
 	 */
 	public void setApplicationMode(ApplicationMode mode) {
 		switch (mode) {
+			case LOADING:
+				setScreen(loadingMode);
+				break;
 			case TITLE:
+				
 				setScreen(titleMode);
 				SoundController.getInstance().stopAll();
 				UIController.playBGM(titleMode.getTitleController().uiController.getUIState());
@@ -67,10 +73,13 @@ public class GDXRoot extends Game implements ScreenListener {
 	public void create() {
 		// We create all the modes we need. A title mode, a game mode, and a loading
 		// mode. We don't need to load anything yet, though.
-		SoundController.getInstance().preLoadSounds(manager);
+		loadingMode = new LoadingMode();
 		titleMode = new TitleMode();
 		titleMode.screenListener = this;
-		setApplicationMode(ApplicationMode.TITLE);
+		loadingMode.manager = manager;
+		SoundController.getInstance().preLoadSounds(manager);
+		loadingMode.screenListener = this;
+		setApplicationMode(ApplicationMode.LOADING);
 	}
 
 	/** 
@@ -98,8 +107,14 @@ public class GDXRoot extends Game implements ScreenListener {
 	public void transitionToMode(Screen screen, int modeCode) {
 		// When the given mode wants to exit the mode. This happens when title chose
 		// a level to play on, or when game mode is done, or when loading is done.
-		if (modeCode == 0) {
+		if (screen == loadingMode){
+			SoundController.getInstance().loadSounds(manager);
 			setApplicationMode(ApplicationMode.TITLE);
+			loadingMode.dispose();
+		}
+		else if (modeCode == 0) {
+			setApplicationMode(ApplicationMode.TITLE);
+
 		} else {
 			if (gameMode != null)
 				gameMode.dispose();
