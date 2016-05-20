@@ -89,6 +89,9 @@ public class GameController extends AbstractController implements ContactListene
 
 	private Rectangle bound;
 	
+	//fade time for UI messages
+	private static int MESSAGE_FADETIME = 4;
+	
 	//For handling High Scores + Time
 	private static Preferences prefs;
 	private String prefFile = "sandglass_scores";
@@ -157,8 +160,6 @@ public class GameController extends AbstractController implements ContactListene
 		uiController.levelFailedView.restartButton.addListener(restartButtonCallback);
 		uiController.levelFailedView.mainMenuButton.addListener(mainMenuButtonCallback);
 		uiController.levelCompleteView.nextLevelButton.addListener(nextLevelButtonCallback);
-		
-		uiController.gameView.setBestTime(highScore);
 	}
 
 	/**

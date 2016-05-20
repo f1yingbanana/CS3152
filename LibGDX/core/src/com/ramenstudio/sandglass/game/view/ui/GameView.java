@@ -21,7 +21,7 @@ public class GameView extends Table {
   
   public final Label currentTimeLabel;
   
-  public final Label bestTimeLabel;
+  //public final Label messageLabel;
   
   /**
    * Default constructor. Uses the given skin to set up the pause screen UI.
@@ -40,17 +40,14 @@ public class GameView extends Table {
     	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type3.png")))));
     }
     
+    currentTimeLabel = new Label("00:00", skin, "font_gotham-_light_24pt", Color.WHITE);
+    add(currentTimeLabel).top().padTop(10).row();
+    
     flipCountLabel = new Label("10", skin);
-    add(flipCountLabel).top().left().padLeft(65).padTop(83).expand().row();
+    add(flipCountLabel).top().left().padLeft(65).padTop(53).expand().row();
 
     shipPieceCountLabel = new Label("10", skin);
-    add(shipPieceCountLabel).top().right().padRight(15).padBottom(30).width(50).row();
-    
-    currentTimeLabel = new Label("YOUR TIME - ", skin, "font_gotham-_light_24pt", Color.WHITE);
-    add(currentTimeLabel).bottom().left().padTop(275).padLeft(15).row();
-    
-    bestTimeLabel = new Label("BEST TIME - ", skin, "font_gotham-_light_24pt", Color.WHITE);
-    add(bestTimeLabel).bottom().left().padBottom(20).padLeft(15).padTop(10);
+    add(shipPieceCountLabel).top().right().padRight(15).padBottom(400).width(50).row();
   }
   
   public void setFlipCount(int flipsLeft) {
@@ -62,12 +59,12 @@ public class GameView extends Table {
   }
   
   public void setCurrentTime(int currentTime) {
-	  currentTimeLabel.setText("YOUR TIME - " + addZero(currentTime/60) + ":" + addZero(currentTime%60));
+	  currentTimeLabel.setText("" + addZero(currentTime/60) + ":" + addZero(currentTime%60));
   }
   
-  public void setBestTime(int bestTime) {
-	  bestTimeLabel.setText("BEST TIME - " + addZero(bestTime/60) + ":" + addZero(bestTime%60));
-  }
+  //public void setMessage(String s){
+//	  messageLabel.setText(s);
+  //}
   
   public String addZero(int time) {
 	  if (time < 10){
