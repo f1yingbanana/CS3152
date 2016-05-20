@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.ramenstudio.sandglass.game.controller.AngleEnum;
 import com.ramenstudio.sandglass.game.controller.GameController;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.AbstractMode;
@@ -98,10 +99,16 @@ public class GameMode extends AbstractMode implements Screen {
 		bgBatch.begin();
 		bgBatch.draw(backgroundImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		bgBatch.end();
-
+		
+		float oldZoom = gameplayController.getViewCamera().zoom;
+		float zoomFactor = ((float) Gdx.graphics.getHeight())/Gdx.graphics.getWidth();
+		gameplayController.getViewCamera().zoom = 3f;
+		
 		tiledMapRenderer.setView(gameplayController.getViewCamera());
 
 		tiledMapRenderer.render();
+		
+		gameplayController.getViewCamera().zoom = oldZoom;
 
 		gameplayController.getCameraController().swapCameraDimensions();
 
@@ -111,12 +118,12 @@ public class GameMode extends AbstractMode implements Screen {
 
 		// DEBUG RENDERS. We can have more render passes later implemented here.
 
-		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-			// debug ^= true;
-		}
-		if (debug) {
-			debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
-		}
+//		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+//			 debug ^= true;
+//		}
+//		if (debug) {
+//			debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
+//		}
 
 		// UI RENDER - special case. UI has to be rendered outside loop.
 		gameplayController.uiController.draw(canvas);
