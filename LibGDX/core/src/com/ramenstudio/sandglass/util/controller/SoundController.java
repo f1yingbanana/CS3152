@@ -80,7 +80,7 @@ public class SoundController {
 	/** The default sound length limit */
 	private static final int DEFAULT_LIMIT = 120;
 	/** The default limit on sounds per frame */
-	private static final int DEFAULT_FRAME = 5;
+	private static final int DEFAULT_FRAME = 15;
 	
 	/** The singleton Sound controller instance */
 	private static SoundController controller;
@@ -145,6 +145,16 @@ public class SoundController {
 	private static final String HARD_01 = "Sounds/GameBGM/HardLevel.mp3";
 	private static final String HARD_01_NAME = "Hard";
 
+  private static final String UI_MOVE = "Sounds/UIMove.mp3";
+  private static final String UI_MOVE_NAME = "UIMove";
+
+  private static final String UI_ENTER = "Sounds/UIEnter.mp3";
+  private static final String UI_ENTER_NAME = "UIEnter";
+
+  private static final String UI_MOVE_ERR = "Sounds/UIMoveErr.mp3";
+  private static final String UI_MOVE_ERR_NAME = "UIMoveErr";
+  
+	
 	/** 
 	 * Creates a new SoundController with the default settings.
 	 */
@@ -187,7 +197,10 @@ public class SoundController {
 		manager.load(LEVEL_FAILED_01, Sound.class);
 		manager.load(MONSTER_HIT_01, Sound.class);
 		manager.load(SANDGLASS_COLLECT_01,Sound.class);
-		manager.load(ROTATION_01,Sound.class);
+    manager.load(ROTATION_01,Sound.class);
+    manager.load(UI_MOVE,Sound.class);
+    manager.load(UI_ENTER,Sound.class);
+    //manager.load(UI_MOVE_ERR,Sound.class);
 	}
 	
 	public void loadSounds(AssetManager manager){
@@ -243,6 +256,20 @@ public class SoundController {
 		Sound rotation1 = manager.get(ROTATION_01,Sound.class);
 		soundbank.put(ROTATION_01_NAME, rotation1);
 		loopers.put(ROTATION_01, false);
+
+    Sound uiMove = manager.get(UI_MOVE,Sound.class);
+    soundbank.put(UI_MOVE_NAME, uiMove);
+    loopers.put(UI_MOVE, false);
+
+    Sound uiEnter = manager.get(UI_ENTER,Sound.class);
+    soundbank.put(UI_ENTER_NAME, uiEnter);
+    loopers.put(UI_ENTER, false);
+
+    /*
+    Sound uiMoveErr = manager.get(UI_MOVE_ERR,Sound.class);
+    soundbank.put(UI_MOVE_ERR_NAME, uiMoveErr);
+    loopers.put(UI_MOVE_ERR, false);
+    */
 	}
 	
 	/// Properties
@@ -408,15 +435,12 @@ public class SoundController {
 			}
 			// If there is a sound for this key, stop it
 			Sound sound = soundbank.get(filename);
+			
 			if (actives.containsKey(key)) {
 				ActiveSound snd = actives.get(key);
-				if (!snd.loop && snd.lifespan > cooldown) {
-					// This is a workaround for the OS X sound bug
-					//snd.sound.stop(snd.id);
-					snd.sound.setVolume(snd.id, 0.0f); 
-				} else {
-					return true;
-				}
+				snd.sound.setVolume(snd.id, 0);
+				
+				current--;
 			}
 			
 			// Play the new sound and add it
@@ -480,6 +504,8 @@ public class SoundController {
 		snd.sound.setLooping(snd.id,false); // Will eventually garbage collect
 		snd.sound.setVolume(snd.id, 0.0f); 
 		actives.remove(key);
+		
+		current--;
 	}
 	
 	/**
@@ -588,7 +614,19 @@ public class SoundController {
 	public void playLost() {
 		play(LEVEL_FAILED_01, LEVEL_FAILED_01_NAME, false, false);
 	}
-	
+
+  public void playUIMove() {
+    play(UI_MOVE, UI_MOVE_NAME, false, false);
+  }
+
+  public void playUIEnter() {
+    play(UI_ENTER, UI_ENTER_NAME, false, false);
+  }
+
+  public void playUIMoveErr() {
+    play(UI_MOVE_ERR, UI_MOVE_ERR_NAME, false, false);
+  }
+  
 	public void dispose() {
 		for (String s: collection){
 			if (!s.equals("MEDIUM_01_NAME") || !s.equals("EASY_01_NAME") || !s.equals("HARD_01_NAME")){
@@ -597,9 +635,4 @@ public class SoundController {
 			}
 		}
 	}
-
-
-
-
-
 }

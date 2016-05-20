@@ -32,25 +32,30 @@ public class KeyboardUIController {
       //System..out.println("UP");
       if (focusedUI.getArrowUp() != null) {
         setFocusedUI(getFocusedUI().getArrowUp());
+        SoundController.getInstance().playUIMove();
       }
     } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
       //System..out.println("DOWN");
       //System..out.println(getFocusedUI().getArrowDown());
       if (getFocusedUI().getArrowDown() != null) {
         setFocusedUI(getFocusedUI().getArrowDown());
+        SoundController.getInstance().playUIMove();
       }
     } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
       if (getFocusedUI().getArrowLeft() != null) {
         setFocusedUI(getFocusedUI().getArrowLeft());
+        SoundController.getInstance().playUIMove();
       }
     } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
       if (getFocusedUI().getArrowRight() != null) {
         setFocusedUI(getFocusedUI().getArrowRight());
+        SoundController.getInstance().playUIMove();
       }
     }
     
     if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
       getFocusedUI().interacted();
+      SoundController.getInstance().playUIEnter();
     }
   }
 
