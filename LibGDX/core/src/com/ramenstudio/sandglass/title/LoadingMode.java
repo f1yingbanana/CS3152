@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
@@ -14,7 +15,7 @@ import com.ramenstudio.sandglass.util.ScreenListener;
 public class LoadingMode extends AbstractMode implements Screen{
 	
 	/** Background texture for start-up */
-	private Texture background = new Texture(Gdx.app.getFiles().internal("Textures/bg1.png"));
+	private Texture background = new Texture(Gdx.app.getFiles().internal("Textures/LoadingBackground.png"));
 	/** gamecanvas*/
 	private GameCanvas canvas = new GameCanvas();
 	/** bg rendering*/
@@ -60,6 +61,7 @@ public class LoadingMode extends AbstractMode implements Screen{
 	private void draw() {
 		canvas.clear();
 		bgBatch.begin();
+		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		bgBatch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		bgBatch.end();	
 	}
