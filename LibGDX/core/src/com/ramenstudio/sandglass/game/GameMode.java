@@ -61,7 +61,7 @@ public class GameMode extends AbstractMode implements Screen {
 		if (gameLevel <= 9){
 			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V2.png"));
 		}
-		else if (gameLevel < 18){
+		else if (gameLevel <= 18){
 			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V1.png"));
 		}
 		else {

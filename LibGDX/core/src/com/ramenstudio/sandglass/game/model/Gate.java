@@ -51,7 +51,7 @@ public class Gate extends GameObject implements Drawable {
 		if (gameLevel < 10){
 	    	texture = new Texture(Gdx.files.internal("gate.v1.png"));
 	    }
-	    else if (gameLevel < 18){
+	    else if (gameLevel < 19){
 	    	texture = new Texture(Gdx.files.internal("gate.v3.png"));
 	    }
 	    else {
