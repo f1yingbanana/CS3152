@@ -160,7 +160,7 @@ public class SoundController {
 	}
 	
 	public void preLoadSounds(AssetManager manager) {
-		System.out.println("Only loading sounds once");
+		//System.out.println("Only loading sounds once");
 		manager.load(BACKGROUND_01,Sound.class);
 		manager.load(DOOR_OPEN_01,Sound.class);
 		manager.load(SHIP_PIECE_COLLECT_01,Sound.class);
@@ -487,7 +487,7 @@ public class SoundController {
 	public void playBGMForLevel(int gameLevel) {
 		// Have logic based on gameLevel to decide which sound to play, currently playing the same.
 //		System.out.println(play(BACKGROUND_01, BACKGROUND_01_NAME,true,true));
-		play(BACKGROUND_01, BACKGROUND_01_NAME,true,.15f, true);
+		play(BACKGROUND_01, BACKGROUND_01_NAME,true,1.5f, true);
 	}
 
 	public void stopAll() {
@@ -529,6 +529,14 @@ public class SoundController {
 		play(ROTATION_01, ROTATION_01_NAME, false, false);
 	}
 	
+	public void dispose() {
+		for (String s: collection){
+			if (!s.equals("BACKGROUND_01_NAME")){
+				Sound snd = soundbank.get(s);
+				snd.dispose();
+			}
+		}
+	}
 //	public void playLevelFail() {
 //		play(LEVEL_FAILED_01, LEVEL_FAILED_01_NAME, false, false);
 //	}

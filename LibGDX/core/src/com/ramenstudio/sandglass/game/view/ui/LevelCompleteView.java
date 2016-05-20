@@ -17,10 +17,16 @@ public class LevelCompleteView extends Table {
   
   public final KeyboardControlButton mainMenuButton;
   
-  // private final Label scoreLabel;
+  private Label scoreLabel;
+  
+  private String yourTime;
+  
+  private String bestTime;
   
   private final Label titleLabel;
   
+  // is there a new high score?
+  public boolean newHighScore = false;
 
   /**
    * Default constructor. Uses the given skin to set up the pause screen UI.
@@ -49,6 +55,16 @@ public class LevelCompleteView extends Table {
     if (didWin) {
       row();
       
+      if(newHighScore){
+    	  scoreLabel = new Label("New Best Time - " + bestTime, skin, "font_gotham-_light_24pt", Color.WHITE);
+      } else {
+    	  scoreLabel = new Label("Your Time - " + yourTime + "  ||  Best Time - " + bestTime, skin, "font_gotham-_light_24pt", Color.WHITE);
+      }
+      
+      add(scoreLabel).pad(20);
+      
+      row();
+      
       add(nextLevelButton).prefSize(w, h).pad(20);
 
       restartButton.setArrowUp(nextLevelButton);
@@ -70,5 +86,23 @@ public class LevelCompleteView extends Table {
     row();
     
     add(mainMenuButton).prefSize(w, h).pad(20);
+  }
+  
+  public void setTime(int yTime, int bTime){
+	  if (newHighScore){
+		  scoreLabel.setText("New Best Time - " + addZero(yTime/60) + ":" + addZero(yTime%60));
+	  } else {
+		  scoreLabel.setText("Your Time - " + addZero(yTime/60) + ":" + addZero(yTime%60) + 
+				  "  ||  Best Time - " + addZero(bTime/60) + ":" + addZero(bTime%60));
+	  }
+  }
+  
+  public String addZero(int time) {
+	  if (time < 10){
+		  return "0" + time;
+	  }
+	  else {
+		  return ""+time;
+	  }
   }
 }
