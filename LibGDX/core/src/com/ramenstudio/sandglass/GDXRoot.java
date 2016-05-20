@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.ramenstudio.sandglass.game.GameMode;
 import com.ramenstudio.sandglass.title.TitleMode;
+import com.ramenstudio.sandglass.title.controller.UIController;
 import com.ramenstudio.sandglass.util.ScreenListener;
 import com.ramenstudio.sandglass.util.controller.SoundController;
 
@@ -47,6 +48,8 @@ public class GDXRoot extends Game implements ScreenListener {
     switch (mode) {
     case TITLE:
       setScreen(titleMode);
+      SoundController.getInstance().stopAll();
+      UIController.playBGM(titleMode.getTitleController().uiController.getUIState());
       break;
     case GAME:
       setScreen(gameMode);
@@ -97,7 +100,6 @@ public class GDXRoot extends Game implements ScreenListener {
     // a level to play on, or when game mode is done, or when loading is done.
     if (modeCode == 0) {
       setApplicationMode(ApplicationMode.TITLE);
-      SoundController.getInstance().stopAll();
     } else {
       if (gameMode != null)
         gameMode.dispose();
