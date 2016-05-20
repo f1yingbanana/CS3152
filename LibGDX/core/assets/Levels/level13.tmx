@@ -1,7 +1,305 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="167">
- <tileset firstgid="1" source="newTile.tsx"/>
- <tileset firstgid="73" name="ground tile 2-01" tilewidth="128" tileheight="128" tilecount="88" columns="11">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="128" tileheight="128" nextobjectid="192">
+ <tileset firstgid="1" name="newTile" tilewidth="128" tileheight="128" tilecount="72" columns="9">
+  <image source="newTile.png" width="1153" height="1024"/>
+  <terraintypes>
+   <terrain name="New Terrain" tile="-1"/>
+  </terraintypes>
+  <tile id="9" terrain=",,,0">
+   <properties>
+    <property name="Collision" value="top_left"/>
+   </properties>
+  </tile>
+  <tile id="10" terrain=",,0,0">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="11" terrain=",,0,">
+   <properties>
+    <property name="Collision" value="top_right"/>
+   </properties>
+  </tile>
+  <tile id="13" terrain=",,,0">
+   <properties>
+    <property name="Collision" value="top_left"/>
+   </properties>
+  </tile>
+  <tile id="14" terrain=",,0,0">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="15" terrain=",,0,0">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="16" terrain=",,0,">
+   <properties>
+    <property name="Collision" value="top_right"/>
+   </properties>
+  </tile>
+  <tile id="18" terrain=",0,,0">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="19" terrain="0,0,0,0"/>
+  <tile id="20" terrain="0,,0,">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="22" terrain=",0,,0">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="23" terrain="0,0,0,0"/>
+  <tile id="24" terrain="0,0,0,0"/>
+  <tile id="25" terrain="0,,0,">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="27" terrain=",0,,">
+   <properties>
+    <property name="Collision" value="bottom_left"/>
+   </properties>
+  </tile>
+  <tile id="28" terrain="0,0,,">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="29" terrain="0,,,">
+   <properties>
+    <property name="Collision" value="bottom_right"/>
+   </properties>
+  </tile>
+  <tile id="31" terrain=",0,,0">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="32" terrain="0,0,0,0"/>
+  <tile id="33" terrain="0,0,0,0"/>
+  <tile id="34" terrain="0,,0,">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="40" terrain=",0,,">
+   <properties>
+    <property name="Collision" value="bottom_left"/>
+   </properties>
+  </tile>
+  <tile id="41" terrain="0,0,,">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="42" terrain="0,0,,">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="43" terrain="0,,,">
+   <properties>
+    <property name="Collision" value="bottom_right"/>
+   </properties>
+  </tile>
+  <tile id="45" terrain=",0,0,0">
+   <properties>
+    <property name="Collision" value="inside_top_left"/>
+   </properties>
+  </tile>
+  <tile id="46" terrain="0,,0,0">
+   <properties>
+    <property name="Collision" value="inside_top_right"/>
+   </properties>
+  </tile>
+  <tile id="54" terrain="0,0,,0">
+   <properties>
+    <property name="Collision" value="inside_bottom_left"/>
+   </properties>
+  </tile>
+  <tile id="55" terrain="0,0,0,">
+   <properties>
+    <property name="Collision" value="inside_bottom_right"/>
+   </properties>
+  </tile>
+  <tile id="58">
+   <properties>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="1"/>
+    <property name="mType" value="UNDER"/>
+    <property name="span" value="100"/>
+    <property name="spcf" value="0.25"/>
+    <property name="type" value="undermonster"/>
+   </properties>
+  </tile>
+  <tile id="66">
+   <properties>
+    <property name="type" value="resource"/>
+   </properties>
+  </tile>
+  <tile id="67">
+   <properties>
+    <property name="type" value="ship"/>
+   </properties>
+  </tile>
+  <tile id="68">
+   <properties>
+    <property name="angle" value="NORTH"/>
+    <property name="initMove" value="RIGHT"/>
+    <property name="level" value="1"/>
+    <property name="mType" value="OVER"/>
+    <property name="span" value="100"/>
+    <property name="spcf" value="0.4"/>
+    <property name="type" value="overmonster"/>
+   </properties>
+  </tile>
+  <tile id="69">
+   <properties>
+    <property name="type" value="player"/>
+   </properties>
+  </tile>
+  <tile id="70">
+   <properties>
+    <property name="type" value="gate"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="73" name="tileset.V3" tilewidth="128" tileheight="128" tilecount="88" columns="11">
+  <image source="tileset.V3.png" width="1408" height="1025"/>
+  <terraintypes>
+   <terrain name="tile3" tile="-1"/>
+  </terraintypes>
+  <tile id="0" terrain=",,,0">
+   <properties>
+    <property name="Collision" value="top_left"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="2" terrain=",,0,0">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="3" terrain=",,0,">
+   <properties>
+    <property name="Collision" value="top_right"/>
+   </properties>
+  </tile>
+  <tile id="11" terrain=",0,,0">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="12" terrain="0,0,0,0"/>
+  <tile id="14">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="Collision" value="top"/>
+   </properties>
+  </tile>
+  <tile id="22">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="25" terrain="0,,0,">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="27">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="30">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="33" terrain=",0,,">
+   <properties>
+    <property name="Collision" value="bottom_left"/>
+   </properties>
+  </tile>
+  <tile id="34" terrain="0,0,,">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="35">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="36" terrain="0,,,">
+   <properties>
+    <property name="Collision" value="bottom_right"/>
+   </properties>
+  </tile>
+  <tile id="38">
+   <properties>
+    <property name="Collision" value="left"/>
+   </properties>
+  </tile>
+  <tile id="41">
+   <properties>
+    <property name="Collision" value="right"/>
+   </properties>
+  </tile>
+  <tile id="50">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="51">
+   <properties>
+    <property name="Collision" value="bottom"/>
+   </properties>
+  </tile>
+  <tile id="55" terrain=",0,0,0">
+   <properties>
+    <property name="Collision" value="inside_top_left"/>
+   </properties>
+  </tile>
+  <tile id="56" terrain="0,,0,0">
+   <properties>
+    <property name="Collision" value="inside_top_right"/>
+   </properties>
+  </tile>
+  <tile id="66" terrain="0,0,,0">
+   <properties>
+    <property name="Collision" value="inside_bottom_left"/>
+   </properties>
+  </tile>
+  <tile id="67" terrain="0,0,0,">
+   <properties>
+    <property name="Collision" value="inside_bottom_right"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="161" name="ground tile 2-01" tilewidth="128" tileheight="128" tilecount="88" columns="11">
   <image source="ground tile 2-01.png" width="1408" height="1024"/>
   <terraintypes>
    <terrain name="New Terrain" tile="-1"/>
@@ -130,11 +428,6 @@
     <property name="Collision" value="bottom_right"/>
    </properties>
   </tile>
-  <tile id="54">
-   <properties>
-    <property name="type" value="ship"/>
-   </properties>
-  </tile>
   <tile id="55" terrain=",0,0,0">
    <properties>
     <property name="Collision" value="inside_top_left"/>
@@ -145,11 +438,6 @@
     <property name="Collision" value="inside_top_right"/>
    </properties>
   </tile>
-  <tile id="65">
-   <properties>
-    <property name="type" value="resource"/>
-   </properties>
-  </tile>
   <tile id="66" terrain="0,0,,0">
    <properties>
     <property name="Collision" value="inside_bottom_left"/>
@@ -158,16 +446,6 @@
   <tile id="67" terrain="0,0,0,">
    <properties>
     <property name="Collision" value="inside_bottom_right"/>
-   </properties>
-  </tile>
-  <tile id="82">
-   <properties>
-    <property name="type" value="player"/>
-   </properties>
-  </tile>
-  <tile id="86">
-   <properties>
-    <property name="type" value="gate"/>
    </properties>
   </tile>
  </tileset>
@@ -181,18 +459,18 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,73,90,75,90,90,92,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,84,97,86,85,96,87,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,84,85,85,96,85,129,75,90,90,92,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,111,86,97,86,85,97,97,85,86,87,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,73,90,75,128,86,86,85,96,96,85,96,86,87,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,84,97,97,85,97,85,85,85,140,124,123,123,125,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,111,96,86,85,85,97,86,86,114,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,106,124,139,97,86,140,123,123,125,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,84,86,86,114,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,111,96,96,114,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,106,123,123,125,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,161,163,178,180,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,172,185,173,175,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,161,178,178,178,178,216,173,173,202,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,172,184,173,173,173,185,174,174,202,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,172,174,173,228,212,227,184,185,202,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,172,173,174,175,0,194,211,211,213,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,199,185,184,175,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,199,185,173,175,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,161,178,216,174,185,217,178,178,180,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,172,184,184,173,185,174,174,184,202,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,172,174,184,184,173,184,173,174,202,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,194,212,212,212,211,212,211,212,213,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -207,6 +485,53 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="Monster">
+  <object id="161" name="1" gid="59" x="1408" y="1536" width="128" height="128">
+   <properties>
+    <property name="X" value="1408"/>
+    <property name="Y" value="1536"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="DEDUCT_FLIPS"/>
+    <property name="spcf" value="1.5"/>
+   </properties>
+  </object>
+  <object id="165" name="2" gid="59" x="2048" y="1280" width="128" height="128">
+   <properties>
+    <property name="X" value="2048"/>
+    <property name="Y" value="1280"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="DEDUCT_FLIPS"/>
+    <property name="spcf" value="1.5"/>
+   </properties>
+  </object>
+  <object id="167" name="3" gid="69" x="1408" y="1344" width="128" height="128">
+   <properties>
+    <property name="X" value="1408"/>
+    <property name="Y" value="1344"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="MAKE_FLIP"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
+  <object id="171" name="4" gid="69" x="1216" y="1536" width="128" height="128">
+   <properties>
+    <property name="X" value="1216"/>
+    <property name="Y" value="1472"/>
+    <property name="angle" value="WEST"/>
+    <property name="level" value="MAKE_FLIP"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
+  <object id="191" name="5" gid="155" x="1152" y="2496" width="128" height="128">
+   <properties>
+    <property name="X" value="1152"/>
+    <property name="Y" value="2496"/>
+    <property name="angle" value="NORTH"/>
+    <property name="level" value="MAKE_FLIP"/>
+    <property name="spcf" value="1.2"/>
+   </properties>
+  </object>
+ </objectgroup>
  <layer name="Object" width="32" height="32">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -216,17 +541,17 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,155,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,70,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,127,0,0,0,0,0,0,0,0,0,0,138,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,68,0,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,71,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,67,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,138,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,127,0,0,0,0,127,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,159,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -243,79 +568,32 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup name="Monster" visible="0">
-  <object id="114" name="2" type="UnderMonster" gid="59" x="2688" y="1664" width="128" height="128">
-   <properties>
-    <property name="X" value="2688"/>
-    <property name="Y" value="1664"/>
-    <property name="angle" value="NORTH"/>
-    <property name="level" value="KILL"/>
-    <property name="spcf" value="1.00"/>
-   </properties>
+ <objectgroup name="Path">
+  <object id="164" name="1" x="1472" y="1472">
+   <polyline points="0,0 0,640"/>
   </object>
-  <object id="115" name="1" type="UnderMonster" gid="59" x="2048" y="1920" width="128" height="128">
-   <properties>
-    <property name="X" value="2048"/>
-    <property name="Y" value="1920"/>
-    <property name="angle" value="NORTH"/>
-    <property name="level" value="KILL"/>
-    <property name="spcf" value="1.00"/>
-   </properties>
+  <object id="183" name="4" x="1280" y="1408">
+   <polyline points="0,0 0,384"/>
   </object>
-  <object id="118" name="3" type="OverMonster" gid="69" x="2176" y="1088" width="128" height="128">
-   <properties>
-    <property name="X" value="2176"/>
-    <property name="Y" value="1088"/>
-    <property name="angle" value="NORTH"/>
-    <property name="level" value="MAKE_FLIP"/>
-    <property name="spcf" value="1.00"/>
-   </properties>
+  <object id="185" name="3" x="1472" y="1280">
+   <polyline points="0,0 452.549,-1.09827 448.936,-131.156"/>
   </object>
-  <object id="123" name="4" gid="1073741893" x="2176" y="2112" width="128" height="128">
-   <properties>
-    <property name="X" value="2176"/>
-    <property name="Y" value="2112"/>
-    <property name="angle" value="SOUTH"/>
-    <property name="level" value="DEDUCT_FLIPS"/>
-    <property name="spcf" value="1.2"/>
-   </properties>
+  <object id="187" name="2" x="2112" y="1216">
+   <polyline points="0,0 0,384"/>
   </object>
-  <object id="161" name="3" x="2304" y="1024">
-   <polyline points="0,0 -512,0"/>
-  </object>
-  <object id="162" name="5" gid="69" x="1408" y="1600" width="128" height="128">
-   <properties>
-    <property name="X" value="1408"/>
-    <property name="Y" value="1600"/>
-    <property name="angle" value="NORTH"/>
-    <property name="level" value="MAKE_FLIP"/>
-    <property name="spcf" value="1.2"/>
-   </properties>
+  <object id="190" name="5" x="1216" y="2304">
+   <polyline points="0,0 768,0"/>
   </object>
  </objectgroup>
- <objectgroup name="Path" visible="0">
-  <object id="116" name="2" type="UnderMonster" x="2749.7" y="1596.98">
-   <polyline points="0,0 -256,0 -256,-128 0,-128 0,0"/>
-  </object>
-  <object id="155" name="1" x="2112" y="1886">
-   <polyline points="0,0 -256,0 -256,-640 0,-640 0,0"/>
-  </object>
-  <object id="160" name="4" x="2240" y="2048">
-   <polyline points="0,0 -128,0 -128,384 -768,384 -768,0"/>
-  </object>
-  <object id="166" name="5" x="1472" y="1536">
-   <polyline points="0,0 184.514,-1.50518 184.514,-385.505"/>
-  </object>
- </objectgroup>
- <objectgroup name="Center" visible="0">
-  <object id="126" name="center" x="2048" y="1664" width="128" height="128">
+ <objectgroup name="Center">
+  <object id="174" name="center" x="1664" y="1728" width="128" height="128">
    <properties>
-    <property name="X" value="16"/>
-    <property name="Y" value="13"/>
-    <property name="longest" value="12"/>
+    <property name="X" value="13.5"/>
+    <property name="Y" value="14"/>
+    <property name="longest" value="11"/>
     <property name="maxFlips" value="10"/>
    </properties>
   </object>
-  <object id="128" name="bound" x="512" y="256" width="2951.48" height="2675.27"/>
+  <object id="175" name="bound" x="512" y="256" width="2304" height="2688"/>
  </objectgroup>
 </map>
