@@ -69,6 +69,7 @@ public class MonsterController extends AbstractController {
 
 	@Override
 	public void dispose() {
+		delegate.dispose();
 		monster.dispose();
 	}
 }

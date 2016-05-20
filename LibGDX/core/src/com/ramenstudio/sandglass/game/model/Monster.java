@@ -529,7 +529,7 @@ public class Monster extends GameObject implements Drawable{
 		handleAnimation();
 		
 		if (isFrozen){
-			setRotation(target.getRotation());
+//			setRotation(target.getRotation());
 			return;
 		}
 		
