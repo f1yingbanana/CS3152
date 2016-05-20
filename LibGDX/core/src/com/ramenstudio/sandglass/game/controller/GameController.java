@@ -297,6 +297,7 @@ public class GameController extends AbstractController implements ContactListene
 				}
 				uiController.levelCompleteView.setTime(currentTime, highScore);
 				uiController.setGameState(UIState.WON);
+				cameraController.update(dt);
 				return;
 		}
 		

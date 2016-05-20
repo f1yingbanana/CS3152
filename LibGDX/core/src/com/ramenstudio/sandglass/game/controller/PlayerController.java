@@ -349,7 +349,7 @@ public class PlayerController extends AbstractController {
 //				player.setRotation(AngleEnum.convertToAngle(heading));
 				world.setGravity(world.getGravity().rotate(180));
 				isUnder ^= true;
-				if(player.isTouchMF()){
+				if (player.isTouchMF()){
 					player.setTouchMF(false);
 				}
 				else{

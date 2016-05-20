@@ -52,6 +52,9 @@ public class CameraController extends AbstractController {
 
 	/** The standard for viewCamera speed. */
 	private static final float FRAME_TIME = 1f/60f;
+	
+	/** The constant for offsetting the initial zoom. */
+	private static final float ZOOM_OFFSET = 0.75f;
 
 	// For debugging purposes
 	private int count = 0;
@@ -102,7 +105,7 @@ public class CameraController extends AbstractController {
 		tracking = false;
 		zoomingOut = true;
 		zoomScale = 1f;
-		maxZoom = zoom + 0.5f;
+		maxZoom = zoom + ZOOM_OFFSET;
 	}
 
 	/**
