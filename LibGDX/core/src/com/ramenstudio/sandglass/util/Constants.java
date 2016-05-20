@@ -5,5 +5,5 @@ package com.ramenstudio.sandglass.util;
  * @author Jiacong Xu
  */
 public class Constants {
-  public final String PREF_FILE_PATH = "sandglass_scores";
+  public static final String PREF_FILE_PATH = "sandglass_scores";
 }
