@@ -83,6 +83,7 @@ public class Player extends GameObject implements Drawable {
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.restitution = 0.2f;
+		fixtureDef.friction = 0f;
 		fixtureDefs[0] = fixtureDef;
 
 		CircleShape c = new CircleShape();
