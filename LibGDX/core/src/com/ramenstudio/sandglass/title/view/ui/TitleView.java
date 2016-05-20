@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -28,6 +29,8 @@ public class TitleView extends Table {
   public final KeyboardControlButton creditsButton;
   public final KeyboardControlButton quitButton;
   
+  public final Image circle;
+  
   public TitleView(Skin skin) {
     super();
     
@@ -40,6 +43,10 @@ public class TitleView extends Table {
     setBackground(new SpriteDrawable(bgSprite));
     //SoundController.getInstance().playMainMenuBGM();
     
+    circle = new Image(new Texture(Gdx.files.internal("UI/TitleCircle.png")));
+    circle.setSize(640, 640);
+    circle.setPosition((Gdx.graphics.getWidth() - circle.getWidth()) / 2f, (Gdx.graphics.getHeight() - circle.getHeight()) / 2f);
+    addActor(circle);
     
     // Create a play button
     
