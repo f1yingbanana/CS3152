@@ -81,19 +81,25 @@ public class GameController extends AbstractController implements ContactListene
 	// controller.
 	public UIController uiController;
 
+	// Arrays of Monstercontroller
 	private Array<MonsterController> monsterController = new Array<MonsterController>();
 
+	//Level Loader
 	public LevelLoader loader = new LevelLoader();
 
 	private Map<LevelLoader.LayerKey, Array<GameObject>> mapObjects;
-
+	
+	// bounds of the level
 	private Rectangle bound;
 	
+	// callback when level has changed
+	public boolean isChangingLevel;
+
 	//fade time for UI messages
 	private static int MESSAGE_FADETIME = 4;
 	//current alpha value of message
 	private float alpha = 1.0f;
-	
+
 	//For handling High Scores + Time
 	private static Preferences prefs;
 	private String prefFile = "sandglass_scores";
@@ -108,11 +114,11 @@ public class GameController extends AbstractController implements ContactListene
 		prefs = Gdx.app.getPreferences(prefFile);
 		// Provide default high score of 0
 		if (!prefs.contains("highScore" + gameLevel)) {
-		   prefs.putInteger("highScore" + gameLevel, 0);
+			prefs.putInteger("highScore" + gameLevel, 0);
 		}
 		level = gameLevel;
 		highScore = getHighScore();
-		
+
 		uiController = new UIController(gameLevel);
 		getGameModel().setGameLevel(gameLevel);
 		mapObjects = loader.loadLevel(gameLevel);
@@ -162,7 +168,7 @@ public class GameController extends AbstractController implements ContactListene
 		uiController.levelFailedView.restartButton.addListener(restartButtonCallback);
 		uiController.levelFailedView.mainMenuButton.addListener(mainMenuButtonCallback);
 		uiController.levelCompleteView.nextLevelButton.addListener(nextLevelButtonCallback);
-		
+
 		uiController.gameView.setMessage("Level "+ level);
 	}
 
@@ -184,8 +190,8 @@ public class GameController extends AbstractController implements ContactListene
 	 * Called when restart button from the paused screen is clicked.
 	 */
 	private KeyboardUIListener restartButtonCallback = new KeyboardUIListener() {
-    @Override
-    public void interacted() {
+		@Override
+		public void interacted() {
 			reset();
 			uiController.setGameState(UIController.UIState.PLAYING);
 		}
@@ -195,8 +201,8 @@ public class GameController extends AbstractController implements ContactListene
 	 * Called when main menu button from the paused screen is clicked.
 	 */
 	private KeyboardUIListener mainMenuButtonCallback = new KeyboardUIListener() {
-    @Override
-    public void interacted() {
+		@Override
+		public void interacted() {
 			needsMenu = true;
 		}
 	};
@@ -205,10 +211,11 @@ public class GameController extends AbstractController implements ContactListene
 	 * Called when player finished a level and wants to go to next level.
 	 */
 	private KeyboardUIListener nextLevelButtonCallback = new KeyboardUIListener() {
-    @Override
-    public void interacted() {
+		@Override
+		public void interacted() {
 			if (gameModel.setGameLevel(gameModel.getGameLevel() + 1)) {
 				reset();
+				isChangingLevel = true;
 			} else {
 				System.out.println("You already cleared the final level!");
 			}
@@ -248,34 +255,34 @@ public class GameController extends AbstractController implements ContactListene
 	@Override
 	public void update(float dt) {
 
-    uiController.update(dt);
-    
-    if (getGameModel().getGameState() != GameState.TUTORIAL) {
-  		if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-  			if (getGameModel().getGameState() == GameState.PLAYING) {
-  				pauseGame();
-  			} else if (getGameModel().getGameState() == GameState.PAUSED) {
-  				resumeGame();
-  			}
-  		}
-  		
-  		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-  			if (getGameModel().getGameState() == GameState.LOST) {
-  				reset();
-  			}
-  		}
-    }
+		uiController.update(dt);
+
+		if (getGameModel().getGameState() != GameState.TUTORIAL) {
+			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+				if (getGameModel().getGameState() == GameState.PLAYING) {
+					pauseGame();
+				} else if (getGameModel().getGameState() == GameState.PAUSED) {
+					resumeGame();
+				}
+			}
+
+			if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+				if (getGameModel().getGameState() == GameState.LOST) {
+					reset();
+				}
+			}
+		}
 
 		switch (getGameModel().getGameState()) {
-		case TUTORIAL:
-		  if (uiController.tutorialView.isDismissed) {
-		    getGameModel().setGameState(GameState.PLAYING);
-	      uiController.setGameState(UIState.PLAYING);
-		  } else {
-	      uiController.setGameState(UIState.TUTORIAL);
-		  }
-		  
-		  return;
+			case TUTORIAL:
+				if (uiController.tutorialView.isDismissed) {
+					getGameModel().setGameState(GameState.PLAYING);
+					uiController.setGameState(UIState.PLAYING);
+				} else {
+					uiController.setGameState(UIState.TUTORIAL);
+				}
+
+				return;
 			case LOST:
 				uiController.setGameState(UIState.LOST);
 				return;
@@ -292,16 +299,16 @@ public class GameController extends AbstractController implements ContactListene
 				uiController.setGameState(UIState.WON);
 				return;
 		}
-		
+
 		updateTime(dt);
 		if (currentTime >= 4 && alpha != 0.0){
 			alpha = uiController.gameView.fadeMessage();
 		}
-		
+
 		uiController.gameView.setCurrentTime(currentTime);
 		uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());
 		uiController.gameView.setShipPieceCount(gameModel.getCollectedPieces(), gameModel.getNumberOfPieces());
-    
+
 		cameraController.update(dt);
 		// Order matters. Must call update BEFORE rotate on cameraController.
 		if (playerController.getRotateAngle() != 0f) {
@@ -319,7 +326,7 @@ public class GameController extends AbstractController implements ContactListene
 			m.monster.setUnder(isUnder);
 			m.monster.update(dt);
 		}
-		
+
 		SoundController.getInstance().update();
 
 
@@ -424,7 +431,7 @@ public class GameController extends AbstractController implements ContactListene
 				theMonster = (Monster)firstOne;
 				thePlayer = (Player)secondOne;
 			}
-			
+
 			if (!thePlayer.isFlashing) {
 				SoundController.getInstance().playMonsterHit();
 				if (theMonster.monsterLevel == MonsterLevel.KILL) {
@@ -434,23 +441,23 @@ public class GameController extends AbstractController implements ContactListene
 				} else if (theMonster.monsterLevel == MonsterLevel.MAKE_FLIP) {
 					thePlayer.setTouchMF(true);
 				}
-				
-//				float angle = (float)(180/Math.PI) *
-//						AngleEnum.convertToAngle(playerController.getHeading());
-//
-//				Vector2 impulse = thePlayer.getBody().getLinearVelocity().x > 0 ? new Vector2(-900f,-50f) :
-//					new Vector2(900f,-50f);
-//				Vector2 relativeVel = thePlayer.getBody().getLinearVelocity().
-//						cpy().rotate((float)(180/Math.PI) *
-//								AngleEnum.convertToAngle(playerController.getHeading()));
-//				Vector2 relImpulse = impulse.rotate(angle);
-//				
-//				thePlayer.setImpulse(relImpulse);
-				
+
+				//				float angle = (float)(180/Math.PI) *
+				//						AngleEnum.convertToAngle(playerController.getHeading());
+				//
+				//				Vector2 impulse = thePlayer.getBody().getLinearVelocity().x > 0 ? new Vector2(-900f,-50f) :
+				//					new Vector2(900f,-50f);
+				//				Vector2 relativeVel = thePlayer.getBody().getLinearVelocity().
+				//						cpy().rotate((float)(180/Math.PI) *
+				//								AngleEnum.convertToAngle(playerController.getHeading()));
+				//				Vector2 relImpulse = impulse.rotate(angle);
+				//				
+				//				thePlayer.setImpulse(relImpulse);
+
 				thePlayer.isFlashing = true;
 			}
 
-			
+
 		}
 
 		if (firstOne instanceof Player &&
@@ -533,7 +540,7 @@ public class GameController extends AbstractController implements ContactListene
 		playerController.dispose();
 		uiController.dispose();
 	}
-	
+
 	public void updateTime(float dt){
 		timeCount += dt;
 		if (timeCount >= 1){
@@ -541,11 +548,11 @@ public class GameController extends AbstractController implements ContactListene
 			timeCount = 0;
 		}
 	}
-	
+
 	public int getHighScore(){
 		return prefs.getInteger("highScore"+level);
 	}
-	
+
 	public void setHighScore(int i){
 		prefs.putInteger("highScore"+level, i);
 		prefs.flush();

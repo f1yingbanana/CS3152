@@ -33,6 +33,8 @@ public class GameMode extends AbstractMode implements Screen {
 
 
 	private Texture backgroundImage;
+	
+	private int gameLevel;
 
 	// A debug renderer
 	Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
@@ -49,6 +51,13 @@ public class GameMode extends AbstractMode implements Screen {
 	 * view canvas.
 	 */
 	public GameMode(int gameLevel) {
+		this.gameLevel = gameLevel;
+		setBackgroundImage();
+		gameplayController = new GameController(gameLevel);
+		tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
+	}
+
+	private void setBackgroundImage() {
 		if (gameLevel <= 9){
 			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V2.png"));
 		}
@@ -58,8 +67,6 @@ public class GameMode extends AbstractMode implements Screen {
 		else {
 			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V3.png"));
 		}
-		gameplayController = new GameController(gameLevel);
-		tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
 	}
 
 	@Override
@@ -70,8 +77,14 @@ public class GameMode extends AbstractMode implements Screen {
 
 	@Override
 	public void render(float delta) {
-		// Implements an update-draw loop
+		// Implements an update-draw loop		
 		gameplayController.update(delta);
+		if (gameplayController.isChangingLevel){
+			this.gameLevel= gameplayController.getGameModel().getGameLevel();
+			setBackgroundImage();
+			gameplayController.isChangingLevel=false;
+		}
+		
 		if (!gameplayController.getGameModel().isInOverworld()){
 			bgBatch.setColor(Color.GRAY);
 		}
@@ -87,7 +100,6 @@ public class GameMode extends AbstractMode implements Screen {
 		bgBatch.end();
 
 		tiledMapRenderer.setView(gameplayController.getViewCamera());
-
 
 		tiledMapRenderer.render();
 
@@ -153,5 +165,13 @@ public class GameMode extends AbstractMode implements Screen {
 	@Override
 	public String[] getResourcePaths() {
 		return null;
+	}
+
+	public int getGameLevel() {
+		return gameLevel;
+	}
+
+	public void setGameLevel(int gameLevel) {
+		this.gameLevel = gameLevel;
 	}
 }
