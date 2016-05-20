@@ -306,6 +306,7 @@ public class PlayerController extends AbstractController {
 				player.setRotation(AngleEnum.convertToAngle(heading));
 				activeCorner = null;
 			}
+			SoundController.getInstance().playRotation();
 		}
 		
 		// Handle flipping

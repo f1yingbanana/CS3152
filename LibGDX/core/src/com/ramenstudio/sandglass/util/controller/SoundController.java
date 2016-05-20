@@ -384,7 +384,6 @@ public class SoundController {
 //		}
 
 		if (!isBackground) {
-			System.out.println("notBG");
 			if (!soundbank.containsKey(filename) || current >= frameLimit) {
 				return false;
 			}
