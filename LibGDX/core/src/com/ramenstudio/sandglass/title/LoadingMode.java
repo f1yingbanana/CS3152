@@ -42,12 +42,10 @@ public class LoadingMode extends AbstractMode implements Screen{
 
 	@Override
 	public void render(float delta) {
-		System.out.println(active);
 		if (active){
 			draw();
 			update(delta);
 			if (isReady()){
-				System.out.println("complete");
 				screenListener.transitionToMode(this, 0);
 			}
 		}
@@ -60,7 +58,6 @@ public class LoadingMode extends AbstractMode implements Screen{
 	}
 
 	private void draw() {
-		System.out.println("drawing");
 		canvas.clear();
 		bgBatch.begin();
 		bgBatch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

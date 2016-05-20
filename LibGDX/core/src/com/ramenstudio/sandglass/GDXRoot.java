@@ -52,6 +52,7 @@ public class GDXRoot extends Game implements ScreenListener {
 				setScreen(loadingMode);
 				break;
 			case TITLE:
+				
 				setScreen(titleMode);
 				SoundController.getInstance().stopAll();
 				UIController.playBGM(titleMode.getTitleController().uiController.getUIState());
@@ -74,6 +75,7 @@ public class GDXRoot extends Game implements ScreenListener {
 		// mode. We don't need to load anything yet, though.
 		loadingMode = new LoadingMode();
 		titleMode = new TitleMode();
+		titleMode.screenListener = this;
 		loadingMode.manager = manager;
 		SoundController.getInstance().preLoadSounds(manager);
 		loadingMode.screenListener = this;
@@ -106,11 +108,13 @@ public class GDXRoot extends Game implements ScreenListener {
 		// When the given mode wants to exit the mode. This happens when title chose
 		// a level to play on, or when game mode is done, or when loading is done.
 		if (screen == loadingMode){
-			loadingMode.dispose();
+			SoundController.getInstance().loadSounds(manager);
 			setApplicationMode(ApplicationMode.TITLE);
+			loadingMode.dispose();
 		}
 		else if (modeCode == 0) {
-			titleMode.screenListener = this;
+			setApplicationMode(ApplicationMode.TITLE);
+
 		} else {
 			if (gameMode != null)
 				gameMode.dispose();
