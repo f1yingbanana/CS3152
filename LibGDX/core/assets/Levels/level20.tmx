@@ -301,12 +301,12 @@
    <polyline points="0,0 -640,0"/>
   </object>
  </objectgroup>
- <objectgroup name="Center" visible="0">
+ <objectgroup name="Center">
   <object id="151" name="center" x="1856" y="1728" width="128" height="128">
    <properties>
-    <property name="X" value="14.5"/>
-    <property name="Y" value="13.5"/>
-    <property name="longest" value="8"/>
+    <property name="X" value="15"/>
+    <property name="Y" value="14"/>
+    <property name="longest" value="9"/>
     <property name="maxFlips" value="10"/>
    </properties>
   </object>

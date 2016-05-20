@@ -264,6 +264,7 @@ public class PlayerController extends AbstractController {
 		if (activeCorner != null) {
 			if (!jump && isUnder && activeCorner.validTurn(vel, heading) &&
 					pressingDown && isGrounded()) {
+				SoundController.getInstance().playRotation();
 				Vector2 cornerPos = activeCorner.getPosition();
 				float diff = (AngleEnum.isVertical(heading))?
 						pos.x - cornerPos.x : pos.y - cornerPos.y;
@@ -319,6 +320,7 @@ public class PlayerController extends AbstractController {
 				player.setRotation(AngleEnum.convertToAngle(heading));
 				activeCorner = null;
 			}
+			
 		}
 		
 		// Handle flipping

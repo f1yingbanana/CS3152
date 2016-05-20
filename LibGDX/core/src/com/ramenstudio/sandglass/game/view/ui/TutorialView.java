@@ -66,7 +66,7 @@ public class TutorialView extends Table {
       showCounter = Math.min(showCounter + Math.min(dt, 0.1f), ANIMATION_DURATION);
       setBackground(skin.newDrawable("white", bgcolor));
       
-      bgcolor.a = 1.0f * showCounter / ANIMATION_DURATION;
+      bgcolor.a = 0.7f * showCounter / ANIMATION_DURATION;
       
       if (showCounter >= ANIMATION_DURATION) {
         showCounter = 0;
