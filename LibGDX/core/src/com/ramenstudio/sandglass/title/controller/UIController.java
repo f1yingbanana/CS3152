@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ramenstudio.sandglass.title.view.ui.*;
 import com.ramenstudio.sandglass.util.controller.KeyboardUIController;
+import com.ramenstudio.sandglass.util.controller.SoundController;
 import com.ramenstudio.sandglass.util.view.ui.CreditsView;
 import com.ramenstudio.sandglass.util.view.ui.KeyboardUIListener;
 
@@ -74,6 +75,9 @@ public class UIController {
     }
   };
   
+  public UIState getUIState(){
+	  return state;
+  }
   
   public void setUIState(UIState uiState) {
     if (uiState == state) {
@@ -88,6 +92,8 @@ public class UIController {
     
     switch (state) {
     case LEVEL_SELECT:
+      SoundController.getInstance().stopAll();
+      SoundController.getInstance().playLevelSelect();
       levelSelectView.setVisible(true);
       keyboardControl.setFocusedUI(levelSelectView.levelScrollView.levelPreviewViews.get(0).levelSelectButton);
       break;
@@ -96,6 +102,8 @@ public class UIController {
       keyboardControl.setFocusedUI(optionsView.backButton);
       break;
     case TITLE:
+      SoundController.getInstance().stopAll();
+      SoundController.getInstance().playMainMenuBGM();
       titleView.setVisible(true);
       keyboardControl.setFocusedUI(titleView.gameStartButton);
       break;
