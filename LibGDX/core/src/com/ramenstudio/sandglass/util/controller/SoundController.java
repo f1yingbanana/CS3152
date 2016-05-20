@@ -122,8 +122,8 @@ public class SoundController {
 	private static final String LEVEL_COMPLETE_01 = "Sounds/LevelComplete.mp3";
 	private static final String LEVEL_COMPLETE_01_NAME = "LevelComplete";
 	
-//	private static final String LEVEL_FAILED_01 = ;
-//	private static final String LEVEL_FAILED_01_NAME = ;
+	private static final String LEVEL_FAILED_01 = "Sounds/Computer Error-SoundBible.com-1655839472.mp3";
+	private static final String LEVEL_FAILED_01_NAME = "LevelFail";
 	
 	private static final String MONSTER_HIT_01 = "Sounds/HitMonster.mp3";
 	private static final String MONSTER_HIT_01_NAME = "MonsterCollision";
@@ -134,7 +134,7 @@ public class SoundController {
 	private static final String ROTATION_01 = "Sounds/rotation.mp3";
 	private static final String ROTATION_01_NAME = "Rotation";
 	
-	private static final String LEVEL_SELECT_01 = "Sounds/LevelSelect.mp3";
+	private static final String LEVEL_SELECT_01 = "Sounds/Kevin MacLeod-DarkFog.mp3";
 	private static final String LEVEL_SELECT_01_NAME = "LevelSelect";
 
 	/** 
@@ -539,7 +539,7 @@ public class SoundController {
 	}
 	
 	public void playMonsterHit() {
-		play(MONSTER_HIT_01, MONSTER_HIT_01_NAME, false, 0.2f, false);
+		play(MONSTER_HIT_01, MONSTER_HIT_01_NAME, false, 0.8f, false);
 	}
 	
 	public void playRotation() {
@@ -547,7 +547,7 @@ public class SoundController {
 	}
 	
 	public void playMainMenuBGM() {
-		play(MAIN_MENU_01, MAIN_MENU_01_NAME, true, 1.0f, true);
+		play(MAIN_MENU_01, MAIN_MENU_01_NAME, true, 0.8f, true);
 	}
 	
 	public void playLevelSelect() {

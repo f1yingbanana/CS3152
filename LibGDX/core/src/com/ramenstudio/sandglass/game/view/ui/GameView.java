@@ -49,7 +49,7 @@ public class GameView extends Table {
     shipPieceCountLabel = new Label("10", skin);
     add(shipPieceCountLabel).top().right().padRight(15).padBottom(358).width(50).row();
     
-    messageLabel = new Label("", skin, "font_gotham-_light_24pt", Color.WHITE);
+    messageLabel = new Label("", skin, "font_gotham-_light_38pt", Color.valueOf("62a4a2"));
     add(messageLabel).bottom().padBottom(10).row();
   }
   
