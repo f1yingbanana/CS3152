@@ -3,7 +3,6 @@ package com.ramenstudio.sandglass.game.controller;
 import java.util.List;
 import java.util.Map;
 
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
@@ -14,13 +13,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.ramenstudio.sandglass.game.controller.UIController.UIState;
 import com.ramenstudio.sandglass.game.model.GameModel;
+import com.ramenstudio.sandglass.game.model.GameObject;
 import com.ramenstudio.sandglass.game.model.GameState;
 import com.ramenstudio.sandglass.game.model.Gate;
+import com.ramenstudio.sandglass.game.model.Monster;
+import com.ramenstudio.sandglass.game.model.Monster.MonsterLevel;
 import com.ramenstudio.sandglass.game.model.Player;
 import com.ramenstudio.sandglass.game.model.Resource;
 import com.ramenstudio.sandglass.game.model.ShipPiece;
@@ -29,9 +32,6 @@ import com.ramenstudio.sandglass.game.util.LevelLoader.LayerKey;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.controller.SoundController;
 import com.ramenstudio.sandglass.util.view.ui.KeyboardUIListener;
-import com.ramenstudio.sandglass.game.model.GameObject;
-import com.ramenstudio.sandglass.game.model.Monster;
-import com.ramenstudio.sandglass.game.model.Monster.MonsterLevel;
 
 /**
  * This takes care of the game initialization, maintains update and drawing
@@ -527,6 +527,7 @@ public class GameController extends AbstractController implements ContactListene
 		cameraController.dispose();
 		playerController.dispose();
 		uiController.dispose();
+		
 	}
 
 	public void updateTime(float dt){

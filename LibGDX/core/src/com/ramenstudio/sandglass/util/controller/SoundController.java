@@ -136,10 +136,10 @@ public class SoundController {
 	private static final String LEVEL_SELECT_01 = "Sounds/LevelSelectBGM.mp3";
 	private static final String LEVEL_SELECT_01_NAME = "LevelSelect";
 	
-	private static final String EASY_01 = "Sounds/GameBGM/EasyLevel.mp3";
+	private static final String EASY_01 = "Sounds/GameBGM/MediumLevel.mp3";
 	private static final String EASY_01_NAME = "Easy";
 	
-	private static final String MEDIUM_01 = "Sounds/GameBGM/MediumLevel.mp3";
+	private static final String MEDIUM_01 = "Sounds/GameBGM/EasyLevel.mp3";
 	private static final String MEDIUM_01_NAME = "Medium";
 	
 	private static final String HARD_01 = "Sounds/GameBGM/HardLevel.mp3";
