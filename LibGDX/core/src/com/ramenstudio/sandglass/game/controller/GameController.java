@@ -258,14 +258,14 @@ public class GameController extends AbstractController implements ContactListene
 		uiController.update(dt);
 
 		if (getGameModel().getGameState() != GameState.TUTORIAL) {
-			if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+			if (Gdx.input.isKeyJustPressed(Input.Keys.P) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
 				if (getGameModel().getGameState() == GameState.PLAYING) {
 					pauseGame();
 				} else if (getGameModel().getGameState() == GameState.PAUSED) {
 					resumeGame();
 				}
 			}
-
+			
 			if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
 				if (getGameModel().getGameState() == GameState.LOST) {
 					reset();
@@ -299,9 +299,9 @@ public class GameController extends AbstractController implements ContactListene
 				uiController.setGameState(UIState.WON);
 				return;
 		}
-
+		
 		updateTime(dt);
-		if (currentTime >= 4 && alpha != 0.0){
+		if (currentTime >= MESSAGE_FADETIME && alpha != 0.0){
 			alpha = uiController.gameView.fadeMessage();
 		}
 
@@ -441,18 +441,6 @@ public class GameController extends AbstractController implements ContactListene
 				} else if (theMonster.monsterLevel == MonsterLevel.MAKE_FLIP) {
 					thePlayer.setTouchMF(true);
 				}
-
-				//				float angle = (float)(180/Math.PI) *
-				//						AngleEnum.convertToAngle(playerController.getHeading());
-				//
-				//				Vector2 impulse = thePlayer.getBody().getLinearVelocity().x > 0 ? new Vector2(-900f,-50f) :
-				//					new Vector2(900f,-50f);
-				//				Vector2 relativeVel = thePlayer.getBody().getLinearVelocity().
-				//						cpy().rotate((float)(180/Math.PI) *
-				//								AngleEnum.convertToAngle(playerController.getHeading()));
-				//				Vector2 relImpulse = impulse.rotate(angle);
-				//				
-				//				thePlayer.setImpulse(relImpulse);
 
 				thePlayer.isFlashing = true;
 			}

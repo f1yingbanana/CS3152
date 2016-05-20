@@ -112,7 +112,7 @@ public class GameMode extends AbstractMode implements Screen {
 		// DEBUG RENDERS. We can have more render passes later implemented here.
 
 		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-			debug ^= true;
+			// debug ^= true;
 		}
 		if (debug) {
 			debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
