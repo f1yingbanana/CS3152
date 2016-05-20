@@ -101,7 +101,7 @@ public class GameMode extends AbstractMode implements Screen {
 		bgBatch.end();
 		
 		float oldZoom = gameplayController.getViewCamera().zoom;
-		float zoomFactor = ((float) Gdx.graphics.getHeight())/Gdx.graphics.getWidth();
+//		float zoomFactor = ((float) Gdx.graphics.getHeight())/Gdx.graphics.getWidth();
 		gameplayController.getViewCamera().zoom = 3f;
 		
 		tiledMapRenderer.setView(gameplayController.getViewCamera());
