@@ -96,7 +96,7 @@ public class GameController extends AbstractController implements ContactListene
 	public boolean isChangingLevel;
 
 	//fade time for UI messages
-	private static int MESSAGE_FADETIME = 4;
+	private static int MESSAGE_FADETIME = 3;
 	//current alpha value of message
 	private float alpha = 1.0f;
 

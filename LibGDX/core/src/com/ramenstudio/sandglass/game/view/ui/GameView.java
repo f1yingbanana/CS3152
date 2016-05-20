@@ -40,17 +40,17 @@ public class GameView extends Table {
     	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type3.png")))));
     }
     
-    currentTimeLabel = new Label("00:00", skin, "font_gotham-_light_24pt", Color.WHITE);
+    currentTimeLabel = new Label("00:00", skin, "whiteNormal");
     add(currentTimeLabel).top().padTop(10).row();
     
-    flipCountLabel = new Label("10", skin);
-    add(flipCountLabel).top().left().padLeft(65).padTop(53).expand().row();
+    flipCountLabel = new Label("-", skin);
+    add(flipCountLabel).top().left().padLeft(70).padTop(38).row();
 
-    shipPieceCountLabel = new Label("10", skin);
-    add(shipPieceCountLabel).top().right().padRight(15).padBottom(358).width(50).row();
+    shipPieceCountLabel = new Label("-", skin);
+    add(shipPieceCountLabel).top().right().padRight(20).padTop(112).width(50).row();
     
-    messageLabel = new Label("", skin, "font_gotham-_light_38pt", Color.valueOf("62a4a2"));
-    add(messageLabel).bottom().padBottom(10).row();
+    messageLabel = new Label("", skin, "levelTitle");
+    add(messageLabel).top().expand().row();
   }
   
   public void setFlipCount(int flipsLeft) {

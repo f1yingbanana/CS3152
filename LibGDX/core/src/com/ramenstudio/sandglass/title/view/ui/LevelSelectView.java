@@ -64,16 +64,9 @@ public class LevelSelectView extends Table {
   @Override
   public void act(float dt) {
     super.act(dt);
-    /*
-    if (isScrolling) {
-      levelScrollPane.setScrollPercentY(levelScrollPane.getScrollPercentY() + scroll * scrollSpeed);
-    }*/
     
-    if (lastFocus != scrollTo) {
+    if (levelScrollView.levelPreviewViews.get(scrollTo - 1).levelSelectButton.isFocused()) {
       levelScrollPane.setScrollY((scrollTo - 1) * 300);
-      levelScrollView.levelPreviewViews.get(scrollTo - 1).setFocus(true);
-      if (lastFocus != -1)
-        levelScrollView.levelPreviewViews.get(lastFocus - 1).setFocus(false);
       lastFocus = scrollTo;
     }
   }

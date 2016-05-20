@@ -46,7 +46,7 @@ public class LevelPreviewView extends Table {
     this.level = level;
     
     // Add preview sprite.
-    levelSelectButton = new KeyboardControlButton("", skin, "white");
+    levelSelectButton = new KeyboardControlButton("", skin, "whiteNormal");
     addActor(levelSelectButton);
     
     // For identifying which level we are selecting
@@ -68,7 +68,7 @@ public class LevelPreviewView extends Table {
       levelName = Constants.LEVEL_NAMES[level - 1].toUpperCase();
     }
     levelNameLabel = new Label(levelName, skin);
-    levelNumberLabel = new Label("LEVEL " + level, skin, "white");
+    levelNumberLabel = new Label("LEVEL " + level, skin, "whiteNormal");
     
     Table texts = new Table();
     texts.add(levelNumberLabel).right().padLeft(240).padTop(65);
@@ -82,7 +82,42 @@ public class LevelPreviewView extends Table {
     focusCircle.setSize(400f, 400f);
     addActor(focusCircle);
     
-
+    scoreLabel = new Label("", skin, "gold");
+    scoreLabel.setAlignment(Align.center);
+    scoreLabel.setVisible(false);
+    scoreLabel.setSize(200f, 60f);
+    
+    addActor(scoreLabel);
+  }
+  
+  @Override
+  public void act(float dt) {
+    // Reposition
+    focusCircle.setPosition(previewSprite.getX() - 100f, previewSprite.getOriginY() - 100f);
+    scoreLabel.setPosition(previewSprite.getX(), previewSprite.getY() - 75f);
+    
+    setFocus(levelSelectButton.isFocused());
+    
+    updateScore();
+  }
+  
+  /**
+   * Sets whether this object should be focused on.
+   * @param inFocus
+   */
+  public void setFocus(boolean inFocus) {
+    
+    focusCircle.setVisible(inFocus);
+    scoreLabel.setVisible(inFocus);
+    
+    if (inFocus) {
+      previewSprite.setDrawable(selectedPreview);
+    } else {
+      previewSprite.setDrawable(unselectedPreview);
+    }
+  }
+  
+  private void updateScore() {
     Preferences prefs = Gdx.app.getPreferences(Constants.PREF_FILE_PATH);
     
     String score = "--:--";
@@ -101,33 +136,6 @@ public class LevelPreviewView extends Table {
       score = "" + minutes + ":" + secText;
     }
     
-    scoreLabel = new Label(score, skin);
-    scoreLabel.setAlignment(Align.center);
-    scoreLabel.setVisible(false);
-    scoreLabel.setSize(200f, 60f);
-    
-    addActor(scoreLabel);
-  }
-  
-  @Override
-  public void act(float dt) {
-    // Reposition
-    focusCircle.setPosition(previewSprite.getX() - 100f, previewSprite.getOriginY() - 100f);
-    scoreLabel.setPosition(previewSprite.getX(), previewSprite.getY() - 75f);
-  }
-  
-  /**
-   * Sets whether this object should be focused on.
-   * @param inFocus
-   */
-  public void setFocus(boolean inFocus) {
-    focusCircle.setVisible(inFocus);
-    scoreLabel.setVisible(inFocus);
-    
-    if (inFocus) {
-      previewSprite.setDrawable(selectedPreview);
-    } else {
-      previewSprite.setDrawable(unselectedPreview);
-    }
+    scoreLabel.setText(score);
   }
 }

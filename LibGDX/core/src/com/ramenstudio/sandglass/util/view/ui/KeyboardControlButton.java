@@ -30,6 +30,8 @@ public class KeyboardControlButton extends Label implements KeyboardControlUI {
   
   private int tag = 0;
   
+  private boolean isFocused = false;
+  
   private List<KeyboardUIListener> listeners = new ArrayList<KeyboardUIListener>();
   
   public KeyboardControlButton(CharSequence text, Skin skin, String styleName) {
@@ -111,6 +113,7 @@ public class KeyboardControlButton extends Label implements KeyboardControlUI {
   public void focusChanged(boolean isFocused) {
     // For this project, let's just change our background to something else if 
     // focused.
+    this.isFocused = isFocused;
     
     // First copy the style
     if (cachedStyle == null) {
@@ -127,5 +130,12 @@ public class KeyboardControlButton extends Label implements KeyboardControlUI {
     } else {
       getStyle().background = null;
     }
+  }
+  
+  /**
+   * Whether this button is focused.
+   */
+  public boolean isFocused() {
+    return isFocused;
   }
 }

@@ -1,24 +1,23 @@
 {
 com.badlogic.gdx.graphics.Color: {
+	gold: { r: 1, g: 0.8, a: 1 },
 	green: { g: 1, a: 1 },
 	light_grey: { r: 0.8, g: 0.8, b: 0.8, a: 1 },
 	"dark grey": { r: 0.4, g: 0.4, b: 0.4, a: 1 },
 	white: { r: 1, g: 1, b: 1, a: 1 },
 	red: { r: 1, a: 1 },
-	black: { a: 1 },
+	grey: { r: 0.7, g: 0.7, b: 0.7, a: 1 },
+	teal: { r: 0.38431373, g: 0.6431373, b: 0.63529414, a: 1 },
 	Sandglass: { r: 0.20392157, g: 0.23137255, b: 0.47843137, a: 1 },
 	Purple: { r: 0.4, b: 0.8, a: 1 },
-	"light yellow": { r: 1, g: 0.9529412, b: 0.7176471, a: 1 },
-	grey: { r: 0.7, g: 0.7, b: 0.7, a: 1 }
+	black: { a: 1 }
 },
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	font_ostrich-regular_24pt_bold: { file: font_ostrich-regular_24pt_bold.fnt },
 	font_g_othic_56pt: { file: font_g_othic_56pt.fnt },
 	font_gotham-_light_30pt: { file: font_gotham-_light_30pt.fnt },
 	font_gotham-_light_56pt: { file: font_gotham-_light_56pt.fnt },
-	font_gotham-_light_24pt: { file: font_gotham-_light_24pt.fnt },
-	font_gotham-_light_48pt: { file: font_gotham-_light_48pt.fnt },
-	font_gotham-_light_38pt: { file: font_gotham-_light_38pt.fnt }
+	font_gotham-_light_24pt: { file: font_gotham-_light_24pt.fnt }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	dialogDim: {
@@ -91,6 +90,10 @@ com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 	default: {}
 },
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	gold: {
+		font: font_gotham-_light_30pt,
+		fontColor: { a: 1, g: 0.8, r: 1 }
+	},
 	default: {
 		font: font_gotham-_light_56pt,
 		fontColor: { a: 1, b: 1, g: 1, r: 1 }
@@ -104,11 +107,14 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		fontColor: { a: 1, b: 1, g: 1, r: 1 },
 		background: purpleButton.
 	},
-	"High Score display": {
-		font: font_gotham-_light_38pt,
-		fontColor: { a: 1, b: 0.7176471, g: 0.9529412, r: 1 }
+	whiteNormal: {
+		font: font_gotham-_light_30pt,
+		fontColor: { a: 1, b: 1, g: 1, r: 1 }
 	},
-	Level_Select: { font: font_gotham-_light_48pt },
+	levelTitle: {
+		font: font_gotham-_light_56pt,
+		fontColor: { a: 1, b: 0.63529414, g: 0.6431373, r: 0.38431373 }
+	},
 	purple: {
 		font: font_gotham-_light_30pt,
 		fontColor: { a: 1, b: 0.47843137, g: 0.23137255, r: 0.20392157 },
