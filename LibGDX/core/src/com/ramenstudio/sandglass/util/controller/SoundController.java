@@ -122,7 +122,7 @@ public class SoundController {
 	private static final String LEVEL_COMPLETE_01 = "Sounds/LevelComplete.mp3";
 	private static final String LEVEL_COMPLETE_01_NAME = "LevelComplete";
 	
-	private static final String LEVEL_FAILED_01 = "Sounds/Computer Error-SoundBible.com-1655839472.mp3";
+	private static final String LEVEL_FAILED_01 = "Sounds/Fail-sound.mp3";
 	private static final String LEVEL_FAILED_01_NAME = "LevelFail";
 	
 	private static final String MONSTER_HIT_01 = "Sounds/HitMonster.mp3";
@@ -174,7 +174,7 @@ public class SoundController {
 		manager.load(SHIP_PIECE_COLLECT_01,Sound.class);
 		manager.load(ITEM_COLLECT_01,Sound.class);
 		manager.load(LEVEL_COMPLETE_01,Sound.class);
-//		manager.load(LEVEL_FAILED_01, Sound.class);
+		manager.load(LEVEL_FAILED_01, Sound.class);
 		manager.load(MONSTER_HIT_01, Sound.class);
 		manager.load(SANDGLASS_COLLECT_01,Sound.class);
 		manager.load(ROTATION_01,Sound.class);
@@ -209,7 +209,7 @@ public class SoundController {
 		soundbank.put(LEVEL_COMPLETE_01_NAME, levelComplete1);
 		loopers.put(LEVEL_COMPLETE_01, false);
 		
-//		Sound levelFailed1 = manager.get(LEVEL_FAILED_01,Sound.class);
+		Sound levelFailed1 = manager.get(LEVEL_FAILED_01,Sound.class);
 //		soundbank.put(LEVEL_FAILED_01_NAME, levelFailed1);
 //		loopers.put(LEVEL_FAILED_01, false);
 		
