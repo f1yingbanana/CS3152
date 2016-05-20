@@ -378,14 +378,13 @@ public class GameController extends AbstractController implements ContactListene
 	@Override
 	public void draw(GameCanvas canvas) {
 		// Draw a background image
+		getGameModel().draw(canvas);
 		playerController.draw(canvas);
 		cameraController.draw(canvas);
 
 		for (MonsterController m: monsterController){
 			m.draw(canvas);
 		}
-
-		getGameModel().draw(canvas);
 	}
 
 	/**
