@@ -4,10 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Align;
 
 /**
  * Defines the UI used for playing state of the game.
@@ -23,6 +25,17 @@ public class GameView extends Table {
   
   public final Label messageLabel;
   
+  private final Table flipCountTable;
+  
+  private final Image sandglassImage;
+  
+  private final Table timeTable;
+
+  private final Image shipImage;
+  private final Image shipPieceImage;
+  
+  private final Table shipPieceTable;
+  
   /**
    * Default constructor. Uses the given skin to set up the pause screen UI.
    * @param skin is the style-sheet for the widgets.
@@ -32,25 +45,55 @@ public class GameView extends Table {
     
     this.setFillParent(true);
     
+    String bgStyle = "default_button";
+    
     if (level < 9){
-    	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type1.png")))));
+      bgStyle = "default_button";
     } else if (level < 18) {
-    	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type2.png")))));
+      bgStyle = "default_button2";
     } else {
-    	this.setBackground(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("UI/UI_LEVEL_Type3.png")))));
+      bgStyle = "default_button3";
     }
     
+    
     currentTimeLabel = new Label("00:00", skin, "whiteNormal");
-    add(currentTimeLabel).top().padTop(10).row();
+    
+    timeTable = new Table(skin);
+    timeTable.setBackground(bgStyle);
+    timeTable.add(currentTimeLabel).padTop(35);
+    add(timeTable).top().center().size(200, 120).padTop(-50).colspan(2);
+    
+    row();
     
     flipCountLabel = new Label("-", skin);
-    add(flipCountLabel).top().left().padLeft(70).padTop(38).row();
+    sandglassImage = new Image(new Texture("UI/Sandglass.png"));
+    flipCountTable = new Table(skin);
+    flipCountTable.setBackground(bgStyle);
+    flipCountTable.add(sandglassImage).size(80).padLeft(60);
+    flipCountTable.add(flipCountLabel);
 
+    add(flipCountTable).size(250, 120).left().top().padTop(20).padLeft(-100);
+    
+    flipCountTable.add(flipCountLabel);
     shipPieceCountLabel = new Label("-", skin);
-    add(shipPieceCountLabel).top().right().padRight(20).padTop(112).width(50).row();
+    shipPieceCountLabel.setAlignment(Align.center);
+
+    shipImage = new Image(new Texture("UI/Ship.png"));
+    shipPieceImage = new Image(new Texture("UI/ShipPiece.png"));
+    
+    shipPieceTable = new Table(skin);
+    shipPieceTable.setBackground(bgStyle);
+    shipPieceTable.add(shipImage).size(120).padBottom(20).colspan(2).padRight(100);
+    shipPieceTable.row();
+    shipPieceTable.add(shipPieceImage).size(64).padRight(10);
+    shipPieceTable.add(shipPieceCountLabel).width(70).left().padRight(100);
+    
+    add(shipPieceTable).size(280, 250).right().top().padTop(20).padRight(-100);
+    
+    row();
     
     messageLabel = new Label("", skin, "levelTitle");
-    add(messageLabel).top().expand().row();
+    add(messageLabel).top().expand().colspan(2);
   }
   
   public void setFlipCount(int flipsLeft) {
