@@ -91,6 +91,8 @@ public class GameController extends AbstractController implements ContactListene
 	
 	//fade time for UI messages
 	private static int MESSAGE_FADETIME = 4;
+	//current alpha value of message
+	private float alpha = 1.0f;
 	
 	//For handling High Scores + Time
 	private static Preferences prefs;
@@ -160,6 +162,8 @@ public class GameController extends AbstractController implements ContactListene
 		uiController.levelFailedView.restartButton.addListener(restartButtonCallback);
 		uiController.levelFailedView.mainMenuButton.addListener(mainMenuButtonCallback);
 		uiController.levelCompleteView.nextLevelButton.addListener(nextLevelButtonCallback);
+		
+		uiController.gameView.setMessage("Level "+ level);
 	}
 
 	/**
@@ -290,6 +294,9 @@ public class GameController extends AbstractController implements ContactListene
 		}
 		
 		updateTime(dt);
+		if (currentTime >= 4 && alpha != 0.0){
+			alpha = uiController.gameView.fadeMessage();
+		}
 		
 		uiController.gameView.setCurrentTime(currentTime);
 		uiController.gameView.setFlipCount(playerController.getPlayer().getFlips());

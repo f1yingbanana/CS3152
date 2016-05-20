@@ -21,7 +21,7 @@ public class GameView extends Table {
   
   public final Label currentTimeLabel;
   
-  //public final Label messageLabel;
+  public final Label messageLabel;
   
   /**
    * Default constructor. Uses the given skin to set up the pause screen UI.
@@ -47,7 +47,10 @@ public class GameView extends Table {
     add(flipCountLabel).top().left().padLeft(65).padTop(53).expand().row();
 
     shipPieceCountLabel = new Label("10", skin);
-    add(shipPieceCountLabel).top().right().padRight(15).padBottom(400).width(50).row();
+    add(shipPieceCountLabel).top().right().padRight(15).padBottom(358).width(50).row();
+    
+    messageLabel = new Label("", skin, "font_gotham-_light_24pt", Color.WHITE);
+    add(messageLabel).bottom().padBottom(10).row();
   }
   
   public void setFlipCount(int flipsLeft) {
@@ -62,9 +65,20 @@ public class GameView extends Table {
 	  currentTimeLabel.setText("" + addZero(currentTime/60) + ":" + addZero(currentTime%60));
   }
   
-  //public void setMessage(String s){
-//	  messageLabel.setText(s);
-  //}
+  public void setMessage(String s){
+	  messageLabel.setText(s);
+  }
+  
+  public float fadeMessage(){
+	  Color mColor = messageLabel.getColor();
+	  float red = mColor.r;
+	  float green = mColor.g;
+	  float blue = mColor.b;
+	  
+	  messageLabel.setColor(red, green, blue, mColor.a - .05f);
+	  
+	  return messageLabel.getColor().a;
+  }
   
   public String addZero(int time) {
 	  if (time < 10){
