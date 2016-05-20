@@ -33,6 +33,8 @@ public class GameMode extends AbstractMode implements Screen {
 
 
 	private Texture backgroundImage;
+	/** reference to game level*/
+	private int gameLevel;
 
 	// A debug renderer
 	Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
@@ -49,17 +51,22 @@ public class GameMode extends AbstractMode implements Screen {
 	 * view canvas.
 	 */
 	public GameMode(int gameLevel) {
+		this.gameLevel = gameLevel;
+		setBackgroundImage();
+		gameplayController = new GameController(gameLevel);
+		tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
+	}
+
+	private void setBackgroundImage() {
 		if (gameLevel <= 9){
 			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V2.png"));
 		}
-		else if (gameLevel < 18){
+		else if (gameLevel <= 18){
 			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V1.png"));
 		}
 		else {
 			backgroundImage = new Texture(Gdx.files.internal("Textures/background.beta.V3.png"));
 		}
-		gameplayController = new GameController(gameLevel);
-		tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
 	}
 
 	@Override
@@ -70,8 +77,14 @@ public class GameMode extends AbstractMode implements Screen {
 
 	@Override
 	public void render(float delta) {
-		// Implements an update-draw loop
+		// Implements an update-draw loop		
 		gameplayController.update(delta);
+		if (gameplayController.isChangingLevel){
+			this.gameLevel= gameplayController.getGameModel().getGameLevel();
+			setBackgroundImage();
+			gameplayController.isChangingLevel=false;
+		}
+		
 		if (!gameplayController.getGameModel().isInOverworld()){
 			bgBatch.setColor(Color.GRAY);
 		}
@@ -88,7 +101,6 @@ public class GameMode extends AbstractMode implements Screen {
 
 		tiledMapRenderer.setView(gameplayController.getViewCamera());
 
-
 		tiledMapRenderer.render();
 
 		gameplayController.getCameraController().swapCameraDimensions();
@@ -100,7 +112,7 @@ public class GameMode extends AbstractMode implements Screen {
 		// DEBUG RENDERS. We can have more render passes later implemented here.
 
 		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-			debug ^= true;
+			// debug ^= true;
 		}
 		if (debug) {
 			debugRenderer.render(gameplayController.world, gameplayController.world2ScreenMatrix());
@@ -155,5 +167,13 @@ public class GameMode extends AbstractMode implements Screen {
 	@Override
 	public String[] getResourcePaths() {
 		return null;
+	}
+
+	public int getGameLevel() {
+		return gameLevel;
+	}
+
+	public void setGameLevel(int gameLevel) {
+		this.gameLevel = gameLevel;
 	}
 }

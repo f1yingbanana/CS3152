@@ -104,8 +104,10 @@ public class SoundController {
 	/** The number of sounds we have played this animation frame */
 	private int current;
 	
-	private static final String BACKGROUND_01 = "Sounds/Odyssey.mp3";
-	private static final String BACKGROUND_01_NAME = "Odyssey";
+
+	
+	private static final String MAIN_MENU_01 = "Sounds/MainMenu.mp3";
+	private static final String MAIN_MENU_01_NAME = "MainMenu";
 	
 	private static final String DOOR_OPEN_01 = "Sounds/OPENGate.mp3";
 	private static final String DOOR_OPEN_01_NAME = "DoorOpen";
@@ -119,8 +121,8 @@ public class SoundController {
 	private static final String LEVEL_COMPLETE_01 = "Sounds/LevelComplete.mp3";
 	private static final String LEVEL_COMPLETE_01_NAME = "LevelComplete";
 	
-//	private static final String LEVEL_FAILED_01 = ;
-//	private static final String LEVEL_FAILED_01_NAME = ;
+	private static final String LEVEL_FAILED_01 = "Sounds/Fail-Sound.mp3";
+	private static final String LEVEL_FAILED_01_NAME = "LevelFail";
 	
 	private static final String MONSTER_HIT_01 = "Sounds/HitMonster.mp3";
 	private static final String MONSTER_HIT_01_NAME = "MonsterCollision";
@@ -130,6 +132,18 @@ public class SoundController {
 	
 	private static final String ROTATION_01 = "Sounds/rotation.mp3";
 	private static final String ROTATION_01_NAME = "Rotation";
+	
+	private static final String LEVEL_SELECT_01 = "Sounds/LevelSelectBGM.mp3";
+	private static final String LEVEL_SELECT_01_NAME = "LevelSelect";
+	
+	private static final String EASY_01 = "Sounds/GameBGM/MediumLevel.mp3";
+	private static final String EASY_01_NAME = "Easy";
+	
+	private static final String MEDIUM_01 = "Sounds/GameBGM/EasyLevel.mp3";
+	private static final String MEDIUM_01_NAME = "Medium";
+	
+	private static final String HARD_01 = "Sounds/GameBGM/HardLevel.mp3";
+	private static final String HARD_01_NAME = "Hard";
 
 	/** 
 	 * Creates a new SoundController with the default settings.
@@ -161,21 +175,42 @@ public class SoundController {
 	
 	public void preLoadSounds(AssetManager manager) {
 		//System.out.println("Only loading sounds once");
-		manager.load(BACKGROUND_01,Sound.class);
+		manager.load(EASY_01,Sound.class);
+		manager.load(MEDIUM_01,Sound.class);
+		manager.load(HARD_01,Sound.class);
+		manager.load(LEVEL_SELECT_01,Sound.class);
+		manager.load(MAIN_MENU_01,Sound.class);
 		manager.load(DOOR_OPEN_01,Sound.class);
 		manager.load(SHIP_PIECE_COLLECT_01,Sound.class);
 		manager.load(ITEM_COLLECT_01,Sound.class);
 		manager.load(LEVEL_COMPLETE_01,Sound.class);
-//		manager.load(LEVEL_FAILED_01, Sound.class);
+		manager.load(LEVEL_FAILED_01, Sound.class);
 		manager.load(MONSTER_HIT_01, Sound.class);
 		manager.load(SANDGLASS_COLLECT_01,Sound.class);
 		manager.load(ROTATION_01,Sound.class);
+	}
+	
+	public void loadSounds(AssetManager manager){
 		
-		manager.finishLoading();
+		Sound easy1 = manager.get(EASY_01,Sound.class);
+		soundbank.put(EASY_01_NAME,easy1);
+		loopers.put(EASY_01, true);
 		
-		Sound background1 = manager.get(BACKGROUND_01,Sound.class);
-		soundbank.put(BACKGROUND_01_NAME,background1);
-		loopers.put(BACKGROUND_01, true);
+		Sound medium1 = manager.get(MEDIUM_01,Sound.class);
+		soundbank.put(MEDIUM_01_NAME,medium1);
+		loopers.put(MEDIUM_01, true);
+		
+		Sound hard1 = manager.get(HARD_01,Sound.class);
+		soundbank.put(HARD_01_NAME,hard1);
+		loopers.put(HARD_01, true);
+		
+		Sound mainmenu1 = manager.get(MAIN_MENU_01,Sound.class);
+		soundbank.put(MAIN_MENU_01_NAME,mainmenu1);
+		loopers.put(MAIN_MENU_01, true);
+		
+		Sound levelSelect1 = manager.get(LEVEL_SELECT_01, Sound.class);
+		soundbank.put(LEVEL_SELECT_01_NAME, levelSelect1);
+		loopers.put(LEVEL_SELECT_01, true);
 		
 		Sound doorOpen1 = manager.get(DOOR_OPEN_01,Sound.class);
 		soundbank.put(DOOR_OPEN_01_NAME, doorOpen1);
@@ -193,9 +228,9 @@ public class SoundController {
 		soundbank.put(LEVEL_COMPLETE_01_NAME, levelComplete1);
 		loopers.put(LEVEL_COMPLETE_01, false);
 		
-//		Sound levelFailed1 = manager.get(LEVEL_FAILED_01,Sound.class);
-//		soundbank.put(LEVEL_FAILED_01_NAME, levelFailed1);
-//		loopers.put(LEVEL_FAILED_01, false);
+		Sound levelFailed1 = manager.get(LEVEL_FAILED_01,Sound.class);
+		soundbank.put(LEVEL_FAILED_01_NAME, levelFailed1);
+		loopers.put(LEVEL_FAILED_01, false);
 		
 		Sound monsterHit1 = manager.get(MONSTER_HIT_01,Sound.class);
 		soundbank.put(MONSTER_HIT_01_NAME, monsterHit1);
@@ -399,6 +434,7 @@ public class SoundController {
 		
 		else {
 			if (!soundbank.containsKey(filename)) {
+				//System.out.println("No key called " + filename);
 				return false;
 			}
 			// If there is a sound for this key, stop it
@@ -486,8 +522,20 @@ public class SoundController {
 
 	public void playBGMForLevel(int gameLevel) {
 		// Have logic based on gameLevel to decide which sound to play, currently playing the same.
-//		System.out.println(play(BACKGROUND_01, BACKGROUND_01_NAME,true,true));
-		play(BACKGROUND_01, BACKGROUND_01_NAME,true,1.5f, true);
+//		System.out.println(play(MEDIUM_01, MEDIUM_01_NAME,true,true));
+		if (gameLevel <= 9 ){
+			stopAll();
+			play(EASY_01, EASY_01_NAME, true, 1.5f, true);
+		}
+		else if (gameLevel <=18){
+			stopAll();
+			play(MEDIUM_01, MEDIUM_01_NAME,true,0.9f, true);
+		}
+		else{
+			stopAll();
+			play(HARD_01,HARD_01_NAME, true, 1.5f, true);
+		}
+		
 	}
 
 	public void stopAll() {
@@ -522,22 +570,36 @@ public class SoundController {
 	}
 	
 	public void playMonsterHit() {
-		play(MONSTER_HIT_01, MONSTER_HIT_01_NAME, false, 0.2f, false);
+		play(MONSTER_HIT_01, MONSTER_HIT_01_NAME, false, 0.8f, false);
 	}
 	
 	public void playRotation() {
 		play(ROTATION_01, ROTATION_01_NAME, false, false);
 	}
 	
+	public void playMainMenuBGM() {
+		play(MAIN_MENU_01, MAIN_MENU_01_NAME, true, 0.8f, true);
+	}
+	
+	public void playLevelSelect() {
+		play(LEVEL_SELECT_01, LEVEL_SELECT_01_NAME, true, 1.0f, true);
+	}
+	
+	public void playLost() {
+		play(LEVEL_FAILED_01, LEVEL_FAILED_01_NAME, false, false);
+	}
+	
 	public void dispose() {
 		for (String s: collection){
-			if (!s.equals("BACKGROUND_01_NAME")){
+			if (!s.equals("MEDIUM_01_NAME") || !s.equals("EASY_01_NAME") || !s.equals("HARD_01_NAME")){
 				Sound snd = soundbank.get(s);
 				snd.dispose();
 			}
 		}
 	}
-//	public void playLevelFail() {
-//		play(LEVEL_FAILED_01, LEVEL_FAILED_01_NAME, false, false);
-//	}
+
+
+
+
+
 }

@@ -21,8 +21,7 @@ public class TitleController {
   public TitleController() {
     LevelPreviewView last = null;
     for (int i = 1; i <= totalLevels; i++) {
-      String previewPath = "UI/LevelPreviews/level" + i + ".png";
-      LevelPreviewView view = uiController.levelSelectView.levelScrollView.addLevelView(i, previewPath);
+      LevelPreviewView view = uiController.levelSelectView.levelScrollView.addLevelView(i);
       
       if (last != null) {
         last.levelSelectButton.setArrowDown(view.levelSelectButton);
@@ -40,6 +39,8 @@ public class TitleController {
       
       last = view;
     }
+    
+    uiController.levelSelectView.levelScrollView.doneAdding();
     
     uiController.titleView.quitButton.addListener(quitButtonListener);
     uiController.titleView.gameStartButton.addListener(gameStartListener);

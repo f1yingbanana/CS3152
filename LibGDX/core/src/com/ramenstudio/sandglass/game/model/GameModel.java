@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.util.Drawable;
+import com.ramenstudio.sandglass.util.controller.SoundController;
 
 /**
  * The root model class for storing all information in a single level.
@@ -132,6 +133,9 @@ public class GameModel implements Drawable {
 	 */
 	public void setGameState(GameState gameState) {
 		this.gameState = gameState;
+		if (gameState == GameState.LOST){
+			SoundController.getInstance().playLost();
+		}
 	}
 
 	public List<ShipPiece> getShipPieces() {

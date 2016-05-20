@@ -31,7 +31,7 @@ public class CreditsView extends Table {
     Sprite bgSprite = new Sprite(bgTexture);
     setBackground(new SpriteDrawable(bgSprite));
     
-    backButton = new KeyboardControlButton("BACK", skin, "white");
+    backButton = new KeyboardControlButton("BACK", skin, "purple");
     add(backButton).prefSize(160, 50).expand().bottom().pad(20);
   }
 }

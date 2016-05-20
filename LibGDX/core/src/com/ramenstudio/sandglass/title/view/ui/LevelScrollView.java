@@ -3,6 +3,9 @@ package com.ramenstudio.sandglass.title.view.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
@@ -16,6 +19,9 @@ public class LevelScrollView extends Table {
   
   private Skin cachedSkin;
   
+  private final Image header;
+  private final Image footer;
+  
   /**
    * Default constructor. Initializes all the UI components with the given skin.
    */
@@ -23,23 +29,31 @@ public class LevelScrollView extends Table {
     super();
     
     cachedSkin = skin;
+    
+    header = new Image();
+    footer = new Image();
+
+    add(header).size(800, Gdx.graphics.getHeight() / 2.0f - 150f);
   }
   
   /**
    * Adds a level with given information, and makes it visible.
    * @param level is the order of the level in all the levels. Starting from 1.
-   * @param imageStyle is the string defining the preview image for the level.
    * @return the newly created level preview view.
    */
-  public LevelPreviewView addLevelView(int level, String imageStyle) {
-    final LevelPreviewView preview = new LevelPreviewView(cachedSkin, level, imageStyle);
+  public LevelPreviewView addLevelView(int level) {
+    final LevelPreviewView preview = new LevelPreviewView(cachedSkin, level);
     row();
-    add(preview).size(500, 200).pad(10);
-    preview.levelSelectButton.setSize(500, 200);
+    add(preview).size(800, 200).padRight(10).padLeft(10).padTop(50).padBottom(50);
+    preview.levelSelectButton.setSize(800, 200);
     levelPreviewViews.add(level - 1, preview);
     
     return preview;
   }
   
+  public void doneAdding() {
+    row();
+    add(footer).size(800, Gdx.graphics.getHeight() / 2.0f - 150f);
+  }
   
 }

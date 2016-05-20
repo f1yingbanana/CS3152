@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.ramenstudio.sandglass.game.view.GameCanvas;
 import com.ramenstudio.sandglass.game.view.ui.GameView;
+import com.ramenstudio.sandglass.game.view.ui.HelpView;
 import com.ramenstudio.sandglass.game.view.ui.LevelCompleteView;
 import com.ramenstudio.sandglass.game.view.ui.PauseView;
 import com.ramenstudio.sandglass.game.view.ui.TutorialView;
@@ -50,7 +51,7 @@ public class UIController extends AbstractController {
   /**
    * The options UI view.
    */
-  public CreditsView creditsView = new CreditsView(skin);
+  public HelpView helpView = new HelpView(skin);
   
   /**
    * The game completed UI view.
@@ -87,9 +88,9 @@ public class UIController extends AbstractController {
     });
     
     // Add options UI.
-    stage.addActor(creditsView);
+    stage.addActor(helpView);
     
-    creditsView.backButton.addListener(new KeyboardUIListener() {
+    helpView.backButton.addListener(new KeyboardUIListener() {
       @Override
       public void interacted() {
         setGameState(UIController.UIState.PAUSED);
@@ -121,7 +122,7 @@ public class UIController extends AbstractController {
     tutorialView.setVisible(false);
     gameView.setVisible(false);
     pauseView.setVisible(false);
-    creditsView.setVisible(false);
+    helpView.setVisible(false);
     levelCompleteView.setVisible(false);
     levelFailedView.setVisible(false);
     
@@ -139,8 +140,8 @@ public class UIController extends AbstractController {
       keyboardControl.setFocusedUI(pauseView.resumeButton);
       break;
     case CREDITS:
-      creditsView.setVisible(true);
-      keyboardControl.setFocusedUI(creditsView.backButton);
+      helpView.setVisible(true);
+      keyboardControl.setFocusedUI(helpView.backButton);
       break;
     case WON:
       levelCompleteView.setVisible(true);
