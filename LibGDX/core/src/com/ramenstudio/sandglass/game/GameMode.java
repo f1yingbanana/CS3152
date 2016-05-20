@@ -112,6 +112,8 @@ public class GameMode extends AbstractMode implements Screen {
 		// If we want to reset, create a new game controller.
 		if (gameplayController.needsReset) {
 			gameplayController.dispose();
+			canvas.dispose();
+			canvas = new GameCanvas();
 			gameplayController = new GameController(gameplayController.getGameModel().getGameLevel());
 			tiledMapRenderer = new OrthogonalTiledMapRenderer(gameplayController.loader.tiledMap, 1/128f);
 		}
