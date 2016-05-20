@@ -48,11 +48,11 @@ public class GameView extends Table {
     String bgStyle = "default_button";
     
     if (level < 9){
-      bgStyle = "default_button";
+      bgStyle = "default_button3";
     } else if (level < 18) {
       bgStyle = "default_button2";
     } else {
-      bgStyle = "default_button3";
+      bgStyle = "default_button";
     }
     
     
@@ -66,6 +66,7 @@ public class GameView extends Table {
     row();
     
     flipCountLabel = new Label("-", skin);
+    flipCountLabel.setAlignment(Align.center);
     sandglassImage = new Image(new Texture("UI/Sandglass.png"));
     flipCountTable = new Table(skin);
     flipCountTable.setBackground(bgStyle);
