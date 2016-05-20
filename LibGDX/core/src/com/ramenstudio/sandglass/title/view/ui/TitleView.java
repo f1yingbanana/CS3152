@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.ramenstudio.sandglass.util.controller.SoundController;
 import com.ramenstudio.sandglass.util.view.ui.KeyboardControlButton;
 
 /**
@@ -37,6 +38,7 @@ public class TitleView extends Table {
     bgTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
     Sprite bgSprite = new Sprite(bgTexture);
     setBackground(new SpriteDrawable(bgSprite));
+    //SoundController.getInstance().playMainMenuBGM();
     
     
     // Create a play button

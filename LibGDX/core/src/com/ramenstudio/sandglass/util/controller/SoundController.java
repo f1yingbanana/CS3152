@@ -107,6 +107,9 @@ public class SoundController {
 	private static final String BACKGROUND_01 = "Sounds/Odyssey.mp3";
 	private static final String BACKGROUND_01_NAME = "Odyssey";
 	
+	private static final String MAIN_MENU_01 = "Sounds/MainMenu.mp3";
+	private static final String MAIN_MENU_01_NAME = "MainMenu";
+	
 	private static final String DOOR_OPEN_01 = "Sounds/OPENGate.mp3";
 	private static final String DOOR_OPEN_01_NAME = "DoorOpen";
 	
@@ -130,6 +133,9 @@ public class SoundController {
 	
 	private static final String ROTATION_01 = "Sounds/rotation.mp3";
 	private static final String ROTATION_01_NAME = "Rotation";
+	
+	private static final String LEVEL_SELECT_01 = "Sounds/LevelSelect.mp3";
+	private static final String LEVEL_SELECT_01_NAME = "LevelSelect";
 
 	/** 
 	 * Creates a new SoundController with the default settings.
@@ -162,6 +168,8 @@ public class SoundController {
 	public void preLoadSounds(AssetManager manager) {
 		//System.out.println("Only loading sounds once");
 		manager.load(BACKGROUND_01,Sound.class);
+		manager.load(LEVEL_SELECT_01,Sound.class);
+		manager.load(MAIN_MENU_01,Sound.class);
 		manager.load(DOOR_OPEN_01,Sound.class);
 		manager.load(SHIP_PIECE_COLLECT_01,Sound.class);
 		manager.load(ITEM_COLLECT_01,Sound.class);
@@ -176,6 +184,14 @@ public class SoundController {
 		Sound background1 = manager.get(BACKGROUND_01,Sound.class);
 		soundbank.put(BACKGROUND_01_NAME,background1);
 		loopers.put(BACKGROUND_01, true);
+		
+		Sound mainmenu1 = manager.get(MAIN_MENU_01,Sound.class);
+		soundbank.put(MAIN_MENU_01_NAME,mainmenu1);
+		loopers.put(MAIN_MENU_01, true);
+		
+		Sound levelSelect1 = manager.get(LEVEL_SELECT_01, Sound.class);
+		soundbank.put(LEVEL_SELECT_01_NAME, levelSelect1);
+		loopers.put(LEVEL_SELECT_01, true);
 		
 		Sound doorOpen1 = manager.get(DOOR_OPEN_01,Sound.class);
 		soundbank.put(DOOR_OPEN_01_NAME, doorOpen1);
@@ -368,6 +384,7 @@ public class SoundController {
 //		}
 
 		if (!isBackground) {
+			System.out.println("notBG");
 			if (!soundbank.containsKey(filename) || current >= frameLimit) {
 				return false;
 			}
@@ -399,6 +416,7 @@ public class SoundController {
 		
 		else {
 			if (!soundbank.containsKey(filename)) {
+				System.out.println("No key called " + filename);
 				return false;
 			}
 			// If there is a sound for this key, stop it
@@ -529,6 +547,14 @@ public class SoundController {
 		play(ROTATION_01, ROTATION_01_NAME, false, false);
 	}
 	
+	public void playMainMenuBGM() {
+		play(MAIN_MENU_01, MAIN_MENU_01_NAME, true, 1.0f, true);
+	}
+	
+	public void playLevelSelect() {
+		play(LEVEL_SELECT_01, LEVEL_SELECT_01_NAME, true, 1.0f, true);
+	}
+	
 	public void dispose() {
 		for (String s: collection){
 			if (!s.equals("BACKGROUND_01_NAME")){
@@ -540,4 +566,8 @@ public class SoundController {
 //	public void playLevelFail() {
 //		play(LEVEL_FAILED_01, LEVEL_FAILED_01_NAME, false, false);
 //	}
+
+
+
+
 }

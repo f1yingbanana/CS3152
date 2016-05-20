@@ -64,10 +64,10 @@ public class GDXRoot extends Game implements ScreenListener {
   public void create() {
     // We create all the modes we need. A title mode, a game mode, and a loading
     // mode. We don't need to load anything yet, though.
+	SoundController.getInstance().preLoadSounds(manager);
     titleMode = new TitleMode();
     titleMode.screenListener = this;
     setApplicationMode(ApplicationMode.TITLE);
-    SoundController.getInstance().preLoadSounds(manager);
   }
 
   /** 
